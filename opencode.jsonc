@@ -1,0 +1,51 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+
+  // Agente inicial al abrir OpenCode
+  "default_agent": "plan",
+
+  // Permisos de seguridad para evitar modificaciones accidentales
+  "permission": {
+    "edit": "ask",       // Te pregunta antes de modificar archivos
+    "bash": "ask",       // Te pregunta antes de ejecutar comandos en la terminal
+    "web_search": "allow" // Búsqueda libre para documentación o paquetes
+  },
+
+  // Agentes especializados
+  "agents": {
+    // A. Agente de Planificación / Arquitectura (No modifica archivos)
+    "plan": {
+      "mode": "primary",
+      "model": "deepseek/deepseek-v4.1-flash#high",
+      "description": "Analiza la estructura del proyecto y diseña soluciones sin editar archivos.",
+      "permission": {
+        "edit": "deny",  // Bloquea escritura para analizar primero
+        "bash": "ask"
+      }
+    },
+
+    // B. Agente de Construcción (Para programar y refactorizar)
+    "build": {
+      "mode": "primary",
+      "model": "deepseek/deepseek-v4.1-flash#high",
+      "description": "Implementa código, corrige errores y refactoriza componentes.",
+      "permission": {
+        "edit": "ask",
+        "bash": "ask"
+      }
+    },
+
+    // C. Subagente para Rápida Documentación y Pruebas Unitarias
+    "fast-coder": {
+      "mode": "subagent",
+      "model": "deepseek/deepseek-v4.1-flash#low",
+      "description": "Genera tests rápidos, archivos de configuración o documentación.",
+      "permission": {
+        "edit": "allow"
+      }
+    }
+  },
+
+  // Formateador automático al guardar
+  "formatter": true
+}
