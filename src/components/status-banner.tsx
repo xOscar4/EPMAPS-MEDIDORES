@@ -11,11 +11,11 @@ import { AppIcon } from './ui/app-icon';
 export function StatusBanner() {
   const insets = useSafeAreaInsets();
   const { online } = useNetworkStatus();
-  const { pendientes, conError, sincronizando, sincronizar } = useOutbox();
+  const { pendientes, conError, sincronizando, sincronizar, ultimoError } = useOutbox();
 
   const puedeSincronizar = online && pendientes > 0 && !sincronizando;
   const sinEnviar = pendientes + conError;
-  const texto = !online
+  const base = !online
     ? sinEnviar === 0
       ? 'Sin conexión · sin pendientes'
       : `Sin conexión · ${sinEnviar} sin enviar`
@@ -24,6 +24,9 @@ export function StatusBanner() {
       : conError > 0
         ? `${conError} lectura${conError === 1 ? '' : 's'} con error · revisar historial`
         : 'En línea · Todo sincronizado';
+
+  // Si el último intento falló, se muestra el motivo en la misma barra.
+  const texto = online && ultimoError && pendientes > 0 ? `${base} · ${ultimoError}` : base;
 
   return (
     <Pressable

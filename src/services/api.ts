@@ -23,6 +23,30 @@ export const MOCKAPI_URL =
 const api = axios.create({ baseURL: MOCKAPI_URL, timeout: 10000 });
 
 /**
+ * MockAPI responde `404 Not found` cuando un GET con filtros no encuentra
+ * ninguna fila (por ejemplo `?idempotencia=...` o `?medidorCodigo=...`).
+ * Eso no es un fallo de red: significa "lista vacía". Sin esta traducción,
+ * el envío de una lectura se detenía antes del POST y la cola quedaba
+ * atascada aunque hubiera Internet.
+ */
+api.interceptors.response.use(
+  (respuesta) => respuesta,
+  (error) => {
+    const esGet = String(error?.config?.method ?? '').toLowerCase() === 'get';
+    if (esGet && error?.response?.status === 404) {
+      return Promise.resolve({
+        data: [],
+        status: 200,
+        statusText: 'OK',
+        headers: error.response.headers,
+        config: error.config,
+      });
+    }
+    return Promise.reject(error);
+  },
+);
+
+/**
  * R3 y R4: la caché de TanStack Query se guarda en AsyncStorage. Además,
  * cada medidor consultado se guarda aquí para poder abrirlo sin Internet
  * incluso si la caché de consultas se limpia.

@@ -8,6 +8,7 @@ import {
   useRef,
   useState,
 } from 'react';
+import { AppState } from 'react-native';
 
 import { useNetworkStatus } from '@/hooks/use-network-status';
 import type { LecturaLocal } from '@/types/models';
@@ -123,6 +124,25 @@ export function OutboxProvider({ children }: { children: React.ReactNode }) {
 
   const pendientes = lecturas.filter((item) => item.estadoSync !== 'error').length;
   const conError = lecturas.length - pendientes;
+
+  /**
+   * R9: si un envío falla (por ejemplo, la red vuelve pero aún no responde),
+   * se reintenta solo cada 20 segundos. Antes solo se intentaba al recuperar
+   * la conexión una vez, así que un fallo dejaba la cola detenida.
+   */
+  useEffect(() => {
+    if (!online || pendientes === 0) return;
+    const timer = setInterval(() => void sincronizar(), 20000);
+    return () => clearInterval(timer);
+  }, [online, pendientes, sincronizar]);
+
+  /** Al volver a la app desde segundo plano también se intenta sincronizar. */
+  useEffect(() => {
+    const sub = AppState.addEventListener('change', (estado) => {
+      if (estado === 'active' && onlineRef.current) void sincronizar();
+    });
+    return () => sub.remove();
+  }, [sincronizar]);
 
   const valor = useMemo(
     () => ({
