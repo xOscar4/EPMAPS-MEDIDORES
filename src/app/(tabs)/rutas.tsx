@@ -147,11 +147,11 @@ export default function RutasScreen() {
 }
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: Brand.background },
-  content: { paddingBottom: 28 },
-  body: { paddingHorizontal: 16, paddingTop: 14, gap: 13 },
-  sectionRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 2 },
-  list: { gap: 10 },
+  screen: { flex: 1, backgroundColor: 'transparent' },
+  content: { paddingBottom: 30 },
+  body: { paddingHorizontal: 16, paddingTop: 16, gap: 14 },
+  sectionRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 4 },
+  list: { gap: 12 },
   loading: { alignItems: 'center', paddingVertical: 34, gap: 8 },
   loadingText: { fontSize: 12, color: Brand.textMuted, fontWeight: '600' },
   errorBox: { gap: 8 },

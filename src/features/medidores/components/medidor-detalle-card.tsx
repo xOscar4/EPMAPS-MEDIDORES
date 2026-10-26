@@ -1,3 +1,4 @@
+import { LinearGradient } from 'expo-linear-gradient';
 import { StyleSheet, Text, View } from 'react-native';
 
 import { AppIcon } from '@/components/ui/app-icon';
@@ -18,8 +19,15 @@ interface Props {
 export function MedidorDetalleCard({ medidor, online, actualizando }: Props) {
   return (
     <View style={styles.wrapper}>
-      <View style={styles.hero}>
+      <LinearGradient
+        colors={[Brand.deepStart, Brand.deepMid, Brand.deepEnd]}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={styles.hero}>
         <View style={styles.heroBubble} />
+        <View pointerEvents="none" style={styles.heroDrop}>
+          <AppIcon name={Icons.drop} size={140} color="#FFFFFF" />
+        </View>
         <View style={styles.heroTop}>
           <Chip
             label={medidor.estado === 'activo' ? 'Servicio activo' : 'Servicio suspendido'}
@@ -35,10 +43,10 @@ export function MedidorDetalleCard({ medidor, online, actualizando }: Props) {
         <Text style={styles.codigo}>{medidor.codigo}</Text>
         <Text style={styles.sector}>{medidor.sector}</Text>
         <View style={styles.addressRow}>
-          <AppIcon name={Icons.location} size={15} color="#9FD4DC" />
+          <AppIcon name={Icons.location} size={15} color="#A9E7EE" />
           <Text style={styles.direccion}>{medidor.direccion}</Text>
         </View>
-      </View>
+      </LinearGradient>
 
       <Card style={styles.dataCard}>
         <View style={styles.grid}>
@@ -89,10 +97,11 @@ function Dato({ label, value, icon }: { label: string; value: string; icon: (typ
 }
 
 const styles = StyleSheet.create({
-  wrapper: { gap: 11 },
+  wrapper: { gap: 12 },
   hero: {
-    backgroundColor: Brand.primaryDark,
     borderRadius: Radius.lg,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.22)',
     padding: 18,
     overflow: 'hidden',
     gap: 3,
@@ -105,33 +114,36 @@ const styles = StyleSheet.create({
     width: 160,
     height: 160,
     borderRadius: 80,
-    backgroundColor: 'rgba(18,166,180,0.25)',
+    backgroundColor: 'rgba(27,184,198,0.28)',
   },
+  heroDrop: { position: 'absolute', right: -26, bottom: -34, opacity: 0.10 },
   heroTop: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 },
   codigo: { color: '#FFFFFF', fontSize: 28, fontWeight: '800', letterSpacing: 0.6 },
-  sector: { color: '#8FDDE4', fontSize: 13, fontWeight: '700' },
+  sector: { color: '#A9E7EE', fontSize: 13, fontWeight: '700' },
   addressRow: { flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 6 },
-  direccion: { color: '#C9DEEA', fontSize: 12, flex: 1 },
+  direccion: { color: '#D6EAF3', fontSize: 12, flex: 1 },
   dataCard: { gap: 11 },
   grid: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
   dato: {
     width: '47%',
     flexGrow: 1,
-    backgroundColor: Brand.background,
+    backgroundColor: 'rgba(255,255,255,0.55)',
+    borderWidth: 1,
+    borderColor: Brand.glassBorderSoft,
     borderRadius: 12,
     padding: 9,
     gap: 1,
   },
   datoIcon: {
-    width: 24,
-    height: 24,
-    borderRadius: 8,
-    backgroundColor: Brand.primaryLight,
+    width: 26,
+    height: 26,
+    borderRadius: 9,
+    backgroundColor: 'rgba(228,242,250,0.9)',
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 3,
   },
-  datoLabel: { fontSize: 9, fontWeight: '700', color: Brand.textMuted, textTransform: 'uppercase' },
+  datoLabel: { fontSize: 9, fontWeight: '700', color: Brand.textMuted, textTransform: 'uppercase', letterSpacing: 0.3 },
   datoValue: { fontSize: 12, fontWeight: '800', color: Brand.text },
   cacheRow: { flexDirection: 'row', alignItems: 'center', gap: 6 },
   cacheText: { flex: 1, fontSize: 10, color: Brand.success, fontWeight: '600' },

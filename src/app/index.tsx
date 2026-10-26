@@ -1,4 +1,5 @@
 import { Redirect, useRouter } from 'expo-router';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useState } from 'react';
 import {
   ActivityIndicator,
@@ -72,9 +73,16 @@ export default function LoginScreen() {
       style={styles.screen}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
       <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
-        <View style={styles.hero}>
+        <LinearGradient
+          colors={[Brand.deepStart, Brand.deepMid, Brand.deepEnd]}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={styles.hero}>
           <View style={styles.bubbleBig} />
           <View style={styles.bubbleSmall} />
+          <View pointerEvents="none" style={styles.dropMark}>
+            <AppIcon name={Icons.drop} size={180} color="#FFFFFF" />
+          </View>
           <View style={styles.logo}>
             <AppIcon name={Icons.drop} size={34} color={Brand.primary} />
           </View>
@@ -83,9 +91,13 @@ export default function LoginScreen() {
           <Text style={styles.heroText}>
             Registra la lectura, respalda con una foto y sincroniza cuando vuelva la señal.
           </Text>
-        </View>
+        </LinearGradient>
 
-        <View style={styles.card}>
+        <LinearGradient
+          colors={['rgba(255,255,255,0.96)', 'rgba(255,255,255,0.80)']}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={styles.card}>
           <Text style={styles.cardTitle}>Iniciar jornada</Text>
           <Text style={styles.cardSubtitle}>Identifícate con tu código de empleado.</Text>
 
@@ -144,7 +156,7 @@ export default function LoginScreen() {
             loading={enviando}
             onPress={() => void entrar()}
           />
-        </View>
+        </LinearGradient>
 
         <Text style={styles.footer}>ESFOT · Prueba I de desarrollo móvil</Text>
       </ScrollView>
@@ -153,14 +165,13 @@ export default function LoginScreen() {
 }
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: Brand.background },
-  loading: { flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: Brand.background },
-  content: { paddingBottom: 32 },
+  screen: { flex: 1, backgroundColor: 'transparent' },
+  loading: { flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: 'transparent' },
+  content: { paddingBottom: 34 },
   hero: {
-    backgroundColor: Brand.primaryDark,
     paddingHorizontal: 24,
     paddingTop: 36,
-    paddingBottom: 54,
+    paddingBottom: 58,
     borderBottomLeftRadius: 36,
     borderBottomRightRadius: 36,
     overflow: 'hidden',
@@ -173,7 +184,7 @@ const styles = StyleSheet.create({
     width: 210,
     height: 210,
     borderRadius: 105,
-    backgroundColor: 'rgba(18,166,180,0.22)',
+    backgroundColor: 'rgba(27,184,198,0.26)',
   },
   bubbleSmall: {
     position: 'absolute',
@@ -184,34 +195,41 @@ const styles = StyleSheet.create({
     borderRadius: 60,
     backgroundColor: 'rgba(255,255,255,0.08)',
   },
+  dropMark: { position: 'absolute', right: -40, bottom: -10, opacity: 0.10 },
   logo: {
-    width: 62,
-    height: 62,
-    borderRadius: 20,
-    backgroundColor: '#FFFFFF',
+    width: 64,
+    height: 64,
+    borderRadius: 22,
+    backgroundColor: 'rgba(255,255,255,0.96)',
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.85)',
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 6,
+    ...Shadows.floating,
   },
-  eyebrow: { color: '#8FDDE4', fontSize: 11, fontWeight: '800', letterSpacing: 1.4 },
-  title: { color: '#FFFFFF', fontSize: 34, lineHeight: 39, fontWeight: '800' },
-  heroText: { color: '#C9DEEA', fontSize: 14, lineHeight: 21, maxWidth: 320 },
+  eyebrow: { color: '#A9E7EE', fontSize: 11, fontWeight: '800', letterSpacing: 1.5 },
+  title: { color: '#FFFFFF', fontSize: 34, lineHeight: 39, fontWeight: '800', letterSpacing: -0.6 },
+  heroText: { color: '#D6EAF3', fontSize: 14, lineHeight: 21, maxWidth: 320 },
   card: {
     marginHorizontal: 20,
-    marginTop: -28,
-    backgroundColor: Brand.surface,
+    marginTop: -30,
     borderRadius: Radius.xl,
+    borderWidth: 1,
+    borderColor: Brand.glassBorder,
     padding: 20,
     gap: 14,
     ...Shadows.floating,
   },
-  cardTitle: { fontSize: 22, fontWeight: '800', color: Brand.text },
+  cardTitle: { fontSize: 22, fontWeight: '800', color: Brand.text, letterSpacing: -0.4 },
   cardSubtitle: { fontSize: 13, color: Brand.textMuted, marginTop: -8, marginBottom: 2 },
   errorBox: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
-    backgroundColor: Brand.dangerSoft,
+    backgroundColor: 'rgba(179,38,30,0.08)',
+    borderWidth: 1,
+    borderColor: 'rgba(179,38,30,0.18)',
     borderRadius: Radius.sm,
     padding: 10,
   },

@@ -3,9 +3,10 @@ import { useState } from 'react';
 import { Keyboard, StyleSheet, Text, View } from 'react-native';
 
 import { AppButton } from '@/components/ui/app-button';
+import { AppIcon } from '@/components/ui/app-icon';
 import { AppInput } from '@/components/ui/app-input';
 import { Card } from '@/components/ui/card';
-import { Brand } from '@/constants/brand';
+import { Brand, Radius } from '@/constants/brand';
 import { Icons } from '@/constants/icons';
 import { esCodigoValido, normalizarCodigo } from '@/utils/validators';
 
@@ -34,7 +35,10 @@ export function BuscarMedidor() {
   return (
     <Card>
       <View style={styles.heading}>
-        <View>
+        <View style={styles.headingIcon}>
+          <AppIcon name={Icons.search} size={19} color={Brand.primary} />
+        </View>
+        <View style={styles.headingTexts}>
           <Text style={styles.title}>Consultar un medidor</Text>
           <Text style={styles.subtitle}>Salta directo a un código de tu zona.</Text>
         </View>
@@ -55,8 +59,15 @@ export function BuscarMedidor() {
         onSubmitEditing={consultar}
         returnKeyType="search"
       />
-      <AppButton title="Consultar medidor" icon={Icons.search} variant="secondary" onPress={consultar} />
-      <AppButton title="Añadir medidor" icon={Icons.add} variant="ghost" onPress={() => router.push('/nuevo-medidor')} />
+      <View style={styles.actions}>
+        <AppButton title="Consultar medidor" icon={Icons.search} variant="secondary" onPress={consultar} />
+        <AppButton
+          title="Añadir medidor"
+          icon={Icons.add}
+          variant="ghost"
+          onPress={() => router.push('/nuevo-medidor')}
+        />
+      </View>
       <Text style={styles.note}>
         Si el código está incompleto, la app no hace ninguna consulta ni gasta datos.
       </Text>
@@ -69,10 +80,22 @@ export function BuscarMedidor() {
 }
 
 const styles = StyleSheet.create({
-  heading: { marginBottom: 12, gap: 2 },
-  title: { fontSize: 16, fontWeight: '800', color: Brand.text },
+  heading: { flexDirection: 'row', alignItems: 'center', gap: 10, marginBottom: 14 },
+  headingIcon: {
+    width: 40,
+    height: 40,
+    borderRadius: Radius.sm,
+    backgroundColor: 'rgba(228,242,250,0.9)',
+    borderWidth: 1,
+    borderColor: Brand.glassBorder,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  headingTexts: { flex: 1, gap: 2 },
+  title: { fontSize: 17, fontWeight: '800', color: Brand.text, letterSpacing: -0.2 },
   subtitle: { fontSize: 12, color: Brand.textMuted },
-  note: { fontSize: 11, color: Brand.textMuted, marginTop: 2 },
+  actions: { gap: 10, marginTop: 2 },
+  note: { fontSize: 11, color: Brand.textMuted, marginTop: 4 },
   brandLine: { flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 2 },
   dot: { width: 6, height: 6, borderRadius: 3, backgroundColor: Brand.accent },
   brandText: { fontSize: 11, color: Brand.primaryDark, fontWeight: '600', flex: 1 },

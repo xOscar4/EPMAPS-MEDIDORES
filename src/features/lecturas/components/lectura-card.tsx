@@ -1,4 +1,5 @@
 import { Image } from 'expo-image';
+import { LinearGradient } from 'expo-linear-gradient';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { AppIcon } from '@/components/ui/app-icon';
@@ -28,7 +29,11 @@ export function LecturaCard({ item, onEditar, onEliminar }: Props) {
   const conError = !enviada && item.estadoSync === 'error';
 
   return (
-    <View style={[styles.card, conError && styles.cardError]}>
+    <LinearGradient
+      colors={['rgba(255,255,255,0.94)', 'rgba(255,255,255,0.58)']}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 1 }}
+      style={[styles.card, conError && styles.cardError]}>
       <View style={styles.topRow}>
         <View style={styles.codeBox}>
           <Text style={styles.codigo}>{item.medidorCodigo}</Text>
@@ -99,7 +104,7 @@ export function LecturaCard({ item, onEditar, onEliminar }: Props) {
           ) : null}
         </View>
       ) : null}
-    </View>
+    </LinearGradient>
   );
 }
 
@@ -115,29 +120,31 @@ function Row({ label, value, tone }: { label: string; value: string; tone?: 'suc
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: Brand.surface,
     borderRadius: Radius.lg,
     borderWidth: 1,
-    borderColor: Brand.border,
+    borderColor: Brand.glassBorder,
     padding: 15,
     gap: 9,
+    overflow: 'hidden',
     ...Shadows.card,
   },
-  cardError: { borderColor: Brand.danger },
+  cardError: { borderColor: 'rgba(179,38,30,0.40)' },
   topRow: { flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between', gap: 8 },
   codeBox: { gap: 1 },
   codigo: { fontSize: 15, fontWeight: '800', color: Brand.text, letterSpacing: 0.3 },
   periodo: { fontSize: 11, color: Brand.textMuted, fontWeight: '600' },
   bodyRow: { flexDirection: 'row', gap: 12, alignItems: 'center' },
   readingBox: {
-    width: 92,
+    width: 94,
     borderRadius: 14,
-    backgroundColor: Brand.primaryLight,
+    backgroundColor: 'rgba(228,242,250,0.85)',
+    borderWidth: 1,
+    borderColor: Brand.glassBorder,
     paddingVertical: 10,
     alignItems: 'center',
   },
   readingLabel: { fontSize: 9, fontWeight: '800', color: Brand.primary, textTransform: 'uppercase' },
-  reading: { fontSize: 24, fontWeight: '800', color: Brand.primaryDark, lineHeight: 28 },
+  reading: { fontSize: 24, fontWeight: '800', color: Brand.primaryDeep, lineHeight: 28 },
   readingUnit: { fontSize: 9, fontWeight: '700', color: Brand.primary },
   data: { flex: 1, gap: 3 },
   row: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 8 },
@@ -158,7 +165,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
-    backgroundColor: 'rgba(5,46,74,0.82)',
+    backgroundColor: 'rgba(4,41,63,0.82)',
     borderRadius: 999,
     paddingHorizontal: 8,
     paddingVertical: 4,
@@ -166,14 +173,29 @@ const styles = StyleSheet.create({
   photoTagText: { color: '#FFFFFF', fontSize: 9, fontWeight: '700' },
   note: { fontSize: 11, color: Brand.textMuted, fontStyle: 'italic' },
   error: { fontSize: 11, color: Brand.danger, fontWeight: '600' },
-  locked: { flexDirection: 'row', alignItems: 'center', gap: 5, borderTopWidth: 1, borderTopColor: Brand.border, paddingTop: 8 },
+  locked: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 5,
+    borderTopWidth: 1,
+    borderTopColor: 'rgba(10,92,142,0.10)',
+    paddingTop: 8,
+  },
   lockedText: { fontSize: 10, color: Brand.success, fontWeight: '600' },
-  actions: { flexDirection: 'row', gap: 8, borderTopWidth: 1, borderTopColor: Brand.border, paddingTop: 9 },
+  actions: {
+    flexDirection: 'row',
+    gap: 8,
+    borderTopWidth: 1,
+    borderTopColor: 'rgba(10,92,142,0.10)',
+    paddingTop: 9,
+  },
   action: {
     flex: 1,
     minHeight: 36,
     borderRadius: 10,
-    backgroundColor: Brand.surfaceAlt,
+    backgroundColor: 'rgba(255,255,255,0.66)',
+    borderWidth: 1,
+    borderColor: Brand.glassBorderSoft,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',

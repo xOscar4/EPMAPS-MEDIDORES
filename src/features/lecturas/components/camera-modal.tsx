@@ -1,4 +1,5 @@
 import { CameraView, useCameraPermissions } from 'expo-camera';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useRef, useState } from 'react';
 import {
   ActivityIndicator,
@@ -59,6 +60,13 @@ function ContenidoCamara({ requerida, onClose, onCapture }: Omit<Props, 'visible
   return (
     <Modal visible animationType="slide" onRequestClose={onClose}>
       <View style={styles.screen}>
+        <LinearGradient
+          colors={['#041A26', '#07334A', '#0A4A6B']}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={StyleSheet.absoluteFill}
+          pointerEvents="none"
+        />
         {permission?.granted ? (
           <>
             <CameraView
@@ -96,7 +104,7 @@ function ContenidoCamara({ requerida, onClose, onCapture }: Omit<Props, 'visible
         ) : (
           <View style={styles.permission}>
             <View style={styles.permissionIcon}>
-              <AppIcon name={Icons.camera} size={34} color={Brand.primary} />
+              <AppIcon name={Icons.camera} size={34} color="#FFFFFF" />
             </View>
             <Text style={styles.permissionTitle}>Necesitamos la cámara</Text>
             <Text style={styles.permissionText}>
@@ -104,7 +112,7 @@ function ContenidoCamara({ requerida, onClose, onCapture }: Omit<Props, 'visible
               decides y se guarda en este teléfono hasta que se envíe.
             </Text>
             {!permission ? (
-              <ActivityIndicator color={Brand.primary} />
+              <ActivityIndicator color="#FFFFFF" />
             ) : (
               <View style={styles.permissionActions}>
                 <AppButton
@@ -165,7 +173,16 @@ const styles = StyleSheet.create({
   shutterDisabled: { opacity: 0.6 },
   shutterText: { color: '#D7E5EC', fontSize: 12, fontWeight: '600' },
   permission: { flex: 1, justifyContent: 'center', padding: 28, gap: 14 },
-  permissionIcon: { width: 72, height: 72, borderRadius: 22, backgroundColor: Brand.primaryLight, alignItems: 'center', justifyContent: 'center' },
+  permissionIcon: {
+    width: 72,
+    height: 72,
+    borderRadius: 22,
+    backgroundColor: 'rgba(255,255,255,0.16)',
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.28)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   permissionTitle: { color: '#FFFFFF', fontSize: 24, fontWeight: '800' },
   permissionText: { color: '#C9DEEA', fontSize: 14, lineHeight: 21 },
   permissionActions: { gap: 10, marginTop: 8 },

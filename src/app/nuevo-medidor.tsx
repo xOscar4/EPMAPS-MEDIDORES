@@ -11,7 +11,7 @@ import { Card } from '@/components/ui/card';
 import { ScreenHeader } from '@/components/ui/screen-header';
 import { SectionTitle } from '@/components/ui/section-title';
 import { Segmented } from '@/components/ui/segmented';
-import { Brand, Shadows } from '@/constants/brand';
+import { Brand, Radius, Shadows } from '@/constants/brand';
 import { Icons } from '@/constants/icons';
 import { CampoFecha } from '@/features/medidores/components/campo-fecha';
 import { useNetworkStatus } from '@/hooks/use-network-status';
@@ -268,21 +268,21 @@ export default function NuevoMedidorScreen() {
 }
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: Brand.background },
-  content: { paddingHorizontal: 16, gap: 16 },
+  screen: { flex: 1, backgroundColor: 'transparent' },
+  content: { paddingHorizontal: 16, paddingTop: 14, gap: 18 },
   intro: { gap: 4 },
   introHeader: { flexDirection: 'row', alignItems: 'center', gap: 7 },
   introTitle: { fontSize: 14, fontWeight: '800', color: Brand.text },
   introText: { fontSize: 12, lineHeight: 17, color: Brand.textMuted },
-  section: { gap: 10 },
+  section: { gap: 11 },
   errorBox: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 7,
-    backgroundColor: '#FFFAFA',
+    backgroundColor: 'rgba(179,38,30,0.07)',
     borderWidth: 1,
-    borderColor: Brand.danger,
-    borderRadius: 12,
+    borderColor: 'rgba(179,38,30,0.22)',
+    borderRadius: Radius.sm,
     padding: 11,
   },
   errorText: { flex: 1, fontSize: 12, color: Brand.danger, fontWeight: '600' },
@@ -292,9 +292,9 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: Brand.surface,
+    backgroundColor: 'rgba(255,255,255,0.94)',
     borderTopWidth: 1,
-    borderTopColor: Brand.border,
+    borderTopColor: Brand.glassBorder,
     paddingHorizontal: 16,
     paddingTop: 10,
     gap: 6,

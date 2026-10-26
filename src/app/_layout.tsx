@@ -1,9 +1,10 @@
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
+import { LinearGradient } from 'expo-linear-gradient';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
-import { View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { StatusBanner } from '@/components/status-banner';
@@ -26,12 +27,23 @@ export default function RootLayout() {
         <AuthProvider>
           <OutboxProvider>
             <StatusBar style="light" />
-            <View style={{ flex: 1, backgroundColor: Brand.background }}>
+            <View style={styles.root}>
+              {/* Fondo de agua: degradado y gotas difusas detrás de toda la app. */}
+              <LinearGradient
+                colors={[Brand.gradientTop, Brand.gradientMid, Brand.gradientBottom]}
+                start={{ x: 0.1, y: 0 }}
+                end={{ x: 0.9, y: 1 }}
+                style={StyleSheet.absoluteFill}
+              />
+              <View pointerEvents="none" style={[styles.drop, styles.dropTop]} />
+              <View pointerEvents="none" style={[styles.drop, styles.dropBottom]} />
+              <View pointerEvents="none" style={[styles.drop, styles.dropMiddle]} />
+
               <StatusBanner />
               <Stack
                 screenOptions={{
                   headerShown: false,
-                  contentStyle: { backgroundColor: Brand.background },
+                  contentStyle: { backgroundColor: 'transparent' },
                 }}>
                 <Stack.Screen name="index" />
                 <Stack.Screen name="(tabs)" />
@@ -47,3 +59,29 @@ export default function RootLayout() {
     </SafeAreaProvider>
   );
 }
+
+const styles = StyleSheet.create({
+  root: { flex: 1, backgroundColor: Brand.gradientMid, overflow: 'hidden' },
+  drop: { position: 'absolute', borderRadius: 999 },
+  dropTop: {
+    width: 280,
+    height: 280,
+    right: -110,
+    top: -60,
+    backgroundColor: 'rgba(27,184,198,0.10)',
+  },
+  dropMiddle: {
+    width: 190,
+    height: 190,
+    left: -90,
+    top: '38%',
+    backgroundColor: 'rgba(127,210,232,0.16)',
+  },
+  dropBottom: {
+    width: 320,
+    height: 320,
+    left: -140,
+    bottom: -150,
+    backgroundColor: 'rgba(18,166,180,0.08)',
+  },
+});

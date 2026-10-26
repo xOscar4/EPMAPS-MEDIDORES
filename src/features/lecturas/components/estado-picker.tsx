@@ -1,7 +1,7 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { AppIcon } from '@/components/ui/app-icon';
-import { Brand, Radius } from '@/constants/brand';
+import { Brand, Radius, Shadows } from '@/constants/brand';
 import { Icons } from '@/constants/icons';
 import type { EstadoMedidor } from '@/types/models';
 
@@ -63,27 +63,33 @@ const styles = StyleSheet.create({
     flex: 1,
     minHeight: 118,
     borderRadius: Radius.md,
-    borderWidth: 1.5,
-    borderColor: Brand.border,
-    backgroundColor: Brand.surface,
+    borderWidth: 1,
+    borderColor: Brand.glassBorder,
+    backgroundColor: 'rgba(255,255,255,0.52)',
     padding: 10,
     alignItems: 'center',
     gap: 4,
   },
-  cardActive: { borderColor: Brand.primary, backgroundColor: Brand.primaryLight },
+  cardActive: {
+    borderColor: 'rgba(10,92,142,0.45)',
+    backgroundColor: 'rgba(228,242,250,0.95)',
+    ...Shadows.card,
+  },
   pressed: { opacity: 0.85 },
   iconBox: {
     width: 38,
     height: 38,
     borderRadius: 12,
-    backgroundColor: Brand.surfaceAlt,
+    backgroundColor: 'rgba(255,255,255,0.75)',
+    borderWidth: 1,
+    borderColor: Brand.glassBorder,
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 2,
   },
   iconBoxActive: { backgroundColor: '#FFFFFF' },
   label: { fontSize: 12, fontWeight: '800', color: Brand.text, textAlign: 'center' },
-  labelActive: { color: Brand.primaryDark },
+  labelActive: { color: Brand.primaryDeep },
   hint: { fontSize: 10, color: Brand.textMuted, textAlign: 'center' },
   error: { color: Brand.danger, fontSize: 12, fontWeight: '600' },
 });

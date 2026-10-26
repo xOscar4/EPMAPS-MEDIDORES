@@ -1,4 +1,5 @@
 import { useRouter } from 'expo-router';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useState } from 'react';
 import {
   ActivityIndicator,
@@ -56,8 +57,15 @@ export default function HistorialScreen() {
           colors={[Brand.primary]}
         />
       }>
-      <View style={styles.header}>
+      <LinearGradient
+        colors={[Brand.deepStart, Brand.deepMid, Brand.deepEnd]}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={styles.header}>
         <View style={styles.headerBubble} />
+        <View pointerEvents="none" style={styles.dropMark}>
+          <AppIcon name={Icons.drop} size={150} color="#FFFFFF" />
+        </View>
         <View style={styles.headerTop}>
           <View>
             <Text style={styles.eyebrow}>MIS REGISTROS</Text>
@@ -88,7 +96,7 @@ export default function HistorialScreen() {
             <Text style={styles.statLabel}>Conexión</Text>
           </View>
         </View>
-      </View>
+      </LinearGradient>
 
       <View style={styles.body}>
         {pendientes > 0 ? (
@@ -175,16 +183,19 @@ export default function HistorialScreen() {
 }
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: Brand.background },
-  content: { paddingBottom: 28 },
+  screen: { flex: 1, backgroundColor: 'transparent' },
+  content: { paddingBottom: 30 },
   header: {
-    backgroundColor: Brand.primaryDark,
-    borderBottomLeftRadius: 30,
-    borderBottomRightRadius: 30,
+    marginHorizontal: 12,
+    marginTop: 10,
+    borderRadius: Radius.xl,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.22)',
     padding: 20,
     paddingBottom: 22,
     overflow: 'hidden',
     gap: 16,
+    ...Shadows.card,
   },
   headerBubble: {
     position: 'absolute',
@@ -193,44 +204,51 @@ const styles = StyleSheet.create({
     width: 190,
     height: 190,
     borderRadius: 95,
-    backgroundColor: 'rgba(18,166,180,0.22)',
+    backgroundColor: 'rgba(27,184,198,0.26)',
   },
+  dropMark: { position: 'absolute', right: -28, top: 12, opacity: 0.10 },
   headerTop: { flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between' },
-  eyebrow: { color: '#8FDDE4', fontSize: 10, fontWeight: '800', letterSpacing: 1.3 },
-  title: { color: '#FFFFFF', fontSize: 28, fontWeight: '800', lineHeight: 34 },
-  subtitle: { color: '#C9DEEA', fontSize: 12, marginTop: 2 },
+  eyebrow: { color: '#A9E7EE', fontSize: 10, fontWeight: '800', letterSpacing: 1.4 },
+  title: { color: '#FFFFFF', fontSize: 28, fontWeight: '800', lineHeight: 34, letterSpacing: -0.4 },
+  subtitle: { color: '#D6EAF3', fontSize: 12, marginTop: 2 },
   headerIcon: {
     width: 48,
     height: 48,
     borderRadius: 16,
-    backgroundColor: 'rgba(255,255,255,0.12)',
+    backgroundColor: 'rgba(255,255,255,0.16)',
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.28)',
     alignItems: 'center',
     justifyContent: 'center',
   },
   stats: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'rgba(255,255,255,0.10)',
+    backgroundColor: 'rgba(255,255,255,0.13)',
     borderRadius: 16,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.22)',
     paddingVertical: 10,
   },
   stat: { flex: 1, alignItems: 'center', gap: 1 },
   statValue: { color: '#FFFFFF', fontSize: 17, fontWeight: '800' },
-  statLabel: { color: '#A9C8D8', fontSize: 9, fontWeight: '700', textTransform: 'uppercase' },
-  statDivider: { width: 1, height: 26, backgroundColor: 'rgba(255,255,255,0.15)' },
-  body: { paddingHorizontal: 16, paddingTop: 14, gap: 12 },
+  statLabel: { color: '#B7D4E2', fontSize: 9, fontWeight: '700', textTransform: 'uppercase', letterSpacing: 0.4 },
+  statDivider: { width: 1, height: 26, backgroundColor: 'rgba(255,255,255,0.18)' },
+  body: { paddingHorizontal: 16, paddingTop: 16, gap: 12 },
   alertBox: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
     backgroundColor: Brand.warningSoft,
+    borderWidth: 1,
+    borderColor: 'rgba(214,138,0,0.22)',
     borderRadius: Radius.sm,
-    padding: 10,
+    padding: 11,
   },
   alertText: { flex: 1, fontSize: 11, fontWeight: '600', color: Brand.warning },
   loading: { alignItems: 'center', paddingVertical: 30, gap: 8 },
   loadingText: { fontSize: 12, color: Brand.textMuted, fontWeight: '600' },
-  list: { gap: 10 },
-  item: { ...Shadows.card, borderRadius: Radius.lg },
+  list: { gap: 12 },
+  item: { borderRadius: Radius.lg },
   legend: { flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginTop: 4 },
 });

@@ -1,8 +1,9 @@
+import { LinearGradient } from 'expo-linear-gradient';
 import { StyleSheet, Text, View } from 'react-native';
 
 import { AppIcon } from '@/components/ui/app-icon';
 import { ProgressBar } from '@/components/ui/progress-bar';
-import { Brand } from '@/constants/brand';
+import { Brand, Radius, Shadows } from '@/constants/brand';
 import { Icons } from '@/constants/icons';
 import type { Tecnico } from '@/types/models';
 import { fechaLarga, saludo } from '@/utils/format';
@@ -21,16 +22,23 @@ export function RutaHero({ tecnico, total, registrados, porEnviar, online }: Pro
   const primerNombre = tecnico.nombre.split(' ')[0];
 
   return (
-    <View style={styles.hero}>
+    <LinearGradient
+      colors={[Brand.deepStart, Brand.deepMid, Brand.deepEnd]}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 1 }}
+      style={styles.hero}>
       <View style={styles.bubbleBig} />
       <View style={styles.bubbleSmall} />
+      <View pointerEvents="none" style={styles.dropMark}>
+        <AppIcon name={Icons.drop} size={150} color="#FFFFFF" />
+      </View>
 
       <Text style={styles.fecha}>{fechaLarga().toUpperCase()}</Text>
       <Text style={styles.saludo}>
         {saludo()}, {primerNombre}
       </Text>
       <View style={styles.zoneRow}>
-        <AppIcon name={Icons.route} size={14} color="#8FDDE4" />
+        <AppIcon name={Icons.route} size={14} color="#A9E7EE" />
         <Text style={styles.zona}>{tecnico.zona}</Text>
       </View>
 
@@ -66,20 +74,23 @@ export function RutaHero({ tecnico, total, registrados, porEnviar, online }: Pro
           {online ? 'Con señal: la ruta se actualiza sola' : 'Sin señal: sigues trabajando con la caché'}
         </Text>
       </View>
-    </View>
+    </LinearGradient>
   );
 }
 
 const styles = StyleSheet.create({
   hero: {
-    backgroundColor: Brand.primaryDark,
-    borderBottomLeftRadius: 30,
-    borderBottomRightRadius: 30,
+    marginHorizontal: 12,
+    marginTop: 10,
+    borderRadius: Radius.xl,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.22)',
     paddingHorizontal: 20,
     paddingTop: 20,
     paddingBottom: 20,
     overflow: 'hidden',
     gap: 3,
+    ...Shadows.card,
   },
   bubbleBig: {
     position: 'absolute',
@@ -88,7 +99,7 @@ const styles = StyleSheet.create({
     width: 200,
     height: 200,
     borderRadius: 100,
-    backgroundColor: 'rgba(18,166,180,0.20)',
+    backgroundColor: 'rgba(27,184,198,0.24)',
   },
   bubbleSmall: {
     position: 'absolute',
@@ -97,30 +108,43 @@ const styles = StyleSheet.create({
     width: 120,
     height: 120,
     borderRadius: 60,
-    backgroundColor: 'rgba(255,255,255,0.05)',
+    backgroundColor: 'rgba(255,255,255,0.06)',
   },
-  fecha: { color: '#8FDDE4', fontSize: 10, fontWeight: '800', letterSpacing: 1.3 },
-  saludo: { color: '#FFFFFF', fontSize: 26, fontWeight: '800', lineHeight: 32 },
+  dropMark: { position: 'absolute', right: -22, top: 30, opacity: 0.10 },
+  fecha: { color: '#A9E7EE', fontSize: 10, fontWeight: '800', letterSpacing: 1.4 },
+  saludo: { color: '#FFFFFF', fontSize: 26, fontWeight: '800', lineHeight: 32, letterSpacing: -0.4 },
   zoneRow: { flexDirection: 'row', alignItems: 'center', gap: 5, marginBottom: 14 },
-  zona: { color: '#C9DEEA', fontSize: 12, fontWeight: '600' },
+  zona: { color: '#CDE6F1', fontSize: 12, fontWeight: '600' },
   progressCard: {
-    backgroundColor: 'rgba(255,255,255,0.10)',
+    backgroundColor: 'rgba(255,255,255,0.13)',
     borderRadius: 20,
     borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.12)',
+    borderColor: 'rgba(255,255,255,0.24)',
     padding: 14,
     gap: 8,
   },
   progressTop: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
-  progressLabel: { color: '#EAF6FB', fontSize: 12, fontWeight: '700' },
+  progressLabel: { color: '#EFF9FD', fontSize: 12, fontWeight: '700' },
   progressPct: { color: '#FFFFFF', fontSize: 13, fontWeight: '800' },
   stats: { flexDirection: 'row', alignItems: 'center', marginTop: 4 },
   stat: { flex: 1, alignItems: 'center', gap: 1 },
   statValue: { color: '#FFFFFF', fontSize: 19, fontWeight: '800' },
   statValueAlert: { color: '#FFD9A3' },
-  statLabel: { color: '#A9C8D8', fontSize: 9, fontWeight: '700', textTransform: 'uppercase' },
-  statDivider: { width: 1, height: 24, backgroundColor: 'rgba(255,255,255,0.16)' },
-  net: { flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 4 },
-  netOffline: { opacity: 0.95 },
-  netText: { color: '#C9DEEA', fontSize: 10, fontWeight: '600', flex: 1 },
+  statLabel: { color: '#B7D4E2', fontSize: 9, fontWeight: '700', textTransform: 'uppercase' },
+  statDivider: { width: 1, height: 24, backgroundColor: 'rgba(255,255,255,0.18)' },
+  net: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    marginTop: 10,
+    alignSelf: 'flex-start',
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.22)',
+    backgroundColor: 'rgba(255,255,255,0.12)',
+    borderRadius: Radius.pill,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+  },
+  netOffline: { opacity: 0.95, borderColor: 'rgba(255,217,163,0.35)' },
+  netText: { color: '#E6F4FA', fontSize: 10, fontWeight: '600', flexShrink: 1 },
 });

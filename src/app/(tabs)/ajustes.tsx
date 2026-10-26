@@ -1,4 +1,5 @@
 import Constants from 'expo-constants';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import { useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
@@ -8,7 +9,7 @@ import { AppButton } from '@/components/ui/app-button';
 import { AppIcon } from '@/components/ui/app-icon';
 import { Card } from '@/components/ui/card';
 import { Chip } from '@/components/ui/chip';
-import { Brand, Shadows } from '@/constants/brand';
+import { Brand, Radius, Shadows } from '@/constants/brand';
 import { Icons } from '@/constants/icons';
 import { useAuth } from '@/features/auth/auth-provider';
 import { useOutbox } from '@/features/lecturas/outbox-provider';
@@ -58,8 +59,15 @@ export default function AjustesScreen() {
 
   return (
     <ScrollView style={styles.screen} contentContainerStyle={styles.content}>
-      <View style={styles.header}>
+      <LinearGradient
+        colors={[Brand.deepStart, Brand.deepMid, Brand.deepEnd]}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={styles.header}>
         <View style={styles.headerBubble} />
+        <View pointerEvents="none" style={styles.dropMark}>
+          <AppIcon name={Icons.drop} size={150} color="#FFFFFF" />
+        </View>
         <View style={styles.headerTop}>
           <View>
             <Text style={styles.eyebrow}>EPMAPS · CAMPO</Text>
@@ -70,7 +78,7 @@ export default function AjustesScreen() {
             <AppIcon name={Icons.settings} size={24} color="#FFFFFF" />
           </View>
         </View>
-      </View>
+      </LinearGradient>
 
       <View style={styles.body}>
         <Card style={styles.profile}>
@@ -183,16 +191,19 @@ function Row({
 }
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: Brand.background },
-  content: { paddingBottom: 30 },
+  screen: { flex: 1, backgroundColor: 'transparent' },
+  content: { paddingBottom: 34 },
   header: {
-    backgroundColor: Brand.primaryDark,
+    marginHorizontal: 12,
+    marginTop: 10,
+    borderRadius: Radius.xl,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.22)',
     paddingHorizontal: 20,
     paddingTop: 20,
-    paddingBottom: 42,
-    borderBottomLeftRadius: 30,
-    borderBottomRightRadius: 30,
+    paddingBottom: 26,
     overflow: 'hidden',
+    ...Shadows.card,
   },
   headerBubble: {
     position: 'absolute',
@@ -201,29 +212,35 @@ const styles = StyleSheet.create({
     width: 180,
     height: 180,
     borderRadius: 90,
-    backgroundColor: 'rgba(18,166,180,0.22)',
+    backgroundColor: 'rgba(27,184,198,0.26)',
   },
+  dropMark: { position: 'absolute', right: -28, top: 16, opacity: 0.10 },
   headerTop: { flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between' },
-  eyebrow: { color: '#8FDDE4', fontSize: 10, fontWeight: '800', letterSpacing: 1.3 },
-  title: { color: '#FFFFFF', fontSize: 28, fontWeight: '800', lineHeight: 34 },
-  subtitle: { color: '#C9DEEA', fontSize: 12, marginTop: 2 },
+  eyebrow: { color: '#A9E7EE', fontSize: 10, fontWeight: '800', letterSpacing: 1.4 },
+  title: { color: '#FFFFFF', fontSize: 28, fontWeight: '800', lineHeight: 34, letterSpacing: -0.4 },
+  subtitle: { color: '#D6EAF3', fontSize: 12, marginTop: 2 },
   headerIcon: {
     width: 48,
     height: 48,
     borderRadius: 16,
-    backgroundColor: 'rgba(255,255,255,0.12)',
+    backgroundColor: 'rgba(255,255,255,0.16)',
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.28)',
     alignItems: 'center',
     justifyContent: 'center',
   },
-  body: { paddingHorizontal: 16, marginTop: -28, gap: 10 },
+  body: { paddingHorizontal: 16, marginTop: 16, gap: 12 },
   profile: { flexDirection: 'row', alignItems: 'center', gap: 12 },
   avatar: {
-    width: 52,
-    height: 52,
+    width: 54,
+    height: 54,
     borderRadius: 18,
     backgroundColor: Brand.primary,
+    borderWidth: 1,
+    borderColor: Brand.glassBorder,
     alignItems: 'center',
     justifyContent: 'center',
+    ...Shadows.card,
   },
   avatarText: { color: '#FFFFFF', fontSize: 18, fontWeight: '800' },
   profileTexts: { flex: 1, gap: 1 },
@@ -232,11 +249,11 @@ const styles = StyleSheet.create({
   zoneRow: { flexDirection: 'row', alignItems: 'center', gap: 4, marginTop: 2 },
   zone: { fontSize: 10, fontWeight: '700', color: Brand.primary },
   sectionTitle: {
-    fontSize: 11,
+    fontSize: 10,
     fontWeight: '800',
-    color: Brand.textMuted,
+    color: Brand.primaryDark,
     textTransform: 'uppercase',
-    letterSpacing: 0.8,
+    letterSpacing: 1,
     marginTop: 8,
     marginLeft: 4,
   },
@@ -246,14 +263,16 @@ const styles = StyleSheet.create({
     width: 32,
     height: 32,
     borderRadius: 10,
-    backgroundColor: Brand.primaryLight,
+    backgroundColor: 'rgba(228,242,250,0.9)',
+    borderWidth: 1,
+    borderColor: Brand.glassBorder,
     alignItems: 'center',
     justifyContent: 'center',
   },
   rowIconWarning: { backgroundColor: Brand.warningSoft },
   rowLabel: { flex: 1, fontSize: 12, fontWeight: '600', color: Brand.text },
   rowValue: { fontSize: 11, fontWeight: '800', maxWidth: '52%', textAlign: 'right' },
-  actions: { gap: 8, marginTop: 6 },
+  actions: { gap: 10, marginTop: 6 },
   action: { minHeight: 46 },
   about: { fontSize: 11, lineHeight: 17, color: Brand.textMuted, marginTop: 4 },
   footer: { textAlign: 'center', fontSize: 10, color: Brand.textMuted, marginTop: 8 },

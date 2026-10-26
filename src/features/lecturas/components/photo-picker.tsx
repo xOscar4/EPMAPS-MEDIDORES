@@ -4,7 +4,7 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { AppIcon } from '@/components/ui/app-icon';
 import { Chip } from '@/components/ui/chip';
-import { Brand, Radius } from '@/constants/brand';
+import { Brand, Radius, Shadows } from '@/constants/brand';
 import { Icons } from '@/constants/icons';
 import { CameraModal } from './camera-modal';
 
@@ -95,8 +95,9 @@ const styles = StyleSheet.create({
     borderRadius: Radius.md,
     overflow: 'hidden',
     borderWidth: 1,
-    borderColor: Brand.border,
-    backgroundColor: Brand.surface,
+    borderColor: Brand.glassBorder,
+    backgroundColor: 'rgba(255,255,255,0.60)',
+    ...Shadows.card,
   },
   image: { width: '100%', height: 190, backgroundColor: Brand.surfaceAlt },
   previewBar: { padding: 10, gap: 8 },
@@ -111,7 +112,9 @@ const styles = StyleSheet.create({
     gap: 5,
     minHeight: 34,
     borderRadius: 10,
-    backgroundColor: Brand.surfaceAlt,
+    backgroundColor: 'rgba(255,255,255,0.70)',
+    borderWidth: 1,
+    borderColor: Brand.glassBorderSoft,
   },
   actionText: { fontSize: 11, fontWeight: '800', color: Brand.primary },
   empty: {
@@ -122,19 +125,22 @@ const styles = StyleSheet.create({
     borderRadius: Radius.md,
     borderWidth: 1.5,
     borderStyle: 'dashed',
-    borderColor: Brand.border,
-    backgroundColor: Brand.background,
+    borderColor: 'rgba(10,92,142,0.25)',
+    backgroundColor: 'rgba(255,255,255,0.42)',
   },
-  emptyError: { borderColor: Brand.danger, backgroundColor: '#FFFAFA' },
+  emptyError: { borderColor: 'rgba(179,38,30,0.45)', backgroundColor: 'rgba(255,247,247,0.75)' },
   pressed: { opacity: 0.8 },
   emptyIcon: {
-    width: 52,
-    height: 52,
-    borderRadius: 16,
-    backgroundColor: Brand.primaryLight,
+    width: 54,
+    height: 54,
+    borderRadius: 17,
+    backgroundColor: 'rgba(228,242,250,0.95)',
+    borderWidth: 1,
+    borderColor: Brand.glassBorder,
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 3,
+    ...Shadows.card,
   },
   emptyTitle: { fontSize: 14, fontWeight: '800', color: Brand.text },
   emptyText: { fontSize: 11, color: Brand.textMuted, textAlign: 'center' },

@@ -18,6 +18,13 @@ export function ProgressBar({ value, tone = Brand.accent }: Props) {
 }
 
 const styles = StyleSheet.create({
-  track: { height: 8, borderRadius: Radius.pill, backgroundColor: 'rgba(255,255,255,0.28)', overflow: 'hidden' },
-  fill: { height: '100%', borderRadius: Radius.pill },
+  track: {
+    height: 9,
+    borderRadius: Radius.pill,
+    backgroundColor: 'rgba(255,255,255,0.24)',
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.22)',
+    overflow: 'hidden',
+  },
+  fill: { height: '100%', borderRadius: Radius.pill, minWidth: 6 },
 });

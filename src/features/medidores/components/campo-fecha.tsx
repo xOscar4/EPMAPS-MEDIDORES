@@ -4,7 +4,7 @@ import { Platform, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
 import { AppIcon } from '@/components/ui/app-icon';
-import { Brand, Radius } from '@/constants/brand';
+import { Brand, Radius, Shadows } from '@/constants/brand';
 import { Icons } from '@/constants/icons';
 import { fechaDesdeISO, fechaISO, formatearFecha } from '@/utils/format';
 
@@ -80,29 +80,36 @@ export function CampoFecha({ label, value, onChange, error, hint, maximumDate }:
 
 const styles = StyleSheet.create({
   container: { gap: 7 },
-  label: { fontSize: 13, fontWeight: '700', color: Brand.textMuted, letterSpacing: 0.3 },
+  label: {
+    fontSize: 11,
+    fontWeight: '800',
+    color: Brand.primaryDark,
+    letterSpacing: 0.8,
+    textTransform: 'uppercase',
+  },
   field: {
     minHeight: 54,
     borderWidth: 1,
-    borderColor: Brand.border,
-    backgroundColor: Brand.surface,
+    borderColor: 'rgba(10,92,142,0.12)',
+    backgroundColor: Brand.glassField,
     borderRadius: Radius.md,
     paddingHorizontal: 16,
     flexDirection: 'row',
     alignItems: 'center',
     gap: 10,
+    ...Shadows.card,
   },
-  fieldError: { borderColor: Brand.danger, backgroundColor: '#FFFAFA' },
+  fieldError: { borderColor: 'rgba(179,38,30,0.45)', backgroundColor: 'rgba(255,247,247,0.92)' },
   pressed: { opacity: 0.8 },
   value: { flex: 1, fontSize: 16, color: Brand.text, paddingVertical: 12, textTransform: 'capitalize' },
   placeholder: { color: Brand.textMuted, textTransform: 'none' },
   error: { color: Brand.danger, fontSize: 12, fontWeight: '600' },
-  hint: { color: Brand.textMuted, fontSize: 12 },
+  hint: { color: Brand.textMuted, fontSize: 11, lineHeight: 15 },
   panel: {
     borderWidth: 1,
-    borderColor: Brand.border,
+    borderColor: Brand.glassBorder,
     borderRadius: Radius.md,
-    backgroundColor: Brand.surface,
+    backgroundColor: Brand.glassStrong,
     paddingVertical: 4,
   },
   done: { alignSelf: 'flex-end', paddingHorizontal: 16, paddingVertical: 10 },

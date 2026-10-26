@@ -58,7 +58,15 @@ const styles = StyleSheet.create({
   direccion: { fontSize: 13, fontWeight: '600', color: Brand.text },
   sector: { fontSize: 11, color: Brand.textMuted },
   metrics: { flexDirection: 'row', gap: 8, marginTop: 8 },
-  metric: { flex: 1, backgroundColor: Brand.surfaceAlt, borderRadius: 12, padding: 9, gap: 2 },
-  metricLabel: { fontSize: 9, fontWeight: '700', color: Brand.textMuted, textTransform: 'uppercase' },
+  metric: {
+    flex: 1,
+    backgroundColor: 'rgba(255,255,255,0.58)',
+    borderWidth: 1,
+    borderColor: Brand.glassBorderSoft,
+    borderRadius: 12,
+    padding: 9,
+    gap: 2,
+  },
+  metricLabel: { fontSize: 9, fontWeight: '700', color: Brand.textMuted, textTransform: 'uppercase', letterSpacing: 0.3 },
   metricValue: { fontSize: 12, fontWeight: '800', color: Brand.primaryDark },
 });

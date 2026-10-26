@@ -1,3 +1,4 @@
+import { LinearGradient } from 'expo-linear-gradient';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { AppIcon } from '@/components/ui/app-icon';
@@ -31,6 +32,13 @@ export function MedidorCard({ medidor, estado, onPress }: Props) {
       accessibilityLabel={`Medidor ${medidor.codigo}, ${meta.label}`}
       onPress={onPress}
       style={({ pressed }) => [styles.card, pressed && styles.pressed]}>
+      <LinearGradient
+        colors={['rgba(255,255,255,0.94)', 'rgba(255,255,255,0.58)']}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={StyleSheet.absoluteFill}
+        pointerEvents="none"
+      />
       <View style={[styles.accent, { backgroundColor: meta.color }]} />
       <View style={styles.body}>
         <View style={styles.topRow}>
@@ -69,15 +77,14 @@ export function MedidorCard({ medidor, estado, onPress }: Props) {
 const styles = StyleSheet.create({
   card: {
     flexDirection: 'row',
-    backgroundColor: Brand.surface,
     borderRadius: Radius.lg,
     borderWidth: 1,
-    borderColor: Brand.border,
+    borderColor: Brand.glassBorder,
     overflow: 'hidden',
     ...Shadows.card,
   },
-  pressed: { opacity: 0.88, transform: [{ scale: 0.995 }] },
-  accent: { width: 5 },
+  pressed: { opacity: 0.9, transform: [{ scale: 0.995 }] },
+  accent: { width: 6 },
   body: { flex: 1, padding: 15, gap: 6 },
   topRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   codigo: { fontSize: 16, fontWeight: '800', color: Brand.text, letterSpacing: 0.4 },
@@ -86,15 +93,17 @@ const styles = StyleSheet.create({
   direccion: { fontSize: 12, color: Brand.textMuted },
   bottomRow: { flexDirection: 'row', alignItems: 'center', gap: 12, marginTop: 4 },
   metric: { gap: 1 },
-  metricLabel: { fontSize: 10, color: Brand.textMuted, textTransform: 'uppercase', fontWeight: '700' },
+  metricLabel: { fontSize: 9, color: Brand.textMuted, textTransform: 'uppercase', fontWeight: '700', letterSpacing: 0.4 },
   metricValue: { fontSize: 13, fontWeight: '800', color: Brand.text },
-  divider: { width: 1, height: 26, backgroundColor: Brand.border },
+  divider: { width: 1, height: 26, backgroundColor: 'rgba(10,92,142,0.12)' },
   arrow: {
     marginLeft: 'auto',
     width: 32,
     height: 32,
     borderRadius: 16,
-    backgroundColor: Brand.primaryLight,
+    backgroundColor: 'rgba(228,242,250,0.9)',
+    borderWidth: 1,
+    borderColor: Brand.glassBorder,
     alignItems: 'center',
     justifyContent: 'center',
   },

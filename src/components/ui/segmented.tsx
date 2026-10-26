@@ -1,6 +1,6 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
-import { Brand, Radius } from '@/constants/brand';
+import { Brand, Radius, Shadows } from '@/constants/brand';
 
 interface Opcion {
   key: string;
@@ -42,8 +42,10 @@ export function Segmented({ options, value, onChange }: Props) {
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    backgroundColor: Brand.surfaceAlt,
+    backgroundColor: 'rgba(255,255,255,0.42)',
     borderRadius: Radius.md,
+    borderWidth: 1,
+    borderColor: Brand.glassBorderSoft,
     padding: 4,
     gap: 4,
   },
@@ -56,19 +58,24 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: 6,
   },
-  itemActive: { backgroundColor: Brand.surface, borderWidth: 1, borderColor: Brand.border },
-  label: { fontSize: 13, fontWeight: '700', color: Brand.textMuted },
-  labelActive: { color: Brand.primaryDark },
+  itemActive: {
+    backgroundColor: 'rgba(255,255,255,0.95)',
+    borderWidth: 1,
+    borderColor: Brand.glassBorder,
+    ...Shadows.card,
+  },
+  label: { fontSize: 12, fontWeight: '700', color: Brand.textMuted },
+  labelActive: { color: Brand.primaryDark, fontWeight: '800' },
   badge: {
     minWidth: 20,
     height: 20,
     borderRadius: 10,
     paddingHorizontal: 5,
-    backgroundColor: Brand.border,
+    backgroundColor: 'rgba(10,92,142,0.08)',
     alignItems: 'center',
     justifyContent: 'center',
   },
-  badgeActive: { backgroundColor: Brand.primaryLight },
+  badgeActive: { backgroundColor: 'rgba(18,166,180,0.16)' },
   badgeText: { fontSize: 10, fontWeight: '800', color: Brand.textMuted },
-  badgeTextActive: { color: Brand.primary },
+  badgeTextActive: { color: Brand.accent },
 });
