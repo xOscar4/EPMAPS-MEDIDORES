@@ -41,19 +41,30 @@ export default function LoginScreen() {
   const entrar = async () => {
     Keyboard.dismiss();
     setError('');
-    if (!codigo.trim() || !clave) {
+    if (!codigo.trim() || !clave.trim()) {
       setError('Ingresa tu código de empleado y tu clave.');
       return;
     }
+    // Se limpian espacios y se muestran los valores que realmente se validan.
+    const codigoLimpio = codigo.trim().toUpperCase();
+    const claveLimpia = clave.trim();
+    setCodigo(codigoLimpio);
+    setClave(claveLimpia);
     setEnviando(true);
     try {
-      await iniciarSesion(codigo, clave);
+      await iniciarSesion(codigoLimpio, claveLimpia);
       router.replace('/rutas');
     } catch (e) {
       setError(e instanceof Error ? e.message : 'No se pudo iniciar sesión.');
     } finally {
       setEnviando(false);
     }
+  };
+
+  const usarDemo = () => {
+    setCodigo('EMP-001');
+    setClave('epmaps2026');
+    setError('');
   };
 
   return (
@@ -85,6 +96,8 @@ export default function LoginScreen() {
             placeholder="EMP-001"
             autoCapitalize="characters"
             autoCorrect={false}
+            autoComplete="off"
+            importantForAutofill="no"
             hint="Demo: EMP-001"
             returnKeyType="next"
           />
@@ -96,6 +109,9 @@ export default function LoginScreen() {
             placeholder="••••••••"
             secureTextEntry={!verClave}
             autoCapitalize="none"
+            autoCorrect={false}
+            autoComplete="off"
+            importantForAutofill="no"
             hint="Demo: epmaps2026"
             returnKeyType="done"
             onSubmitEditing={() => void entrar()}
@@ -109,6 +125,11 @@ export default function LoginScreen() {
               </Pressable>
             }
           />
+
+          <Pressable onPress={usarDemo} hitSlop={8} style={styles.demoFill}>
+            <AppIcon name={Icons.person} size={15} color={Brand.primary} />
+            <Text style={styles.demoFillText}>Usar credenciales de demostración</Text>
+          </Pressable>
 
           {error ? (
             <View style={styles.errorBox}>
@@ -195,5 +216,13 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   errorText: { flex: 1, color: Brand.danger, fontSize: 12, fontWeight: '600' },
+  demoFill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6,
+    paddingVertical: 2,
+  },
+  demoFillText: { color: Brand.primary, fontSize: 12, fontWeight: '700' },
   footer: { textAlign: 'center', color: Brand.textMuted, fontSize: 11, marginTop: 24 },
 });

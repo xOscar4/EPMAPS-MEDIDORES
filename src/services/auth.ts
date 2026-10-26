@@ -20,8 +20,9 @@ export async function login(codigo: string, clave: string): Promise<Tecnico> {
   // Pequeña espera para que el botón muestre su estado de carga.
   await new Promise((resolve) => setTimeout(resolve, 400));
 
+  // Se limpian espacios accidentales del teclado o del autocompletado.
   const usuario = codigo.trim().toUpperCase();
-  if (usuario !== CREDENCIALES.codigo || clave !== CREDENCIALES.clave) {
+  if (usuario !== CREDENCIALES.codigo || clave.trim() !== CREDENCIALES.clave) {
     throw new ApiError('CREDENCIALES', 'Código de empleado o clave incorrectos.');
   }
   return TECNICO;
