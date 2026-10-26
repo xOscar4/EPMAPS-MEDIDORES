@@ -56,12 +56,13 @@ npx tsc --noEmit        # verificación de tipos
 Para el APK de la defensa:
 
 ```bash
-npx eas-cli login
-npx eas-cli build:configure   # solo la primera vez, vincula el proyecto
-npx eas-cli build --platform android --profile preview
+npx eas-cli@latest login
+npx eas-cli@latest build --platform android --profile preview
 ```
 
-El perfil `preview` de `eas.json` genera un APK instalable (`buildType: "apk"`), no un AAB.
+El proyecto ya está vinculado a `@xoscar4/epmaps-medidores` (`extra.eas.projectId` en `app.json`). El perfil `preview` de `eas.json` genera un APK instalable (`buildType: "apk"`), no un AAB, e inyecta `EXPO_PUBLIC_MOCKAPI_URL` para que el APK quede conectado a MockAPI sin depender de la laptop.
+
+La carpeta del proyecto tiene su propio repositorio Git (`git init`). Es necesario para que EAS empaquete solo la app: el repositorio padre está en `C:\Users\Administrator` y EAS intentaría subir todo el perfil de usuario.
 
 El proyecto usa Expo SDK 57, React Native 0.86, React 19.2, TanStack Query 5, AsyncStorage, NetInfo, expo-camera, expo-file-system y expo-symbols.
 
