@@ -149,6 +149,8 @@ Cada ADR incluye alternativas, desventajas, verificación y uso de IA.
 
 Checklist de integración y evidencia de las pruebas: [`docs/verificacion-mockapi.md`](docs/verificacion-mockapi.md).
 
+Guía completa para probar R1–R10 paso a paso: [`docs/pruebas-paso-a-paso.md`](docs/pruebas-paso-a-paso.md).
+
 ## Pruebas manuales rápidas
 
 - **Sin señal:** modo avión → registrar lectura → aparece en Historial como pendiente.
