@@ -147,6 +147,8 @@ Guion detallado con preguntas probables: [`docs/guion-defensa.md`](docs/guion-de
 
 Cada ADR incluye alternativas, desventajas, verificación y uso de IA.
 
+Checklist de integración y evidencia de las pruebas: [`docs/verificacion-mockapi.md`](docs/verificacion-mockapi.md).
+
 ## Pruebas manuales rápidas
 
 - **Sin señal:** modo avión → registrar lectura → aparece en Historial como pendiente.
