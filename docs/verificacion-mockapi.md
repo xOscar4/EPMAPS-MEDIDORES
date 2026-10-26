@@ -44,9 +44,34 @@ Prueba ejecutada el 2026-10-26 con un periodo de prueba (`2099-12`):
 
 Los datos reales del proyecto (8 medidores, 0 lecturas) quedaron intactos.
 
-## Prueba pendiente en dispositivo
+## Comportamiento 404 de MockAPI
 
-El APK `preview` se compila en EAS. En el teléfono conviene repetir este recorrido:
+MockAPI responde **404 `Not found`** cuando un `GET` con filtros no encuentra
+filas (por ejemplo `?idempotencia=...` o un medidor sin lecturas). No es un
+fallo de red: significa “lista vacía”. `src/services/api.ts` lo traduce con un
+interceptor de respuesta, así que:
+
+- el chequeo de idempotencia y el de duplicados siguen su curso cuando no hay filas;
+- solo un error real de red o de servidor cancela el envío;
+- `getMedidor()` sigue informando “No existe un medidor con ese código” cuando la lista llega vacía.
+
+## Prueba en dispositivo (emulador Android, Expo Go)
+
+Ejecutada el 2026-10-26 con dos lecturas pendientes reales (`MED-100002` y
+`MED-100003`) guardadas en modo avión:
+
+1. Al desactivar el modo avión la app sincronizó sola; el banner pasó a
+   “En línea · 0 pendientes”.
+2. `GET /lecturas` mostró 3 filas: `MED-100001` (263), `MED-100002` (133) y
+   `MED-100003` (100, `anomalia: true`, `confirmoAnomalia: true`, con `fotoUri`).
+3. La cola local quedó vacía (`EPMAPS_OUTBOX` → `[]`), es decir, los pendientes
+   se borraron solo después de recibir respuesta del servidor.
+4. Cada fila conservó su `idempotencia`, `medidorCodigo`, `periodo`,
+   `consumo`, `promedio`, `tecnicoCodigo` y `enviadoEn`.
+
+## Recorrido recomendado en el APK
+
+El APK `preview` se compila en EAS. En el teléfono conviene repetir este recorrido del R1 al R10 con `docs/pruebas-paso-a-paso.md`:
 
 1. Abrir la app con internet: se cargan los 8 medidores.
 2. Activar modo avión y abrir un medidor ya consultado: se ven los 7 datos.
