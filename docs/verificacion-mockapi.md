@@ -68,6 +68,12 @@ Ejecutada el 2026-10-26 con dos lecturas pendientes reales (`MED-100002` y
    se borraron solo después de recibir respuesta del servidor.
 4. Cada fila conservó su `idempotencia`, `medidorCodigo`, `periodo`,
    `consumo`, `promedio`, `tecnicoCodigo` y `enviadoEn`.
+5. Se probó el alta desde **Añadir medidor**: `POST /medidores` creó
+   `MED-200001` con `fechaUltimaLectura: "2026-10-15"` elegida en el calendario
+   nativo (`@react-native-community/datetimepicker`). El registro de prueba se
+   eliminó después y quedaron los 8 medidores de la ruta.
+6. Con última lectura 75 y lectura actual 74, la app mostró consumo 0 m³, la
+   etiqueta “Lectura menor” y exigió confirmar el reemplazo antes de guardar.
 
 ## Recorrido recomendado en el APK
 

@@ -34,6 +34,20 @@ export function periodoActual(fecha = new Date()): string {
   return `${fecha.getFullYear()}-${String(fecha.getMonth() + 1).padStart(2, '0')}`;
 }
 
+/** Fecha local en formato ISO corto (YYYY-MM-DD), sin desfase de zona horaria. */
+export function fechaISO(fecha: Date): string {
+  return `${fecha.getFullYear()}-${String(fecha.getMonth() + 1).padStart(2, '0')}-${String(
+    fecha.getDate(),
+  ).padStart(2, '0')}`;
+}
+
+/** Convierte 2026-09-12 en un Date local a medianoche. */
+export function fechaDesdeISO(iso: string): Date {
+  const [anio, mes, dia] = iso.slice(0, 10).split('-').map(Number);
+  if (!anio || !mes || !dia) return new Date();
+  return new Date(anio, mes - 1, dia);
+}
+
 /** Convierte 2026-10 en \"octubre 2026\" para el historial. */
 export function formatearPeriodo(periodo: string): string {
   const [anio, mes] = periodo.split('-').map(Number);

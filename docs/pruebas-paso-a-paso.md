@@ -113,6 +113,27 @@ Cada prueba usa un medidor distinto para no chocar con el duplicado del mismo me
 2. Corregir una pendiente y guardar: se actualiza.
 3. Intentar registrar otra lectura del mismo medidor en el mismo mes: se rechaza.
 
+### 11. Alta de medidor (extra)
+
+1. En Mi ruta, tocar **Añadir medidor**.
+2. Escribir código `MED-200001`, dirección, sector, cuenta de 10 dígitos, última lectura `320` y promedio `18`.
+3. Tocar **Fecha de la última lectura**: se abre el calendario nativo; elegir un día y confirmar.
+4. Guardar: aparece “Medidor agregado” y se abre el detalle con la fecha elegida.
+5. En `/medidores` de MockAPI debe estar el registro con `fechaUltimaLectura` en formato `YYYY-MM-DD`.
+6. Repetir el alta con el mismo código: se rechaza con “Ya existe un medidor con ese código”.
+
+> El alta necesita conexión porque escribe directo en MockAPI. El medidor queda además guardado en el teléfono para consultarlo sin señal.
+
+### Lectura menor que la anterior
+
+En un medidor con última lectura `75`, escribir `74`:
+
+1. El consumo se muestra en `0 m³` y aparece la etiqueta “Lectura menor”.
+2. La app avisa que solo es válido si reemplazaron el medidor.
+3. Hay que marcar “Confirmo que el medidor fue reemplazado”; sin esa marca no se guarda.
+
+El servidor recibe `confirmoAnomalia: true` y `anomalia` sigue en `false`, porque no es un consumo alto sino un cambio de medidor.
+
 ## Verificar que quedó en MockAPI
 
 En el navegador, abrir:

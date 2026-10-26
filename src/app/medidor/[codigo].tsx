@@ -72,7 +72,7 @@ export default function MedidorScreen() {
                   </View>
                   <View style={styles.stateTexts}>
                     <Text style={styles.stateTitle}>Lectura enviada</Text>
-                    <Text style={styles.stateSub}>Confirmada por la oficina el {formatearFechaHora(enviada.enviadoEn)}</Text>
+                    <Text style={styles.stateSub}>Recibida en MockAPI el {formatearFechaHora(enviada.enviadoEn)}</Text>
                   </View>
                 </View>
                 <View style={styles.infoRow}>
@@ -87,7 +87,8 @@ export default function MedidorScreen() {
                 </View>
                 {enviada.anomalia ? <Chip label="Consumo anómalo reportado" tone="warning" icon={Icons.warning} /> : null}
                 <Text style={styles.locked}>
-                  R10: una lectura enviada no se puede editar. Si hay un error, la oficina debe corregirla.
+                  R10: esta lectura ya está guardada en el servidor y es de solo lectura. Si tiene un
+                  error, la oficina debe anularla y el técnico registra una nueva.
                 </Text>
               </Card>
             ) : pendiente ? (

@@ -27,6 +27,11 @@ export function consumoDe(actual: number, anterior: number): number {
   return Math.max(0, Number((actual - anterior).toFixed(2)));
 }
 
+/** Una lectura menor a la anterior solo es válida si cambiaron el medidor. */
+export function esLecturaMenor(actual: number, anterior: number): boolean {
+  return actual < anterior;
+}
+
 /** R6: más del triple del promedio mensual se considera anómalo. */
 export function esConsumoAnomalo(consumo: number, promedio: number): boolean {
   if (promedio <= 0) return consumo > 0;
@@ -44,6 +49,7 @@ export function validarFormulario(
   form: FormLectura,
   fotoRequerida: boolean,
   anomalia: boolean,
+  lecturaMenor = false,
 ): Record<string, string> {
   const errores: Record<string, string> = {};
 
@@ -72,6 +78,11 @@ export function validarFormulario(
 
   if (anomalia && !form.confirmoAnomalia) {
     errores.confirmacion = 'Confirma que revisaste el medidor.';
+  }
+
+  // El medidor no puede retroceder: solo se acepta si lo reemplazaron.
+  if (lecturaMenor && !anomalia && !form.confirmoAnomalia) {
+    errores.confirmacion = 'Confirma que el medidor fue reemplazado.';
   }
 
   if (fotoRequerida && !form.fotoUri) {

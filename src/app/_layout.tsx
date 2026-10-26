@@ -37,6 +37,7 @@ export default function RootLayout() {
                 <Stack.Screen name="(tabs)" />
                 <Stack.Screen name="medidor/[codigo]" />
                 <Stack.Screen name="lectura/[codigo]" />
+                <Stack.Screen name="nuevo-medidor" />
               </Stack>
             </View>
             <DraftGate />

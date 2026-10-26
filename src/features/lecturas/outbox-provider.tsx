@@ -112,6 +112,8 @@ export function OutboxProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   useEffect(() => {
+    // Lectura inicial del outbox desde AsyncStorage; el setState llega después del await.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     void refrescar();
   }, [refrescar]);
 

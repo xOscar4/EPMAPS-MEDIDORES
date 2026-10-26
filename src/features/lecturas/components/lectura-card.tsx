@@ -81,7 +81,7 @@ export function LecturaCard({ item, onEditar, onEliminar }: Props) {
       {enviada ? (
         <View style={styles.locked}>
           <AppIcon name={Icons.verified} size={14} color={Brand.success} />
-          <Text style={styles.lockedText}>Confirmada por la oficina · solo lectura</Text>
+          <Text style={styles.lockedText}>Enviada a la oficina · solo lectura</Text>
         </View>
       ) : onEditar || onEliminar ? (
         <View style={styles.actions}>

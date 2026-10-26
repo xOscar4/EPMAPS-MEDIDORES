@@ -16,7 +16,7 @@ import { Card } from '@/components/ui/card';
 import { EmptyState } from '@/components/ui/empty-state';
 import { ScreenHeader } from '@/components/ui/screen-header';
 import { SectionTitle } from '@/components/ui/section-title';
-import { Brand, Radius, Shadows } from '@/constants/brand';
+import { Brand, Shadows } from '@/constants/brand';
 import { Icons } from '@/constants/icons';
 import { ConsumoResumen } from '@/features/lecturas/components/consumo-resumen';
 import { EstadoPicker } from '@/features/lecturas/components/estado-picker';
@@ -50,6 +50,7 @@ export default function LecturaScreen() {
     descartarBorrador,
     consumo,
     anomalia,
+    lecturaMenor,
     fotoRequerida,
     guardarLectura,
   } = useLecturaForm(codigoMedidor, lecturaId, continuar === '1');
@@ -232,6 +233,7 @@ export default function LecturaScreen() {
             promedio={medidor.promedioMensual}
             consumo={consumo}
             anomalia={anomalia}
+            lecturaMenor={lecturaMenor}
             inaccesible={form.estado === 'inaccesible'}
             confirmado={form.confirmoAnomalia}
             onConfirmar={() => setCampo('confirmoAnomalia', !form.confirmoAnomalia)}

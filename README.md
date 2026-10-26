@@ -45,6 +45,19 @@ node scripts/seed-mockapi.mjs --reset-lecturas
 
 Si `EXPO_PUBLIC_MOCKAPI_URL` no está definida, `src/services/api.ts` usa la URL de la prueba como valor por defecto: el APK nunca queda sin backend. El login se valida en el teléfono porque la prueba permite datos quemados y MockAPI solo expone los dos recursos pedidos; la clave no se guarda.
 
+### Alta de medidor
+
+En **Mi ruta → Añadir medidor** se crea un medidor nuevo en `/medidores` con
+código, dirección, sector, cuenta, estado, última lectura, fecha de la última
+lectura y promedio mensual. La fecha se elige con el calendario nativo de
+`@react-native-community/datetimepicker` (incluido en Expo Go). El código debe
+cumplir `MED-` + 6 dígitos y no puede repetirse; el alta necesita conexión
+porque se escribe directamente en MockAPI.
+
+La lectura actual puede ser menor que la anterior solo si reemplazaron el
+medidor: la app lo detecta, registra el consumo en 0 m³ y exige confirmarlo
+antes de guardar.
+
 ## Persistencia local (AsyncStorage)
 
 La app usa AsyncStorage para todo lo que debe sobrevivir al cierre del teléfono:

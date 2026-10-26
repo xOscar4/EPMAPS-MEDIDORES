@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import axios from 'axios';
+import { create } from 'axios';
 
 import type { EstadoMedidor, LecturaLocal, LecturaServidor, Medidor } from '@/types/models';
 import { ApiError } from './apiError';
@@ -20,7 +20,7 @@ import { ApiError } from './apiError';
 export const MOCKAPI_URL =
   process.env.EXPO_PUBLIC_MOCKAPI_URL ?? 'https://6ade67884e88f1bba4a5218d.mockapi.io';
 
-const api = axios.create({ baseURL: MOCKAPI_URL, timeout: 10000 });
+const api = create({ baseURL: MOCKAPI_URL, timeout: 10000 });
 
 /**
  * MockAPI responde `404 Not found` cuando un GET con filtros no encuentra
@@ -149,6 +149,27 @@ export async function getMedidor(codigo: string): Promise<Medidor> {
     throw new ApiError('NO_ENCONTRADO', 'No existe un medidor con ese código.');
   }
   return medidor;
+}
+
+/** Datos que se piden para dar de alta un medidor nuevo en la ruta. */
+export type NuevoMedidor = Medidor;
+
+/**
+ * Alta de medidor. MockAPI no impone un código único, así que la app
+ * comprueba primero que el código no exista y después hace el POST.
+ */
+export async function crearMedidor(datos: NuevoMedidor): Promise<Medidor> {
+  const existente = await getMedidor(datos.codigo).catch((error) => {
+    if (error instanceof ApiError && error.codigo === 'NO_ENCONTRADO') return null;
+    throw error;
+  });
+  if (existente) {
+    throw new ApiError('DUPLICADA', 'Ya existe un medidor con ese código.');
+  }
+
+  const { data } = await api.post<Medidor>('/medidores', datos);
+  await guardarMedidorVisto(data);
+  return data;
 }
 
 export async function getLecturasEnviadas(): Promise<LecturaServidor[]> {

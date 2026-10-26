@@ -43,6 +43,8 @@ export const Icons = {
   photoAdd: { ios: 'photo.badge.plus', android: 'add_a_photo', web: 'add_a_photo' },
   timer: { ios: 'timer', android: 'schedule', web: 'schedule' },
   waterDamage: { ios: 'drop.triangle.fill', android: 'water_damage', web: 'water_damage' },
+  add: { ios: 'plus', android: 'add', web: 'add' },
+  save: { ios: 'square.and.arrow.down.fill', android: 'save', web: 'save' },
   eye: { ios: 'eye.fill', android: 'visibility', web: 'visibility' },
   eyeOff: { ios: 'eye.slash.fill', android: 'visibility_off', web: 'visibility_off' },
 } satisfies Record<string, SymbolViewProps['name']>;

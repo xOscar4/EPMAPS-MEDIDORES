@@ -1,5 +1,5 @@
 import { CameraView, useCameraPermissions } from 'expo-camera';
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
@@ -14,7 +14,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { AppButton } from '@/components/ui/app-button';
 import { AppIcon } from '@/components/ui/app-icon';
-import { Brand, Radius } from '@/constants/brand';
+import { Brand } from '@/constants/brand';
 import { Icons } from '@/constants/icons';
 import { guardarFoto } from '../foto';
 
@@ -27,20 +27,17 @@ interface Props {
 
 /** R7: cámara con explicación del permiso y salida cuando la foto es opcional. */
 export function CameraModal({ visible, requerida, onClose, onCapture }: Props) {
+  // Al cerrar se desmonta el contenido, así la cámara y sus estados vuelven a cero.
+  if (!visible) return null;
+  return <ContenidoCamara requerida={requerida} onClose={onClose} onCapture={onCapture} />;
+}
+
+function ContenidoCamara({ requerida, onClose, onCapture }: Omit<Props, 'visible'>) {
   const insets = useSafeAreaInsets();
   const [permission, requestPermission] = useCameraPermissions();
   const [lista, setLista] = useState(false);
   const [capturando, setCapturando] = useState(false);
   const camara = useRef<CameraView>(null);
-
-  useEffect(() => {
-    if (!visible) {
-      setLista(false);
-      setCapturando(false);
-    }
-  }, [visible]);
-
-  if (!visible) return null;
 
   const tomarFoto = async () => {
     if (!camara.current || !lista || capturando) return;

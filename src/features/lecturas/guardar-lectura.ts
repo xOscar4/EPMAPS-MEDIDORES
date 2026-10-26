@@ -6,7 +6,7 @@ import type {
   Tecnico,
 } from '@/types/models';
 import { periodoActual } from '@/utils/format';
-import { consumoDe, esConsumoAnomalo, numeroDesdeTexto } from '@/utils/validators';
+import { consumoDe, esConsumoAnomalo, esLecturaMenor, numeroDesdeTexto } from '@/utils/validators';
 import { borrarFoto } from './foto';
 
 interface Argumentos {
@@ -47,6 +47,8 @@ export async function persistirLectura({
 
   const consumo = lectura !== null ? consumoDe(lectura, medidor.ultimaLectura) : 0;
   const anomalia = lectura !== null ? esConsumoAnomalo(consumo, medidor.promedioMensual) : false;
+  const lecturaMenor = lectura !== null ? esLecturaMenor(lectura, medidor.ultimaLectura) : false;
+  const requiereConfirmacion = anomalia || lecturaMenor;
   const periodo = periodoActual();
 
   const repetida =
@@ -71,7 +73,7 @@ export async function persistirLectura({
     consumo,
     promedio: medidor.promedioMensual,
     anomalia,
-    confirmoAnomalia: anomalia ? form.confirmoAnomalia : false,
+    confirmoAnomalia: requiereConfirmacion ? form.confirmoAnomalia : false,
     fotoUri: form.fotoUri,
     tecnicoCodigo: tecnico.codigo,
   };

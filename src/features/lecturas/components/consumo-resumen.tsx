@@ -13,6 +13,7 @@ interface Props {
   promedio: number;
   consumo: number;
   anomalia: boolean;
+  lecturaMenor: boolean;
   inaccesible: boolean;
   confirmado: boolean;
   onConfirmar: () => void;
@@ -26,6 +27,7 @@ export function ConsumoResumen({
   promedio,
   consumo,
   anomalia,
+  lecturaMenor,
   inaccesible,
   confirmado,
   onConfirmar,
@@ -61,20 +63,21 @@ export function ConsumoResumen({
 
   const limite = promedio * 3;
   const avance = limite > 0 ? Math.min(1, consumo / limite) : 1;
+  const alerta = anomalia || lecturaMenor;
 
   return (
     <Card style={styles.card}>
       <View style={styles.topRow}>
         <Text style={styles.eyebrow}>CONSUMO DEL MES</Text>
         <Chip
-          label={anomalia ? 'Revisar' : 'Dentro del promedio'}
-          tone={anomalia ? 'warning' : 'success'}
-          icon={anomalia ? Icons.warning : Icons.check}
+          label={anomalia ? 'Revisar' : lecturaMenor ? 'Lectura menor' : 'Dentro del promedio'}
+          tone={alerta ? 'warning' : 'success'}
+          icon={alerta ? Icons.warning : Icons.check}
         />
       </View>
 
       <View style={styles.amountRow}>
-        <Text style={[styles.amount, anomalia && styles.amountAlert]}>{formatearNumero(consumo)}</Text>
+        <Text style={[styles.amount, alerta && styles.amountAlert]}>{formatearNumero(consumo)}</Text>
         <Text style={styles.unit}>m³</Text>
       </View>
       <Text style={styles.formula}>
@@ -85,7 +88,7 @@ export function ConsumoResumen({
         <View
           style={[
             styles.fill,
-            { width: `${avance * 100}%`, backgroundColor: anomalia ? Brand.warning : Brand.accent },
+            { width: `${avance * 100}%`, backgroundColor: alerta ? Brand.warning : Brand.accent },
           ]}
         />
       </View>
@@ -94,15 +97,18 @@ export function ConsumoResumen({
         <Text style={styles.legend}>Alerta {formatearNumero(limite, 0)} m³</Text>
       </View>
 
-      {anomalia ? (
+      {alerta ? (
         <View style={styles.alertBox}>
           <View style={styles.alertHeader}>
             <AppIcon name={Icons.warning} size={18} color={Brand.warning} />
-            <Text style={styles.alertTitle}>Consumo mayor al triple del promedio</Text>
+            <Text style={styles.alertTitle}>
+              {anomalia ? 'Consumo mayor al triple del promedio' : 'Lectura menor que la anterior'}
+            </Text>
           </View>
           <Text style={styles.alertText}>
-            Revisa que la lectura y el medidor sean correctos antes de continuar. La lectura se
-            guardará como anómala para que la oficina la verifique.
+            {anomalia
+              ? 'Revisa que la lectura y el medidor sean correctos antes de continuar. La lectura se guardará como anómala para que la oficina la verifique.'
+              : `La lectura actual (${formatearNumero(lectura)}) es menor que la anterior (${formatearNumero(anterior)}). El consumo se registra en 0 m³ y solo es válido si cambiaron el medidor.`}
           </Text>
           <Pressable
             accessibilityRole="checkbox"
@@ -115,7 +121,11 @@ export function ConsumoResumen({
               color={confirmado ? Brand.success : Brand.warning}
             />
             <Text style={[styles.confirmText, confirmado && styles.confirmTextActive]}>
-              {confirmado ? 'Confirmado: revisé el medidor' : 'Confirmo que revisé el medidor'}
+              {confirmado
+                ? 'Confirmado'
+                : anomalia
+                  ? 'Confirmo que revisé el medidor'
+                  : 'Confirmo que el medidor fue reemplazado'}
             </Text>
           </Pressable>
           {error ? <Text style={styles.error}>{error}</Text> : null}

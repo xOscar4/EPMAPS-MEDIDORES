@@ -5,6 +5,7 @@ import type { BorradorLectura, FormLectura, LecturaLocal } from '@/types/models'
 import {
   consumoDe,
   esConsumoAnomalo,
+  esLecturaMenor,
   hayDatos,
   numeroDesdeTexto,
   validarFormulario,
@@ -104,10 +105,12 @@ export function useLecturaForm(codigo: string, lecturaId?: string, continuar?: b
   const consumo = medidor && lectura !== null ? consumoDe(lectura, medidor.ultimaLectura) : 0;
   const anomalia =
     medidor && lectura !== null ? esConsumoAnomalo(consumo, medidor.promedioMensual) : false;
+  const lecturaMenor =
+    medidor && lectura !== null ? esLecturaMenor(lectura, medidor.ultimaLectura) : false;
   const fotoRequerida = anomalia || form.estado === 'danado';
 
   const validar = () => {
-    const encontrados = validarFormulario(form, fotoRequerida, anomalia);
+    const encontrados = validarFormulario(form, fotoRequerida, anomalia, lecturaMenor);
     setErrores(encontrados);
     return Object.keys(encontrados).length === 0;
   };
@@ -166,6 +169,7 @@ export function useLecturaForm(codigo: string, lecturaId?: string, continuar?: b
     descartarBorrador,
     consumo,
     anomalia,
+    lecturaMenor,
     fotoRequerida,
     guardarLectura,
   };

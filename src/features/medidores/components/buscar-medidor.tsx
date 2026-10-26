@@ -56,6 +56,7 @@ export function BuscarMedidor() {
         returnKeyType="search"
       />
       <AppButton title="Consultar medidor" icon={Icons.search} variant="secondary" onPress={consultar} />
+      <AppButton title="Añadir medidor" icon={Icons.add} variant="ghost" onPress={() => router.push('/nuevo-medidor')} />
       <Text style={styles.note}>
         Si el código está incompleto, la app no hace ninguna consulta ni gasta datos.
       </Text>
