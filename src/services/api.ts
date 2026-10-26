@@ -1,22 +1,33 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 
 import type { EstadoMedidor, LecturaLocal, LecturaServidor, Medidor } from '@/types/models';
 import { ApiError } from './apiError';
 
 /**
- * Sistema de la oficina real simulado con MockAPI.
+ * Sistema de la oficina: MockAPI real.
  *
  * Recursos:
- *  - GET/POST /medidores
- *  - GET/POST /lecturas
+ *  - GET /medidores
+ *  - GET /medidores?codigo=MED-100001
+ *  - GET /lecturas
+ *  - POST /lecturas
  *
- * La URL se configura con EXPO_PUBLIC_MOCKAPI_URL. Si no existe, la fachada
- * `mockApi.ts` usa el mock local (mockApiLocal.ts) como fallback.
+ * La URL se puede cambiar con EXPO_PUBLIC_MOCKAPI_URL. Si la variable no
+ * existe se usa la URL de la prueba, de modo que el APK siempre queda
+ * conectado y no hay ningún backend simulado dentro del teléfono.
  */
-const api = axios.create({
-  baseURL: process.env.EXPO_PUBLIC_MOCKAPI_URL,
-  timeout: 10000,
-});
+export const MOCKAPI_URL =
+  process.env.EXPO_PUBLIC_MOCKAPI_URL ?? 'https://6ade67884e88f1bba4a5218d.mockapi.io';
+
+const api = axios.create({ baseURL: MOCKAPI_URL, timeout: 10000 });
+
+/**
+ * R3 y R4: la caché de TanStack Query se guarda en AsyncStorage. Además,
+ * cada medidor consultado se guarda aquí para poder abrirlo sin Internet
+ * incluso si la caché de consultas se limpia.
+ */
+const MEDIDOR_KEY = 'EPMAPS_MEDIDORES_VISTOS';
 
 interface LecturaApi {
   id: string;
@@ -36,13 +47,13 @@ interface LecturaApi {
   enviadoEn?: string;
 }
 
-/** MockAPI puede devolver un objeto o un arreglo según el filtro. */
+/** MockAPI devuelve un arreglo al listar y un objeto al filtrar por id. */
 function comoLista<T>(data: T[] | T): T[] {
   if (Array.isArray(data)) return data;
   return data ? [data] : [];
 }
 
-/** Normaliza los campos que MockAPI guarda como texto. */
+/** Normaliza los campos que MockAPI puede guardar como texto. */
 function aServidor(raw: LecturaApi): LecturaServidor {
   const estado = (raw.estadoMedidor ?? 'normal') as EstadoMedidor;
   const tieneLectura =
@@ -68,6 +79,38 @@ function aServidor(raw: LecturaApi): LecturaServidor {
     tecnicoCodigo: String(raw.tecnicoCodigo ?? ''),
     enviadoEn: String(raw.enviadoEn ?? ''),
   };
+}
+
+async function leerVistos(): Promise<Record<string, Medidor>> {
+  try {
+    const raw = await AsyncStorage.getItem(MEDIDOR_KEY);
+    return raw ? (JSON.parse(raw) as Record<string, Medidor>) : {};
+  } catch {
+    return {};
+  }
+}
+
+/** Guarda una copia del medidor para las consultas sin conexión (R3). */
+export async function guardarMedidorVisto(medidor: Medidor): Promise<void> {
+  const vistos = await leerVistos();
+  await AsyncStorage.setItem(
+    MEDIDOR_KEY,
+    JSON.stringify({ ...vistos, [medidor.codigo]: medidor }),
+  );
+}
+
+/** Guarda la ruta completa en una sola escritura, sin condiciones de carrera. */
+export async function guardarMedidoresVistos(medidores: Medidor[]): Promise<void> {
+  const vistos = await leerVistos();
+  const siguientes = { ...vistos };
+  for (const medidor of medidores) siguientes[medidor.codigo] = medidor;
+  await AsyncStorage.setItem(MEDIDOR_KEY, JSON.stringify(siguientes));
+}
+
+/** Devuelve la copia local de un medidor ya consultado, o `null`. */
+export async function leerMedidorVisto(codigo: string): Promise<Medidor | null> {
+  const vistos = await leerVistos();
+  return vistos[codigo] ?? null;
 }
 
 export async function getRuta(): Promise<Medidor[]> {

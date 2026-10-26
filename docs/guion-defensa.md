@@ -79,7 +79,7 @@ Duración objetivo: 8–10 minutos. Orden pensado para que cada requisito se vea
 
 ## 8. Cierre — 30 s
 
-**Qué decir:** “La app cumple R1–R10. Las decisiones están en ocho ADR: caché con TanStack Query, outbox idempotente, borrador, fotos, validación, sesión, mock local de respaldo y conexión a MockAPI. Las limitaciones conscientes son: la primera carga necesita internet, el login sigue local, la sesión no está cifrada y la sincronización no corre en segundo plano.”
+**Qué decir:** “La app cumple R1–R10. Las decisiones están en ocho ADR: caché con TanStack Query, outbox idempotente, borrador, fotos, validación, sesión, mock local descartado y MockAPI como único backend. Las limitaciones conscientes son: la primera carga necesita internet, el login se valida en el teléfono porque la prueba permite datos quemados, la sesión no está cifrada y la sincronización no corre en segundo plano.”
 
 ## Preguntas probables y respuestas cortas
 
@@ -90,7 +90,7 @@ Duración objetivo: 8–10 minutos. Orden pensado para que cada requisito se vea
 | ¿Cómo evitas duplicados si se corta la señal? | La lectura nace con una `idempotencia` única que se conserva en el outbox. Antes de insertar, el adaptador busca esa clave en MockAPI; si ya está, devuelve la existente. |
 | ¿Qué pasa si el teléfono se reinicia con una lectura pendiente? | El outbox está en AsyncStorage; al abrir, el proveedor lo lee y sincroniza si hay red. Si quedó en `enviando`, se reenvía con la misma clave. |
 | ¿Por qué no SecureStore? | No está instalado y la prueba no pide cifrado. Se documentó como mejora de producción; la clave nunca se guarda. |
-| ¿Por qué MockAPI y no el mock local? | MockAPI es un backend HTTP real y el enunciado lo pide. Se conserva el mock local como fallback si `EXPO_PUBLIC_MOCKAPI_URL` no existe, para no depender de internet. |
+| ¿Por qué MockAPI y no un mock local? | El enunciado pide una herramienta mock real; MockAPI da HTTP verificable. Sin señal, la app sigue con la caché de TanStack Query, la copia de medidores en AsyncStorage y el outbox. |
 | ¿Cómo se prueba la foto tras reiniciar? | Se copia de la caché a `Paths.document/fotos-medidores` y se guarda la URI en el borrador/lectura. |
 | ¿Qué pasa si el cliente reclama por consumo alto? | La lectura guarda consumo, promedio, bandera de anomalía y foto; el historial conserva la evidencia y la fecha. |
 | ¿Por qué no hay edición de enviadas? | R10 lo prohíbe; la UI oculta acciones y el adaptador de MockAPI no expone `PUT` sobre `lecturas` confirmadas. |

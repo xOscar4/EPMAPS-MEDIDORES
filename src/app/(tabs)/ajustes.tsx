@@ -13,7 +13,7 @@ import { Icons } from '@/constants/icons';
 import { useAuth } from '@/features/auth/auth-provider';
 import { useOutbox } from '@/features/lecturas/outbox-provider';
 import { useNetworkStatus } from '@/hooks/use-network-status';
-import { usaMockApiRemoto } from '@/services/mockApi';
+import { MOCKAPI_URL } from '@/services/api';
 
 export default function AjustesScreen() {
   const router = useRouter();
@@ -139,15 +139,10 @@ export default function AjustesScreen() {
         <Text style={styles.sectionTitle}>Acerca de</Text>
         <Card style={styles.card}>
           <Row icon={Icons.info} label="Versión" value={Constants.expoConfig?.version ?? '1.0.0'} />
-          <Row
-            icon={Icons.route}
-            label="Sistema de oficina"
-            value={usaMockApiRemoto ? 'MockAPI en la nube' : 'Mock local'}
-          />
+          <Row icon={Icons.route} label="Sistema de oficina" value="MockAPI en la nube" />
           <Text style={styles.about}>
-            {usaMockApiRemoto
-              ? 'Conectado a MockAPI: recursos medidores y lecturas. Sin señal se usa la copia guardada y las lecturas quedan en cola.'
-              : 'Modo local sin internet: la ruta y las lecturas se simulan dentro del teléfono.'}
+            Conectado a {MOCKAPI_URL}. Recursos medidores y lecturas. Sin señal se usa la copia
+            guardada en el teléfono y las lecturas quedan en cola.
           </Text>
           <Text style={styles.about}>
             Las lecturas se guardan primero en el teléfono y se envían solas al recuperar la señal.

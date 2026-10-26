@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { getLecturasEnviadas } from '@/services/mockApi';
+import { getLecturasEnviadas } from '@/services/api';
 import { periodoActual } from '@/utils/format';
 import { useOutbox } from './outbox-provider';
 

@@ -16,7 +16,7 @@ Prueba I de desarrollo móvil · ESFOT · Defensa: miércoles 28 de octubre de 2
 | Medidor dañado | `MED-100004` (exige descripción y foto) |
 | Medidor suspendido | `MED-100007` |
 
-El sistema de la oficina está conectado a **MockAPI** (`https://6ade67884e88f1bba4a5218d.mockapi.io`), con dos recursos: `medidores` y `lecturas`. La app conserva un **mock local** como fallback si no se define `EXPO_PUBLIC_MOCKAPI_URL` (ADR-007 y ADR-008). La caché de consultas y el outbox permiten seguir trabajando sin señal.
+El sistema de la oficina es **MockAPI** (`https://6ade67884e88f1bba4a5218d.mockapi.io`), con dos recursos: `medidores` y `lecturas`. No hay backend simulado dentro del teléfono (ADR-008): la app siempre consulta y envía a MockAPI. La caché persistente, la copia de medidores en AsyncStorage y el outbox permiten seguir trabajando sin señal.
 
 ## Backend MockAPI
 
@@ -43,7 +43,22 @@ Para borrar las lecturas de prueba y dejar el historial limpio antes de una demo
 node scripts/seed-mockapi.mjs --reset-lecturas
 ```
 
-La app usa MockAPI cuando la variable existe. Si la comentas o la eliminas, cambia automáticamente al mock local, que funciona sin internet. El login sigue siendo local para no exponer credenciales en el mock remoto.
+Si `EXPO_PUBLIC_MOCKAPI_URL` no está definida, `src/services/api.ts` usa la URL de la prueba como valor por defecto: el APK nunca queda sin backend. El login se valida en el teléfono porque la prueba permite datos quemados y MockAPI solo expone los dos recursos pedidos; la clave no se guarda.
+
+## Persistencia local (AsyncStorage)
+
+La app usa AsyncStorage para todo lo que debe sobrevivir al cierre del teléfono:
+
+| Clave / carpeta | Contenido | Requisito |
+| --- | --- | --- |
+| `EPMAPS_SESION` | Perfil del técnico, sin clave | R1 |
+| `EPMAPS_QUERY_CACHE` | Caché de TanStack Query (ruta e historial) | R3 |
+| `EPMAPS_MEDIDORES_VISTOS` | Copia de cada medidor consultado | R3 |
+| `EPMAPS_OUTBOX` | Lecturas pendientes, con su `idempotencia` | R4, R9, R10 |
+| `EPMAPS_BORRADOR_LECTURA` | Registro a medio llenar | R8 |
+| `fotos-medidores/` | Archivos de foto copiados a documentos | R7 |
+
+La sesión, el borrador y el outbox se leen al iniciar. Si no hay red, la ruta y el detalle salen de la caché o de la copia del medidor; las lecturas se guardan en el outbox y se envían solas al volver la conexión.
 
 ## Ejecutar
 
@@ -83,7 +98,7 @@ src/
     auth/                   sesión persistida (R1)
     medidores/              hooks de consulta y tarjetas
     lecturas/               borrador, fotos, outbox, sync y formulario
-  services/                 queryClient, fachada mockApi, adaptador remoto y mock local
+  services/                 api (MockAPI), auth, queryClient y errores
   types/                    modelos TypeScript
   utils/                    formato y validadores puros
 docs/adr/                   decisiones de arquitectura (8 ADR)
@@ -95,14 +110,14 @@ docs/adr/                   decisiones de arquitectura (8 ADR)
 | --- | --- | --- |
 | R1 | Login con código y clave, sesión persistida sin guardar la clave, logout que limpia la caché | `features/auth`, `app/index.tsx` |
 | R2 | Regex `^MED-\d{6}$`; la consulta no se ejecuta con códigos incompletos | `utils/validators.ts`, `features/medidores/hooks.ts` |
-| R3 | TanStack Query con `staleTime` de 12 h y persistencia en AsyncStorage de 7 días; siete datos en el detalle | `services/queryClient.ts`, `app/medidor/[codigo].tsx` |
+| R3 | TanStack Query con `staleTime` de 12 h y persistencia de 7 días; copia de cada medidor en AsyncStorage; siete datos en el detalle | `services/queryClient.ts`, `services/api.ts`, `features/medidores/hooks.ts` |
 | R4 | La lectura se guarda primero en el outbox local y queda pendiente de envío/verificación | `features/lecturas/outbox.ts`, `guardar-lectura.ts` |
 | R5 | Normal exige lectura; inaccesible exige motivo y no calcula consumo; dañado exige descripción y admite lectura | `utils/validators.ts`, `estado-picker.tsx` |
 | R6 | Consumo = actual − anterior; alerta si supera 3× el promedio y exige confirmación | `consumo-resumen.tsx`, `validators.ts` |
 | R7 | Foto obligatoria en anómalos/dañados y opcional en el resto; copia a documentos; permiso explicado | `photo-picker.tsx`, `camera-modal.tsx`, `foto.ts` |
 | R8 | Borrador automático con debounce y `AppState`; aviso continuar/descartar | `use-lectura-form.ts`, `draft-gate.tsx` |
 | R9 | Envío secuencial con idempotencia, reintento al reconectar y banner global con conexión y pendientes | `sync.ts`, `outbox-provider.tsx`, `status-banner.tsx` |
-| R10 | Pendientes editables, enviadas de solo lectura, duplicado medidor+mes rechazado en app y MockAPI | `historial.tsx`, `guardar-lectura.ts`, `mockApiRemote.ts` |
+| R10 | Pendientes editables, enviadas de solo lectura, duplicado medidor+mes rechazado en app y MockAPI | `historial.tsx`, `guardar-lectura.ts`, `api.ts` |
 
 ## Recorrido de defensa (8 minutos)
 
@@ -127,8 +142,8 @@ Guion detallado con preguntas probables: [`docs/guion-defensa.md`](docs/guion-de
 | 004 | Fotos en el directorio de documentos con expo-file-system | R7 |
 | 005 | Validación con estado local y funciones puras | R2, R5, R6 |
 | 006 | Sesión persistida sin guardar la clave | R1 |
-| 007 | MockAPI local persistente con latencia artificial (fallback sin internet) | R1, R2, R3, R4, R9, R10 |
-| 008 | Conexión a MockAPI remoto con fallback local y variables de entorno | R1–R4, R9, R10 |
+| 007 | MockAPI local persistente con latencia artificial (reemplazado por ADR-008) | R1, R2, R3, R4, R9, R10 |
+| 008 | MockAPI remoto como único backend + persistencia local y variables de entorno | R1–R4, R9, R10 |
 
 Cada ADR incluye alternativas, desventajas, verificación y uso de IA.
 

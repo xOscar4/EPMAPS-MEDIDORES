@@ -1,4 +1,5 @@
-import { ApiError, enviarLectura } from '@/services/mockApi';
+import { enviarLectura } from '@/services/api';
+import { ApiError } from '@/services/apiError';
 import type { LecturaLocal } from '@/types/models';
 import { guardarOutbox, leerOutbox } from './outbox';
 

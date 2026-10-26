@@ -2,9 +2,9 @@
 
 ## Estado
 
-Aceptado como fallback. La integración principal con MockAPI se registra en ADR-008.
+Reemplazado por ADR-008 el 2026-10-26.
 
-> Actualización 2026-10-26: la app se conectó a un proyecto real de MockAPI con los recursos `medidores` y `lecturas` (ADR-008). Este mock local se conserva para trabajar sin internet o cuando `EXPO_PUBLIC_MOCKAPI_URL` no está definida.
+> Este ADR se conserva como registro histórico. El mock local se eliminó del código: la app usa únicamente MockAPI remoto (ADR-008). La continuidad sin Internet se resuelve con la caché, la copia de medidores en AsyncStorage y el outbox, no con un backend simulado.
 
 ## Fecha
 

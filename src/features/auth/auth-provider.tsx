@@ -1,6 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 
-import { login } from '@/services/mockApi';
+import { login } from '@/services/auth';
 import { asyncStoragePersister, queryClient } from '@/services/queryClient';
 import type { Tecnico } from '@/types/models';
 import { borrarSesion, guardarSesion, leerSesion } from './session';
