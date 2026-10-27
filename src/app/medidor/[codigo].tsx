@@ -1,5 +1,6 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { AppButton } from '@/components/ui/app-button';
 import { AppIcon } from '@/components/ui/app-icon';
@@ -20,6 +21,7 @@ import { esCodigoValido, normalizarCodigo } from '@/utils/validators';
 export default function MedidorScreen() {
   const { codigo } = useLocalSearchParams<{ codigo: string }>();
   const router = useRouter();
+  const insets = useSafeAreaInsets();
   const { online } = useNetworkStatus();
   const codigoMedidor = normalizarCodigo(codigo ?? '');
   const consulta = useMedidor(codigoMedidor);
@@ -35,7 +37,7 @@ export default function MedidorScreen() {
   return (
     <View style={styles.screen}>
       <ScreenHeader title="Detalle del medidor" subtitle={codigoMedidor} onBack={volver} />
-      <ScrollView contentContainerStyle={styles.content}>
+      <ScrollView contentContainerStyle={[styles.content, { paddingBottom: 28 + insets.bottom }]}>
         {!valido ? (
           <EmptyState
             icon={Icons.error}

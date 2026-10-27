@@ -4,7 +4,7 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { AppIcon } from '@/components/ui/app-icon';
 import { Chip } from '@/components/ui/chip';
-import { Brand, Radius, Shadows } from '@/constants/brand';
+import { Brand, Radius } from '@/constants/brand';
 import { Icons } from '@/constants/icons';
 import { CameraModal } from './camera-modal';
 
@@ -96,10 +96,9 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     borderWidth: 1,
     borderColor: Brand.glassBorder,
-    backgroundColor: 'rgba(255,255,255,0.60)',
-    ...Shadows.card,
+    backgroundColor: '#FFFFFF',
   },
-  image: { width: '100%', height: 190, backgroundColor: Brand.surfaceAlt },
+  image: { width: '100%', height: 180, backgroundColor: Brand.surfaceAlt },
   previewBar: { padding: 10, gap: 8 },
   saved: { flexDirection: 'row', alignItems: 'center', gap: 5 },
   savedText: { fontSize: 11, fontWeight: '700', color: Brand.success },
@@ -110,11 +109,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     gap: 5,
-    minHeight: 34,
+    minHeight: 36,
     borderRadius: 10,
-    backgroundColor: 'rgba(255,255,255,0.70)',
+    backgroundColor: '#F1F8FC',
     borderWidth: 1,
-    borderColor: Brand.glassBorderSoft,
+    borderColor: Brand.glassBorder,
   },
   actionText: { fontSize: 11, fontWeight: '800', color: Brand.primary },
   empty: {
@@ -125,22 +124,21 @@ const styles = StyleSheet.create({
     borderRadius: Radius.md,
     borderWidth: 1.5,
     borderStyle: 'dashed',
-    borderColor: 'rgba(10,92,142,0.25)',
-    backgroundColor: 'rgba(255,255,255,0.42)',
+    borderColor: 'rgba(11,92,142,0.28)',
+    backgroundColor: '#F8FCFE',
   },
-  emptyError: { borderColor: 'rgba(179,38,30,0.45)', backgroundColor: 'rgba(255,247,247,0.75)' },
+  emptyError: { borderColor: 'rgba(179,38,30,0.50)', backgroundColor: '#FFF8F8' },
   pressed: { opacity: 0.8 },
   emptyIcon: {
     width: 54,
     height: 54,
     borderRadius: 17,
-    backgroundColor: 'rgba(228,242,250,0.95)',
+    backgroundColor: Brand.primaryLight,
     borderWidth: 1,
     borderColor: Brand.glassBorder,
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 3,
-    ...Shadows.card,
   },
   emptyTitle: { fontSize: 14, fontWeight: '800', color: Brand.text },
   emptyText: { fontSize: 11, color: Brand.textMuted, textAlign: 'center' },

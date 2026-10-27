@@ -2,44 +2,45 @@ import { Platform, type ViewStyle } from 'react-native';
 
 /**
  * Paleta de EPMAPS: azul institucional, agua y estados de campo.
- * Los tonos `glass*` son superficies translúcidas para el efecto de vidrio.
+ * Los tonos `glass*` son superficies de vidrio con opacidad alta para que el
+ * texto y los campos siempre se lean bien sobre el fondo.
  */
 export const Brand = {
-  primary: '#0A5C8E',
-  primaryDark: '#06456B',
-  primaryDeep: '#04293F',
-  primaryLight: '#E4F2FA',
+  primary: '#0B5C8E',
+  primaryDark: '#073F63',
+  primaryDeep: '#052E4A',
+  primaryLight: '#E6F3FA',
   accent: '#12A6B4',
-  accentSoft: '#DCF5F4',
+  accentSoft: '#DDF6F5',
   background: '#EAF5FB',
-  surface: 'rgba(255,255,255,0.78)',
-  surfaceAlt: 'rgba(255,255,255,0.52)',
+  surface: '#FFFFFF',
+  surfaceAlt: '#F1F8FC',
   text: '#0B2333',
   textMuted: '#4D6B7C',
-  border: 'rgba(10,92,142,0.14)',
+  border: 'rgba(11,92,142,0.16)',
   success: '#11704A',
-  successSoft: 'rgba(23,164,106,0.12)',
+  successSoft: '#E3F6EC',
   warning: '#9A5B00',
-  warningSoft: 'rgba(214,138,0,0.13)',
+  warningSoft: '#FFF4DF',
   danger: '#B3261E',
-  dangerSoft: 'rgba(179,38,30,0.10)',
+  dangerSoft: '#FDECEA',
   offline: '#6E4500',
-  offlineSoft: 'rgba(255,214,140,0.22)',
+  offlineSoft: '#FFF1D6',
 
-  /** Capas de vidrio esmerilado. */
-  glass: 'rgba(255,255,255,0.74)',
-  glassStrong: 'rgba(255,255,255,0.92)',
-  glassSoft: 'rgba(255,255,255,0.42)',
-  glassBorder: 'rgba(255,255,255,0.92)',
-  glassBorderSoft: 'rgba(255,255,255,0.58)',
-  glassField: 'rgba(255,255,255,0.62)',
+  /** Capas de vidrio esmerilado (casi opacas para no interferir con el texto). */
+  glass: 'rgba(255,255,255,0.94)',
+  glassStrong: 'rgba(255,255,255,0.98)',
+  glassSoft: 'rgba(249,253,255,0.94)',
+  glassBorder: 'rgba(11,92,142,0.12)',
+  glassBorderSoft: 'rgba(11,92,142,0.08)',
+  glassField: '#FFFFFF',
 
   /** Degradados de agua. */
   sky: '#7FD2E8',
   turquoise: '#1BB8C6',
   gradientTop: '#E4F3FC',
-  gradientMid: '#F2FAFE',
-  gradientBottom: '#E6F6F7',
+  gradientMid: '#F4FAFE',
+  gradientBottom: '#E8F6F8',
   deepStart: '#0A4A75',
   deepMid: '#0A6C93',
   deepEnd: '#0F8FA3',
@@ -48,24 +49,24 @@ export const Brand = {
 
 export const Radius = {
   sm: 12,
-  md: 18,
-  lg: 24,
-  xl: 30,
+  md: 16,
+  lg: 22,
+  xl: 28,
   pill: 999,
 } as const;
 
 export const Shadows: Record<'card' | 'floating', ViewStyle> = {
   card: {
     ...Platform.select({
-      ios: { shadowColor: '#0A4A75', shadowOpacity: 0.10, shadowRadius: 18, shadowOffset: { width: 0, height: 8 } },
-      android: { elevation: 4 },
+      ios: { shadowColor: '#0A4A75', shadowOpacity: 0.07, shadowRadius: 12, shadowOffset: { width: 0, height: 4 } },
+      android: { elevation: 2 },
       default: {},
     }),
   },
   floating: {
     ...Platform.select({
-      ios: { shadowColor: '#04293F', shadowOpacity: 0.22, shadowRadius: 26, shadowOffset: { width: 0, height: 12 } },
-      android: { elevation: 10 },
+      ios: { shadowColor: '#052E4A', shadowOpacity: 0.16, shadowRadius: 20, shadowOffset: { width: 0, height: 8 } },
+      android: { elevation: 6 },
       default: {},
     }),
   },

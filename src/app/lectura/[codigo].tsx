@@ -296,7 +296,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: 'rgba(255,255,255,0.94)',
+    backgroundColor: '#FFFFFF',
     borderTopWidth: 1,
     borderTopColor: Brand.glassBorder,
     paddingHorizontal: 16,

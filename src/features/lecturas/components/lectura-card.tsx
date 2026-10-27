@@ -30,7 +30,7 @@ export function LecturaCard({ item, onEditar, onEliminar }: Props) {
 
   return (
     <LinearGradient
-      colors={['rgba(255,255,255,0.94)', 'rgba(255,255,255,0.58)']}
+      colors={['#FFFFFF', '#F7FBFD']}
       start={{ x: 0, y: 0 }}
       end={{ x: 1, y: 1 }}
       style={[styles.card, conError && styles.cardError]}>
@@ -129,30 +129,32 @@ const styles = StyleSheet.create({
     ...Shadows.card,
   },
   cardError: { borderColor: 'rgba(179,38,30,0.40)' },
-  topRow: { flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between', gap: 8 },
-  codeBox: { gap: 1 },
+  topRow: { flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between', gap: 8, flexWrap: 'wrap' },
+  codeBox: { gap: 1, flexShrink: 1 },
   codigo: { fontSize: 15, fontWeight: '800', color: Brand.text, letterSpacing: 0.3 },
   periodo: { fontSize: 11, color: Brand.textMuted, fontWeight: '600' },
   bodyRow: { flexDirection: 'row', gap: 12, alignItems: 'center' },
   readingBox: {
-    width: 94,
+    width: 92,
+    flexShrink: 0,
     borderRadius: 14,
-    backgroundColor: 'rgba(228,242,250,0.85)',
+    backgroundColor: '#EAF5FB',
     borderWidth: 1,
     borderColor: Brand.glassBorder,
-    paddingVertical: 10,
+    paddingVertical: 9,
     alignItems: 'center',
   },
   readingLabel: { fontSize: 9, fontWeight: '800', color: Brand.primary, textTransform: 'uppercase' },
-  reading: { fontSize: 24, fontWeight: '800', color: Brand.primaryDeep, lineHeight: 28 },
+  reading: { fontSize: 23, fontWeight: '800', color: Brand.primaryDeep, lineHeight: 27 },
   readingUnit: { fontSize: 9, fontWeight: '700', color: Brand.primary },
-  data: { flex: 1, gap: 3 },
+  data: { flex: 1, minWidth: 0, gap: 3 },
   row: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 8 },
-  rowLabel: { fontSize: 10, color: Brand.textMuted, fontWeight: '600' },
-  rowValue: { fontSize: 11, fontWeight: '800' },
+  rowLabel: { fontSize: 10, color: Brand.textMuted, fontWeight: '600', flexShrink: 1 },
+  rowValue: { fontSize: 11, fontWeight: '800', flexShrink: 1, textAlign: 'right' },
   badges: { flexDirection: 'row', gap: 6, flexWrap: 'wrap' },
   photoWrap: {
-    height: 112,
+    width: '100%',
+    height: 110,
     borderRadius: 12,
     overflow: 'hidden',
     backgroundColor: Brand.surfaceAlt,
@@ -191,16 +193,17 @@ const styles = StyleSheet.create({
   },
   action: {
     flex: 1,
-    minHeight: 36,
+    minHeight: 38,
     borderRadius: 10,
-    backgroundColor: 'rgba(255,255,255,0.66)',
+    backgroundColor: '#F2F8FB',
     borderWidth: 1,
-    borderColor: Brand.glassBorderSoft,
+    borderColor: Brand.glassBorder,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     gap: 5,
+    paddingHorizontal: 8,
   },
-  actionDanger: { backgroundColor: Brand.dangerSoft },
+  actionDanger: { backgroundColor: Brand.dangerSoft, borderColor: 'rgba(179,38,30,0.18)' },
   actionText: { fontSize: 11, fontWeight: '800', color: Brand.primary },
 });

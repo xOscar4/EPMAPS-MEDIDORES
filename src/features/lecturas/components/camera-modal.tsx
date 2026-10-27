@@ -140,7 +140,7 @@ function ContenidoCamara({ requerida, onClose, onCapture }: Omit<Props, 'visible
 }
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: '#041A26' },
+  screen: { flex: 1, backgroundColor: '#0A4A6B' },
   topBar: {
     position: 'absolute',
     top: 0,

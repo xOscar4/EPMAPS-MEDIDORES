@@ -10,7 +10,7 @@ interface Props {
   elevated?: boolean;
 }
 
-/** Superficie de vidrio esmerilado reutilizada por todas las tarjetas. */
+/** Superficie de vidrio reutilizada por todas las tarjetas. */
 export function Card({ children, style, padded = true, elevated = true }: Props) {
   return (
     <LinearGradient
@@ -28,6 +28,7 @@ const styles = StyleSheet.create({
     borderRadius: Radius.lg,
     borderWidth: 1,
     borderColor: Brand.glassBorder,
+    overflow: 'hidden',
   },
-  padded: { padding: 18 },
+  padded: { padding: 16 },
 });

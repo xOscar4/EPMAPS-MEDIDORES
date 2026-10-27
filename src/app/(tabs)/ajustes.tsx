@@ -182,10 +182,10 @@ function Row({
       <View style={[styles.rowIcon, tone === 'warning' && styles.rowIconWarning]}>
         <AppIcon name={icon} size={16} color={tone === 'warning' ? Brand.warning : Brand.primary} />
       </View>
-      <Text style={styles.rowLabel}>{label}</Text>
-      <Text style={[styles.rowValue, { color }]} numberOfLines={1}>
-        {value}
-      </Text>
+      <View style={styles.rowTexts}>
+        <Text style={styles.rowLabel}>{label}</Text>
+        <Text style={[styles.rowValue, { color }]}>{value}</Text>
+      </View>
     </View>
   );
 }
@@ -230,24 +230,23 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   body: { paddingHorizontal: 16, marginTop: 16, gap: 12 },
-  profile: { flexDirection: 'row', alignItems: 'center', gap: 12 },
+  profile: { flexDirection: 'row', alignItems: 'center', gap: 12, flexWrap: 'wrap' },
   avatar: {
-    width: 54,
-    height: 54,
+    width: 52,
+    height: 52,
     borderRadius: 18,
     backgroundColor: Brand.primary,
     borderWidth: 1,
     borderColor: Brand.glassBorder,
     alignItems: 'center',
     justifyContent: 'center',
-    ...Shadows.card,
   },
   avatarText: { color: '#FFFFFF', fontSize: 18, fontWeight: '800' },
-  profileTexts: { flex: 1, gap: 1 },
+  profileTexts: { flex: 1, minWidth: 120, gap: 1 },
   name: { fontSize: 16, fontWeight: '800', color: Brand.text },
   role: { fontSize: 11, color: Brand.textMuted },
   zoneRow: { flexDirection: 'row', alignItems: 'center', gap: 4, marginTop: 2 },
-  zone: { fontSize: 10, fontWeight: '700', color: Brand.primary },
+  zone: { fontSize: 10, fontWeight: '700', color: Brand.primary, flexShrink: 1 },
   sectionTitle: {
     fontSize: 10,
     fontWeight: '800',
@@ -257,21 +256,22 @@ const styles = StyleSheet.create({
     marginTop: 8,
     marginLeft: 4,
   },
-  card: { gap: 4, ...Shadows.card },
-  row: { flexDirection: 'row', alignItems: 'center', gap: 10, paddingVertical: 6 },
+  card: { gap: 2 },
+  row: { flexDirection: 'row', alignItems: 'center', gap: 10, paddingVertical: 7 },
   rowIcon: {
     width: 32,
     height: 32,
     borderRadius: 10,
-    backgroundColor: 'rgba(228,242,250,0.9)',
+    backgroundColor: Brand.primaryLight,
     borderWidth: 1,
     borderColor: Brand.glassBorder,
     alignItems: 'center',
     justifyContent: 'center',
   },
   rowIconWarning: { backgroundColor: Brand.warningSoft },
-  rowLabel: { flex: 1, fontSize: 12, fontWeight: '600', color: Brand.text },
-  rowValue: { fontSize: 11, fontWeight: '800', maxWidth: '52%', textAlign: 'right' },
+  rowTexts: { flex: 1, minWidth: 0, gap: 1 },
+  rowLabel: { fontSize: 12, fontWeight: '600', color: Brand.text },
+  rowValue: { fontSize: 11, fontWeight: '800' },
   actions: { gap: 10, marginTop: 6 },
   action: { minHeight: 46 },
   about: { fontSize: 11, lineHeight: 17, color: Brand.textMuted, marginTop: 4 },

@@ -180,7 +180,7 @@ export default function NuevoMedidorScreen() {
             label="Dirección"
             value={form.direccion}
             onChangeText={(valor) => setCampo('direccion', valor)}
-            placeholder="Av. Amazonas N34-120 y Naciones Unidas"
+            placeholder="Ej. Av. Amazonas N34-120"
             error={errores.direccion}
           />
           <AppInput
@@ -292,7 +292,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: 'rgba(255,255,255,0.94)',
+    backgroundColor: '#FFFFFF',
     borderTopWidth: 1,
     borderTopColor: Brand.glassBorder,
     paddingHorizontal: 16,

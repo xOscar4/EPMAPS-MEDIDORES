@@ -1,7 +1,7 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { AppIcon } from '@/components/ui/app-icon';
-import { Brand, Radius, Shadows } from '@/constants/brand';
+import { Brand, Radius } from '@/constants/brand';
 import { Icons } from '@/constants/icons';
 import type { EstadoMedidor } from '@/types/models';
 
@@ -61,26 +61,26 @@ const styles = StyleSheet.create({
   row: { flexDirection: 'row', gap: 8 },
   card: {
     flex: 1,
-    minHeight: 118,
+    minWidth: 0,
+    minHeight: 112,
     borderRadius: Radius.md,
     borderWidth: 1,
     borderColor: Brand.glassBorder,
-    backgroundColor: 'rgba(255,255,255,0.52)',
-    padding: 10,
+    backgroundColor: '#F7FBFD',
+    padding: 9,
     alignItems: 'center',
-    gap: 4,
+    gap: 3,
   },
   cardActive: {
-    borderColor: 'rgba(10,92,142,0.45)',
-    backgroundColor: 'rgba(228,242,250,0.95)',
-    ...Shadows.card,
+    borderColor: 'rgba(11,92,142,0.45)',
+    backgroundColor: Brand.primaryLight,
   },
   pressed: { opacity: 0.85 },
   iconBox: {
-    width: 38,
-    height: 38,
+    width: 36,
+    height: 36,
     borderRadius: 12,
-    backgroundColor: 'rgba(255,255,255,0.75)',
+    backgroundColor: '#FFFFFF',
     borderWidth: 1,
     borderColor: Brand.glassBorder,
     alignItems: 'center',

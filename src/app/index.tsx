@@ -12,6 +12,7 @@ import {
   Text,
   View,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { AppButton } from '@/components/ui/app-button';
 import { AppIcon } from '@/components/ui/app-icon';
@@ -23,6 +24,7 @@ import { useAuth } from '@/features/auth/auth-provider';
 export default function LoginScreen() {
   const { tecnico, cargando, iniciarSesion } = useAuth();
   const router = useRouter();
+  const insets = useSafeAreaInsets();
   const [codigo, setCodigo] = useState('');
   const [clave, setClave] = useState('');
   const [verClave, setVerClave] = useState(false);
@@ -72,7 +74,9 @@ export default function LoginScreen() {
     <KeyboardAvoidingView
       style={styles.screen}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-      <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
+      <ScrollView
+        contentContainerStyle={[styles.content, { paddingBottom: 28 + insets.bottom }]}
+        keyboardShouldPersistTaps="handled">
         <LinearGradient
           colors={[Brand.deepStart, Brand.deepMid, Brand.deepEnd]}
           start={{ x: 0, y: 0 }}
@@ -94,7 +98,7 @@ export default function LoginScreen() {
         </LinearGradient>
 
         <LinearGradient
-          colors={['rgba(255,255,255,0.96)', 'rgba(255,255,255,0.80)']}
+          colors={['#FFFFFF', '#F7FBFD']}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
           style={styles.card}>
@@ -239,8 +243,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     gap: 6,
-    paddingVertical: 2,
+    minHeight: 40,
+    paddingHorizontal: 12,
+    borderRadius: Radius.sm,
+    backgroundColor: Brand.primaryLight,
+    borderWidth: 1,
+    borderColor: 'rgba(11,92,142,0.16)',
   },
-  demoFillText: { color: Brand.primary, fontSize: 12, fontWeight: '700' },
+  demoFillText: { color: Brand.primary, fontSize: 12, fontWeight: '700', flexShrink: 1 },
   footer: { textAlign: 'center', color: Brand.textMuted, fontSize: 11, marginTop: 24 },
 });

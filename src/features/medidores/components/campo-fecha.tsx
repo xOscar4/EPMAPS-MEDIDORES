@@ -4,7 +4,7 @@ import { Platform, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
 import { AppIcon } from '@/components/ui/app-icon';
-import { Brand, Radius, Shadows } from '@/constants/brand';
+import { Brand, Radius } from '@/constants/brand';
 import { Icons } from '@/constants/icons';
 import { fechaDesdeISO, fechaISO, formatearFecha } from '@/utils/format';
 
@@ -88,20 +88,19 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
   },
   field: {
-    minHeight: 54,
+    minHeight: 52,
     borderWidth: 1,
-    borderColor: 'rgba(10,92,142,0.12)',
+    borderColor: 'rgba(11,92,142,0.18)',
     backgroundColor: Brand.glassField,
     borderRadius: Radius.md,
-    paddingHorizontal: 16,
+    paddingHorizontal: 14,
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 10,
-    ...Shadows.card,
+    gap: 8,
   },
-  fieldError: { borderColor: 'rgba(179,38,30,0.45)', backgroundColor: 'rgba(255,247,247,0.92)' },
+  fieldError: { borderColor: 'rgba(179,38,30,0.55)', backgroundColor: '#FFF8F8' },
   pressed: { opacity: 0.8 },
-  value: { flex: 1, fontSize: 16, color: Brand.text, paddingVertical: 12, textTransform: 'capitalize' },
+  value: { flex: 1, minWidth: 0, fontSize: 16, color: Brand.text, paddingVertical: 11, textTransform: 'capitalize' },
   placeholder: { color: Brand.textMuted, textTransform: 'none' },
   error: { color: Brand.danger, fontSize: 12, fontWeight: '600' },
   hint: { color: Brand.textMuted, fontSize: 11, lineHeight: 15 },
@@ -109,8 +108,9 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: Brand.glassBorder,
     borderRadius: Radius.md,
-    backgroundColor: Brand.glassStrong,
+    backgroundColor: '#FFFFFF',
     paddingVertical: 4,
+    overflow: 'hidden',
   },
   done: { alignSelf: 'flex-end', paddingHorizontal: 16, paddingVertical: 10 },
   doneText: { color: Brand.primary, fontSize: 14, fontWeight: '800' },

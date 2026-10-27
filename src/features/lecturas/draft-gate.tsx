@@ -53,7 +53,7 @@ export function DraftGate() {
         end={{ x: 1, y: 1 }}
         style={styles.overlay}>
         <LinearGradient
-          colors={['rgba(255,255,255,0.98)', 'rgba(255,255,255,0.88)']}
+          colors={['#FFFFFF', '#F7FBFD']}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
           style={styles.card}>
@@ -96,12 +96,11 @@ const styles = StyleSheet.create({
     width: 60,
     height: 60,
     borderRadius: 19,
-    backgroundColor: 'rgba(255,241,214,0.9)',
+    backgroundColor: '#FFF4DF',
     borderWidth: 1,
     borderColor: Brand.glassBorder,
     alignItems: 'center',
     justifyContent: 'center',
-    ...Shadows.card,
   },
   title: { fontSize: 20, fontWeight: '800', color: Brand.text, letterSpacing: -0.3 },
   message: { fontSize: 14, lineHeight: 21, color: Brand.textMuted, marginBottom: 6 },

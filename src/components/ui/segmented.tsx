@@ -26,7 +26,9 @@ export function Segmented({ options, value, onChange }: Props) {
             accessibilityState={{ selected: activa }}
             onPress={() => onChange(opcion.key)}
             style={[styles.item, activa && styles.itemActive]}>
-            <Text style={[styles.label, activa && styles.labelActive]}>{opcion.label}</Text>
+            <Text style={[styles.label, activa && styles.labelActive]} numberOfLines={1}>
+              {opcion.label}
+            </Text>
             {typeof opcion.count === 'number' ? (
               <View style={[styles.badge, activa && styles.badgeActive]}>
                 <Text style={[styles.badgeText, activa && styles.badgeTextActive]}>{opcion.count}</Text>
@@ -42,40 +44,42 @@ export function Segmented({ options, value, onChange }: Props) {
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    backgroundColor: 'rgba(255,255,255,0.42)',
+    backgroundColor: '#EDF6FB',
     borderRadius: Radius.md,
     borderWidth: 1,
-    borderColor: Brand.glassBorderSoft,
+    borderColor: Brand.glassBorder,
     padding: 4,
     gap: 4,
   },
   item: {
     flex: 1,
+    minWidth: 0,
     minHeight: 42,
     borderRadius: Radius.sm,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 6,
+    gap: 4,
+    paddingHorizontal: 2,
   },
   itemActive: {
-    backgroundColor: 'rgba(255,255,255,0.95)',
+    backgroundColor: '#FFFFFF',
     borderWidth: 1,
-    borderColor: Brand.glassBorder,
+    borderColor: 'rgba(11,92,142,0.18)',
     ...Shadows.card,
   },
-  label: { fontSize: 12, fontWeight: '700', color: Brand.textMuted },
-  labelActive: { color: Brand.primaryDark, fontWeight: '800' },
+  label: { fontSize: 11, fontWeight: '700', color: Brand.textMuted, flexShrink: 1 },
+  labelActive: { color: Brand.primaryDeep, fontWeight: '800' },
   badge: {
-    minWidth: 20,
-    height: 20,
-    borderRadius: 10,
-    paddingHorizontal: 5,
-    backgroundColor: 'rgba(10,92,142,0.08)',
+    minWidth: 18,
+    height: 18,
+    borderRadius: 9,
+    paddingHorizontal: 4,
+    backgroundColor: '#E1EFF7',
     alignItems: 'center',
     justifyContent: 'center',
   },
-  badgeActive: { backgroundColor: 'rgba(18,166,180,0.16)' },
-  badgeText: { fontSize: 10, fontWeight: '800', color: Brand.textMuted },
-  badgeTextActive: { color: Brand.accent },
+  badgeActive: { backgroundColor: '#D7EFF2' },
+  badgeText: { fontSize: 9, fontWeight: '800', color: Brand.textMuted },
+  badgeTextActive: { color: Brand.primary },
 });

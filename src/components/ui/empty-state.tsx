@@ -1,7 +1,6 @@
-import { LinearGradient } from 'expo-linear-gradient';
 import { StyleSheet, Text, View } from 'react-native';
 
-import { Brand, Radius, Shadows } from '@/constants/brand';
+import { Brand, Radius } from '@/constants/brand';
 import type { IconName } from '@/constants/icons';
 import { AppIcon } from './app-icon';
 
@@ -14,13 +13,9 @@ interface Props {
 export function EmptyState({ icon, title, message }: Props) {
   return (
     <View style={styles.container}>
-      <LinearGradient
-        colors={['rgba(255,255,255,0.95)', 'rgba(226,244,252,0.85)']}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-        style={styles.iconBox}>
+      <View style={styles.iconBox}>
         <AppIcon name={icon} size={30} color={Brand.primary} />
-      </LinearGradient>
+      </View>
       <Text style={styles.title}>{title}</Text>
       <Text style={styles.message}>{message}</Text>
     </View>
@@ -30,24 +25,24 @@ export function EmptyState({ icon, title, message }: Props) {
 const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
-    paddingVertical: 34,
-    paddingHorizontal: 24,
+    paddingVertical: 32,
+    paddingHorizontal: 20,
     gap: 8,
     borderRadius: Radius.lg,
     borderWidth: 1,
-    borderColor: Brand.glassBorderSoft,
-    backgroundColor: 'rgba(255,255,255,0.38)',
+    borderColor: Brand.glassBorder,
+    backgroundColor: 'rgba(252,254,255,0.94)',
   },
   iconBox: {
-    width: 64,
-    height: 64,
+    width: 62,
+    height: 62,
     borderRadius: Radius.pill,
+    backgroundColor: Brand.primaryLight,
     borderWidth: 1,
     borderColor: Brand.glassBorder,
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 4,
-    ...Shadows.card,
   },
   title: { fontSize: 16, fontWeight: '800', color: Brand.text, textAlign: 'center' },
   message: { fontSize: 12, lineHeight: 18, color: Brand.textMuted, textAlign: 'center' },

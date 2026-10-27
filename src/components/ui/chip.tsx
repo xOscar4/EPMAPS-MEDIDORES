@@ -13,11 +13,11 @@ interface Props {
 }
 
 const TONOS = {
-  neutral: { fondo: 'rgba(255,255,255,0.58)', texto: Brand.textMuted, borde: 'rgba(10,92,142,0.12)' },
-  success: { fondo: 'rgba(23,164,106,0.12)', texto: Brand.success, borde: 'rgba(23,164,106,0.24)' },
-  warning: { fondo: 'rgba(214,138,0,0.14)', texto: Brand.warning, borde: 'rgba(214,138,0,0.26)' },
-  danger: { fondo: 'rgba(179,38,30,0.10)', texto: Brand.danger, borde: 'rgba(179,38,30,0.22)' },
-  info: { fondo: 'rgba(10,92,142,0.10)', texto: Brand.primary, borde: 'rgba(10,92,142,0.18)' },
+  neutral: { fondo: '#F2F8FB', texto: '#3F5D6E', borde: 'rgba(11,92,142,0.14)' },
+  success: { fondo: '#E3F6EC', texto: Brand.success, borde: 'rgba(17,112,74,0.22)' },
+  warning: { fondo: '#FFF4DF', texto: Brand.warning, borde: 'rgba(154,91,0,0.24)' },
+  danger: { fondo: '#FDECEA', texto: Brand.danger, borde: 'rgba(179,38,30,0.22)' },
+  info: { fondo: '#E6F3FA', texto: Brand.primary, borde: 'rgba(11,92,142,0.20)' },
 } as const;
 
 export function Chip({ label, tone = 'neutral', icon }: Props) {
@@ -25,7 +25,9 @@ export function Chip({ label, tone = 'neutral', icon }: Props) {
   return (
     <View style={[styles.chip, { backgroundColor: colores.fondo, borderColor: colores.borde }]}>
       {icon ? <AppIcon name={icon} size={13} color={colores.texto} /> : null}
-      <Text style={[styles.label, { color: colores.texto }]}>{label}</Text>
+      <Text style={[styles.label, { color: colores.texto }]} numberOfLines={1}>
+        {label}
+      </Text>
     </View>
   );
 }
@@ -37,9 +39,10 @@ const styles = StyleSheet.create({
     gap: 5,
     borderRadius: Radius.pill,
     borderWidth: 1,
-    paddingHorizontal: 10,
-    paddingVertical: 5,
+    paddingHorizontal: 9,
+    paddingVertical: 4,
     alignSelf: 'flex-start',
+    flexShrink: 1,
   },
-  label: { fontSize: 10, fontWeight: '800', letterSpacing: 0.3 },
+  label: { fontSize: 10, fontWeight: '800', letterSpacing: 0.3, flexShrink: 1 },
 });

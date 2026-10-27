@@ -1,7 +1,7 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import { StyleSheet, Text, View } from 'react-native';
 
-import { Brand, Radius, Shadows } from '@/constants/brand';
+import { Brand, Radius } from '@/constants/brand';
 
 interface Props {
   index: string;
@@ -37,10 +37,9 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(255,255,255,0.45)',
     alignItems: 'center',
     justifyContent: 'center',
-    ...Shadows.card,
   },
   indexText: { color: '#FFFFFF', fontSize: 13, fontWeight: '800' },
-  texts: { flex: 1, gap: 1 },
+  texts: { flex: 1, minWidth: 0, gap: 1 },
   title: { fontSize: 16, fontWeight: '800', color: Brand.text, letterSpacing: -0.2 },
   subtitle: { fontSize: 11, color: Brand.textMuted, fontWeight: '600' },
 });
