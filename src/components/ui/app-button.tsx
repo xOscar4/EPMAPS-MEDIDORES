@@ -4,6 +4,7 @@ import {
   Pressable,
   StyleSheet,
   Text,
+  View,
   type StyleProp,
   type ViewStyle,
 } from 'react-native';
@@ -29,17 +30,17 @@ interface Props {
  * depende del fondo para distinguirse.
  */
 const ESTILOS = {
-  primary: { texto: '#FFFFFF', borde: 'rgba(255,255,255,0.28)' },
-  secondary: { texto: Brand.primaryDeep, borde: 'rgba(11,92,142,0.22)' },
-  ghost: { texto: Brand.primary, borde: 'rgba(11,92,142,0.26)' },
-  danger: { texto: Brand.danger, borde: 'rgba(179,38,30,0.26)' },
+  primary: { texto: '#FFFFFF', borde: 'rgba(255,255,255,0.26)', icono: 'rgba(255,255,255,0.18)' },
+  secondary: { texto: Brand.primaryDark, borde: 'rgba(10,90,140,0.20)', icono: 'rgba(10,90,140,0.08)' },
+  ghost: { texto: Brand.primary, borde: 'rgba(10,90,140,0.24)', icono: 'rgba(10,90,140,0.06)' },
+  danger: { texto: Brand.danger, borde: 'rgba(168,35,28,0.24)', icono: 'rgba(168,35,28,0.08)' },
 } as const;
 
 const FONDOS: Record<Variante, string> = {
   primary: 'transparent',
-  secondary: '#E3F2FB',
+  secondary: '#E7F4FB',
   ghost: '#FFFFFF',
-  danger: '#FDECEA',
+  danger: '#FDF1EF',
 };
 
 export function AppButton({
@@ -70,7 +71,7 @@ export function AppButton({
       ]}>
       {variant === 'primary' ? (
         <LinearGradient
-          colors={[Brand.deepMid, Brand.deepEnd]}
+          colors={[Brand.primaryDark, Brand.deepMid, Brand.deepEnd]}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
           style={StyleSheet.absoluteFill}
@@ -82,7 +83,11 @@ export function AppButton({
         <ActivityIndicator color={colores.texto} />
       ) : (
         <>
-          {icon ? <AppIcon name={icon} size={18} color={colores.texto} /> : null}
+          {icon ? (
+            <View style={[styles.iconBox, { backgroundColor: colores.icono }]}>
+              <AppIcon name={icon} size={16} color={colores.texto} />
+            </View>
+          ) : null}
           <Text style={[styles.texto, { color: colores.texto }]} numberOfLines={2}>
             {title}
           </Text>
@@ -97,15 +102,22 @@ const styles = StyleSheet.create({
     minHeight: 50,
     borderRadius: Radius.md,
     borderWidth: 1,
-    paddingHorizontal: 18,
-    paddingVertical: 12,
+    paddingHorizontal: 12,
+    paddingVertical: 9,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     gap: 8,
     overflow: 'hidden',
   },
+  iconBox: {
+    width: 28,
+    height: 28,
+    borderRadius: 9,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   texto: { fontSize: 15, fontWeight: '700', letterSpacing: 0.2, flexShrink: 1 },
-  pressed: { opacity: 0.88 },
-  disabled: { opacity: 0.5 },
+  pressed: { opacity: 0.9, transform: [{ scale: 0.99 }] },
+  disabled: { opacity: 0.45 },
 });

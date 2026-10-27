@@ -3,7 +3,9 @@ import { StyleSheet, Text, View } from 'react-native';
 
 import { AppIcon } from '@/components/ui/app-icon';
 import { ProgressBar } from '@/components/ui/progress-bar';
-import { Brand, Radius, Shadows } from '@/constants/brand';
+import { StatTile } from '@/components/ui/stat-tile';
+import { WaterGlow, WaterWaves } from '@/components/ui/water-decor';
+import { Brand, Radius } from '@/constants/brand';
 import { Icons } from '@/constants/icons';
 import type { Tecnico } from '@/types/models';
 import { fechaLarga, saludo } from '@/utils/format';
@@ -27,10 +29,25 @@ export function RutaHero({ tecnico, total, registrados, porEnviar, online }: Pro
       start={{ x: 0, y: 0 }}
       end={{ x: 1, y: 1 }}
       style={styles.hero}>
-      <View style={styles.bubbleBig} />
-      <View style={styles.bubbleSmall} />
-      <View pointerEvents="none" style={styles.dropMark}>
-        <AppIcon name={Icons.drop} size={150} color="#FFFFFF" />
+      <WaterGlow style={{ right: -80, top: -110 }} opacity={0.62} />
+      <WaterGlow
+        tone={Brand.aqua}
+        size={180}
+        style={{ left: -90, bottom: -60 }}
+        opacity={0.34}
+      />
+      <WaterWaves opacity={0.16} />
+
+      <View style={styles.topRow}>
+        <View style={styles.brandPill}>
+          <AppIcon name={Icons.drop} size={12} color="#CFF6FA" />
+          <Text style={styles.brandPillText}>EPMAPS · CAMPO</Text>
+        </View>
+        <View style={[styles.netPill, !online && styles.netPillOff]}>
+          <View style={[styles.netDot, !online && styles.netDotOff]} />
+          <AppIcon name={online ? Icons.wifi : Icons.wifiOff} size={12} color="#FFFFFF" />
+          <Text style={styles.netPillText}>{online ? 'En línea' : 'Sin señal'}</Text>
+        </View>
       </View>
 
       <Text style={styles.fecha}>{fechaLarga().toUpperCase()}</Text>
@@ -38,40 +55,56 @@ export function RutaHero({ tecnico, total, registrados, porEnviar, online }: Pro
         {saludo()}, {primerNombre}
       </Text>
       <View style={styles.zoneRow}>
-        <AppIcon name={Icons.route} size={14} color="#A9E7EE" />
+        <AppIcon name={Icons.route} size={13} color={Brand.aqua} />
         <Text style={styles.zona}>{tecnico.zona}</Text>
       </View>
 
-      <View style={styles.progressCard}>
-        <View style={styles.progressTop}>
-          <Text style={styles.progressLabel}>
-            {registrados} de {total} medidores registrados
-          </Text>
-          <Text style={styles.progressPct}>{Math.round(avance * 100)}%</Text>
+      <View style={styles.board}>
+        <View style={styles.boardTop}>
+          <View style={styles.boardTexts}>
+            <Text style={styles.boardEyebrow}>AVANCE DE HOY</Text>
+            <Text style={styles.boardTitle}>
+              {registrados} de {total} medidores
+            </Text>
+          </View>
+          <View style={styles.pctBox}>
+            <Text style={styles.pct}>{Math.round(avance * 100)}</Text>
+            <Text style={styles.pctSign}>%</Text>
+          </View>
         </View>
+
         <ProgressBar value={avance} />
-        <View style={styles.stats}>
-          <View style={styles.stat}>
-            <Text style={styles.statValue}>{total - registrados}</Text>
-            <Text style={styles.statLabel}>Por visitar</Text>
-          </View>
-          <View style={styles.statDivider} />
-          <View style={styles.stat}>
-            <Text style={styles.statValue}>{registrados}</Text>
-            <Text style={styles.statLabel}>Registrados</Text>
-          </View>
-          <View style={styles.statDivider} />
-          <View style={styles.stat}>
-            <Text style={[styles.statValue, porEnviar > 0 && styles.statValueAlert]}>{porEnviar}</Text>
-            <Text style={styles.statLabel}>Por enviar</Text>
-          </View>
+
+        <View style={styles.tiles}>
+          <StatTile
+            value={total - registrados}
+            label="Por visitar"
+            icon={Icons.timer}
+            appearance="glass"
+          />
+          <StatTile
+            value={registrados}
+            label="Registrados"
+            icon={Icons.check}
+            tone="success"
+            appearance="glass"
+          />
+          <StatTile
+            value={porEnviar}
+            label="Por enviar"
+            icon={Icons.cloudDone}
+            tone={porEnviar > 0 ? 'warning' : 'neutral'}
+            appearance="glass"
+          />
         </View>
       </View>
 
-      <View style={[styles.net, !online && styles.netOffline]}>
-        <AppIcon name={online ? Icons.wifi : Icons.wifiOff} size={13} color="#FFFFFF" />
-        <Text style={styles.netText}>
-          {online ? 'Con señal: la ruta se actualiza sola' : 'Sin señal: sigues trabajando con la caché'}
+      <View style={styles.netHint}>
+        <AppIcon name={online ? Icons.sync : Icons.wifiOff} size={11} color="#BFE4EF" />
+        <Text style={styles.netHintText} numberOfLines={2}>
+          {online
+            ? 'Con señal: la ruta y las lecturas se sincronizan solas'
+            : 'Sin señal: sigues trabajando con la copia guardada'}
         </Text>
       </View>
     </LinearGradient>
@@ -80,71 +113,80 @@ export function RutaHero({ tecnico, total, registrados, porEnviar, online }: Pro
 
 const styles = StyleSheet.create({
   hero: {
-    marginHorizontal: 12,
-    marginTop: 10,
-    borderRadius: Radius.xl,
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.22)',
-    paddingHorizontal: 20,
-    paddingTop: 20,
-    paddingBottom: 20,
+    borderBottomLeftRadius: 30,
+    borderBottomRightRadius: 30,
+    paddingHorizontal: 18,
+    paddingTop: 16,
+    paddingBottom: 18,
     overflow: 'hidden',
     gap: 3,
-    ...Shadows.card,
+    borderBottomWidth: 1,
+    borderColor: 'rgba(255,255,255,0.16)',
   },
-  bubbleBig: {
-    position: 'absolute',
-    right: -70,
-    top: -80,
-    width: 200,
-    height: 200,
-    borderRadius: 100,
-    backgroundColor: 'rgba(27,184,198,0.24)',
-  },
-  bubbleSmall: {
-    position: 'absolute',
-    left: -40,
-    bottom: -50,
-    width: 120,
-    height: 120,
-    borderRadius: 60,
-    backgroundColor: 'rgba(255,255,255,0.06)',
-  },
-  dropMark: { position: 'absolute', right: -22, top: 30, opacity: 0.10 },
-  fecha: { color: '#A9E7EE', fontSize: 10, fontWeight: '800', letterSpacing: 1.4 },
-  saludo: { color: '#FFFFFF', fontSize: 26, fontWeight: '800', lineHeight: 32, letterSpacing: -0.4 },
-  zoneRow: { flexDirection: 'row', alignItems: 'center', gap: 5, marginBottom: 14 },
-  zona: { color: '#CDE6F1', fontSize: 12, fontWeight: '600' },
-  progressCard: {
-    backgroundColor: 'rgba(255,255,255,0.13)',
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.24)',
-    padding: 14,
-    gap: 8,
-  },
-  progressTop: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
-  progressLabel: { color: '#EFF9FD', fontSize: 12, fontWeight: '700' },
-  progressPct: { color: '#FFFFFF', fontSize: 13, fontWeight: '800' },
-  stats: { flexDirection: 'row', alignItems: 'center', marginTop: 4 },
-  stat: { flex: 1, alignItems: 'center', gap: 1 },
-  statValue: { color: '#FFFFFF', fontSize: 19, fontWeight: '800' },
-  statValueAlert: { color: '#FFD9A3' },
-  statLabel: { color: '#B7D4E2', fontSize: 9, fontWeight: '700', textTransform: 'uppercase' },
-  statDivider: { width: 1, height: 24, backgroundColor: 'rgba(255,255,255,0.18)' },
-  net: {
+  topRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 6,
-    marginTop: 10,
-    alignSelf: 'flex-start',
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.22)',
-    backgroundColor: 'rgba(255,255,255,0.12)',
-    borderRadius: Radius.pill,
-    paddingHorizontal: 10,
-    paddingVertical: 5,
+    justifyContent: 'space-between',
+    gap: 8,
+    marginBottom: 10,
   },
-  netOffline: { opacity: 0.95, borderColor: 'rgba(255,217,163,0.35)' },
-  netText: { color: '#E6F4FA', fontSize: 10, fontWeight: '600', flexShrink: 1 },
+  brandPill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 5,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.24)',
+    backgroundColor: 'rgba(255,255,255,0.10)',
+    borderRadius: Radius.pill,
+    paddingHorizontal: 9,
+    paddingVertical: 4,
+    flexShrink: 1,
+  },
+  brandPillText: { color: '#DDF6FA', fontSize: 9, fontWeight: '800', letterSpacing: 1, flexShrink: 1 },
+  netPill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 5,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.28)',
+    backgroundColor: 'rgba(255,255,255,0.14)',
+    borderRadius: Radius.pill,
+    paddingHorizontal: 9,
+    paddingVertical: 4,
+  },
+  netPillOff: { borderColor: 'rgba(255,217,163,0.40)', backgroundColor: 'rgba(143,83,0,0.24)' },
+  netDot: { width: 6, height: 6, borderRadius: 3, backgroundColor: '#8CF0C4' },
+  netDotOff: { backgroundColor: '#FFD9A3' },
+  netPillText: { color: '#FFFFFF', fontSize: 10, fontWeight: '800', letterSpacing: 0.2 },
+  fecha: { color: '#CDEDF4', fontSize: 10, fontWeight: '800', letterSpacing: 1.4 },
+  saludo: { color: '#FFFFFF', fontSize: 27, fontWeight: '800', lineHeight: 33, letterSpacing: -0.5 },
+  zoneRow: { flexDirection: 'row', alignItems: 'center', gap: 5, marginBottom: 14 },
+  zona: { color: '#D3EDF5', fontSize: 12, fontWeight: '600', flexShrink: 1 },
+  board: {
+    backgroundColor: 'rgba(255,255,255,0.14)',
+    borderRadius: 22,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.26)',
+    padding: 14,
+    gap: 9,
+  },
+  boardTop: { flexDirection: 'row', alignItems: 'center', gap: 10 },
+  boardTexts: { flex: 1, minWidth: 0, gap: 1 },
+  boardEyebrow: { color: '#D7EFF6', fontSize: 9, fontWeight: '800', letterSpacing: 1.2 },
+  boardTitle: { color: '#FFFFFF', fontSize: 16, fontWeight: '800', letterSpacing: -0.2 },
+  pctBox: {
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    backgroundColor: 'rgba(4,38,60,0.30)',
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.20)',
+    borderRadius: 14,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+  },
+  pct: { color: '#FFFFFF', fontSize: 24, fontWeight: '800', letterSpacing: -0.6, lineHeight: 28 },
+  pctSign: { color: '#B9E7EF', fontSize: 12, fontWeight: '800', marginBottom: 4 },
+  tiles: { flexDirection: 'row', gap: 7, marginTop: 2 },
+  netHint: { flexDirection: 'row', alignItems: 'center', gap: 5, marginTop: 11 },
+  netHintText: { color: '#DBF0F6', fontSize: 10, fontWeight: '600', flex: 1, minWidth: 0 },
 });

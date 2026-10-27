@@ -1,23 +1,57 @@
 import { LinearGradient } from 'expo-linear-gradient';
-import { StyleSheet, type StyleProp, type ViewStyle } from 'react-native';
+import { StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
 
 import { Brand, Radius, Shadows } from '@/constants/brand';
+
+type Variante = 'glass' | 'plain' | 'accent';
 
 interface Props {
   children: React.ReactNode;
   style?: StyleProp<ViewStyle>;
   padded?: boolean;
   elevated?: boolean;
+  /** `glass` = vidrio, `plain` = superficie blanca sin sombra, `accent` = filete de agua. */
+  variant?: Variante;
 }
 
-/** Superficie de vidrio reutilizada por todas las tarjetas. */
-export function Card({ children, style, padded = true, elevated = true }: Props) {
+/** Superficie reutilizada por todas las tarjetas, con tres acabados del sistema. */
+export function Card({ children, style, padded = true, elevated = true, variant = 'glass' }: Props) {
+  if (variant === 'plain') {
+    return (
+      <View
+        style={[
+          styles.card,
+          styles.plain,
+          padded && styles.padded,
+          elevated && Shadows.card,
+          style,
+        ]}>
+        {children}
+      </View>
+    );
+  }
+
   return (
     <LinearGradient
-      colors={[Brand.glassStrong, Brand.glassSoft]}
+      colors={variant === 'accent' ? ['#FFFFFF', '#F4FBFD'] : [Brand.glassStrong, Brand.glassSoft]}
       start={{ x: 0, y: 0 }}
       end={{ x: 0.9, y: 1 }}
-      style={[styles.card, padded && styles.padded, elevated && Shadows.card, style]}>
+      style={[
+        styles.card,
+        padded && styles.padded,
+        elevated && Shadows.card,
+        variant === 'accent' && styles.accentCard,
+        style,
+      ]}>
+      {variant === 'accent' ? (
+        <LinearGradient
+          colors={[Brand.accentBright, Brand.deepEnd, Brand.primary]}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 0 }}
+          style={styles.rail}
+          pointerEvents="none"
+        />
+      ) : null}
       {children}
     </LinearGradient>
   );
@@ -30,5 +64,8 @@ const styles = StyleSheet.create({
     borderColor: Brand.glassBorder,
     overflow: 'hidden',
   },
+  plain: { backgroundColor: '#FFFFFF' },
+  accentCard: { paddingTop: 20 },
   padded: { padding: 16 },
+  rail: { position: 'absolute', top: 0, left: 0, right: 0, height: 4 },
 });

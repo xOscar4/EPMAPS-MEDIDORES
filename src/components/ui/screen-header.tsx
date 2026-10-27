@@ -1,6 +1,7 @@
+import { LinearGradient } from 'expo-linear-gradient';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
-import { Brand, Radius, Shadows } from '@/constants/brand';
+import { Brand, Shadows } from '@/constants/brand';
 import { Icons } from '@/constants/icons';
 import { AppIcon } from './app-icon';
 
@@ -35,6 +36,13 @@ export function ScreenHeader({ title, subtitle, onBack, right }: Props) {
         ) : null}
       </View>
       {right}
+      <LinearGradient
+        colors={[Brand.accentBright, Brand.accent, 'rgba(15,166,180,0)']}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 0 }}
+        style={styles.hairline}
+        pointerEvents="none"
+      />
     </View>
   );
 }
@@ -46,18 +54,20 @@ const styles = StyleSheet.create({
     gap: 12,
     paddingHorizontal: 16,
     paddingTop: 14,
-    paddingBottom: 12,
-    backgroundColor: 'rgba(252,254,255,0.96)',
+    paddingBottom: 13,
+    backgroundColor: 'rgba(252,254,255,0.97)',
     borderBottomWidth: 1,
     borderBottomColor: Brand.glassBorder,
+    overflow: 'hidden',
   },
+  hairline: { position: 'absolute', left: 0, right: 0, bottom: 0, height: 2 },
   back: {
     width: 42,
     height: 42,
-    borderRadius: Radius.pill,
+    borderRadius: 14,
     backgroundColor: '#FFFFFF',
     borderWidth: 1,
-    borderColor: Brand.glassBorder,
+    borderColor: 'rgba(10,90,140,0.16)',
     alignItems: 'center',
     justifyContent: 'center',
     ...Shadows.card,
@@ -65,5 +75,5 @@ const styles = StyleSheet.create({
   pressed: { opacity: 0.7 },
   titles: { flex: 1, minWidth: 0, gap: 2 },
   title: { fontSize: 19, fontWeight: '800', color: Brand.text, letterSpacing: -0.3 },
-  subtitle: { fontSize: 11, color: Brand.primary, fontWeight: '700', letterSpacing: 0.2 },
+  subtitle: { fontSize: 11, color: Brand.accentDeep, fontWeight: '700', letterSpacing: 0.2 },
 });

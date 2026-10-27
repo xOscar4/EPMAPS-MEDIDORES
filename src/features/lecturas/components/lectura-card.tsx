@@ -27,6 +27,8 @@ export function LecturaCard({ item, onEditar, onEliminar }: Props) {
   const fecha = enviada ? item.enviadoEn : item.creadoEn;
   const estado = ESTADOS[item.estadoMedidor];
   const conError = !enviada && item.estadoSync === 'error';
+  const franja =
+    enviada ? '#1B9A67' : conError ? Brand.danger : item.estadoSync === 'enviando' ? Brand.accent : '#D08A16';
 
   return (
     <LinearGradient
@@ -34,9 +36,12 @@ export function LecturaCard({ item, onEditar, onEliminar }: Props) {
       start={{ x: 0, y: 0 }}
       end={{ x: 1, y: 1 }}
       style={[styles.card, conError && styles.cardError]}>
+      <View style={[styles.stripe, { backgroundColor: franja }]} />
       <View style={styles.topRow}>
         <View style={styles.codeBox}>
-          <Text style={styles.codigo}>{item.medidorCodigo}</Text>
+          <Text style={styles.codigo} numberOfLines={1}>
+            {item.medidorCodigo}
+          </Text>
           <Text style={styles.periodo}>{formatearPeriodo(item.periodo)}</Text>
         </View>
         {enviada ? (
@@ -51,11 +56,17 @@ export function LecturaCard({ item, onEditar, onEliminar }: Props) {
       </View>
 
       <View style={styles.bodyRow}>
-        <View style={styles.readingBox}>
+        <LinearGradient
+          colors={['#EAF7FB', '#D8EEF8']}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={styles.readingBox}>
           <Text style={styles.readingLabel}>Lectura</Text>
-          <Text style={styles.reading}>{item.lectura !== null ? formatearNumero(item.lectura) : '—'}</Text>
+          <Text style={styles.reading} numberOfLines={1} adjustsFontSizeToFit>
+            {item.lectura !== null ? formatearNumero(item.lectura) : '—'}
+          </Text>
           <Text style={styles.readingUnit}>m³</Text>
-        </View>
+        </LinearGradient>
         <View style={styles.data}>
           <Row label="Estado" value={estado.label} tone={estado.tone} />
           <Row label="Consumo" value={`${formatearNumero(item.consumo)} m³`} />
@@ -124,32 +135,42 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: Brand.glassBorder,
     padding: 15,
+    paddingLeft: 18,
     gap: 9,
     overflow: 'hidden',
     ...Shadows.card,
   },
-  cardError: { borderColor: 'rgba(179,38,30,0.40)' },
+  stripe: {
+    position: 'absolute',
+    left: 0,
+    top: 14,
+    bottom: 14,
+    width: 4,
+    borderTopRightRadius: 3,
+    borderBottomRightRadius: 3,
+  },
+  cardError: { borderColor: 'rgba(168,35,28,0.40)' },
   topRow: { flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between', gap: 8, flexWrap: 'wrap' },
   codeBox: { gap: 1, flexShrink: 1 },
   codigo: { fontSize: 15, fontWeight: '800', color: Brand.text, letterSpacing: 0.3 },
   periodo: { fontSize: 11, color: Brand.textMuted, fontWeight: '600' },
   bodyRow: { flexDirection: 'row', gap: 12, alignItems: 'center' },
   readingBox: {
-    width: 92,
+    width: 96,
     flexShrink: 0,
-    borderRadius: 14,
-    backgroundColor: '#EAF5FB',
+    borderRadius: 16,
     borderWidth: 1,
-    borderColor: Brand.glassBorder,
+    borderColor: 'rgba(10,90,140,0.12)',
     paddingVertical: 9,
     alignItems: 'center',
+    overflow: 'hidden',
   },
-  readingLabel: { fontSize: 9, fontWeight: '800', color: Brand.primary, textTransform: 'uppercase' },
-  reading: { fontSize: 23, fontWeight: '800', color: Brand.primaryDeep, lineHeight: 27 },
-  readingUnit: { fontSize: 9, fontWeight: '700', color: Brand.primary },
-  data: { flex: 1, minWidth: 0, gap: 3 },
+  readingLabel: { fontSize: 9, fontWeight: '800', color: Brand.primary, textTransform: 'uppercase', letterSpacing: 0.6 },
+  reading: { fontSize: 25, fontWeight: '800', color: Brand.primaryDeep, lineHeight: 29 },
+  readingUnit: { fontSize: 9, fontWeight: '700', color: Brand.accentDeep },
+  data: { flex: 1, minWidth: 0, gap: 4 },
   row: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 8 },
-  rowLabel: { fontSize: 10, color: Brand.textMuted, fontWeight: '600', flexShrink: 1 },
+  rowLabel: { fontSize: 10, color: Brand.textMuted, fontWeight: '700', flexShrink: 1 },
   rowValue: { fontSize: 11, fontWeight: '800', flexShrink: 1, textAlign: 'right' },
   badges: { flexDirection: 'row', gap: 6, flexWrap: 'wrap' },
   photoWrap: {

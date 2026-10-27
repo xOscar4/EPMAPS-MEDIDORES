@@ -1,10 +1,22 @@
 import { Redirect, Tabs } from 'expo-router';
+import { StyleSheet, View, type ColorValue } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { AppIcon } from '@/components/ui/app-icon';
-import { Brand } from '@/constants/brand';
+import { Brand, Shadows } from '@/constants/brand';
+import type { IconName } from '@/constants/icons';
 import { Icons } from '@/constants/icons';
 import { useAuth } from '@/features/auth/auth-provider';
+
+function icono(nombre: IconName) {
+  return function TabIcon({ color, focused }: { color: ColorValue; focused: boolean }) {
+    return (
+      <View style={[styles.iconWrap, focused && styles.iconWrapActive]}>
+        <AppIcon name={nombre} color={color as string} size={20} />
+      </View>
+    );
+  };
+}
 
 export default function TabsLayout() {
   const { tecnico, cargando } = useAuth();
@@ -18,39 +30,38 @@ export default function TabsLayout() {
       screenOptions={{
         headerShown: false,
         tabBarActiveTintColor: Brand.primaryDark,
-        tabBarInactiveTintColor: Brand.textMuted,
-        tabBarLabelStyle: { fontSize: 10, fontWeight: '800', letterSpacing: 0.3 },
+        tabBarInactiveTintColor: '#6E8A99',
+        tabBarLabelStyle: { fontSize: 10, fontWeight: '800', letterSpacing: 0.2 },
         tabBarStyle: {
-          height: 64 + insets.bottom,
-          paddingTop: 9,
-          paddingBottom: insets.bottom + 7,
-          backgroundColor: 'rgba(255,255,255,0.98)',
-          borderTopColor: Brand.glassBorder,
-          borderTopWidth: 1,
+          position: 'absolute',
+          left: 14,
+          right: 14,
+          bottom: Math.max(insets.bottom, 10),
+          height: 66,
+          paddingTop: 7,
+          paddingBottom: 7,
+          borderRadius: 22,
+          borderWidth: 1,
+          borderColor: 'rgba(10,90,140,0.12)',
+          backgroundColor: '#FFFFFF',
+          ...Shadows.floating,
         },
         tabBarHideOnKeyboard: true,
       }}>
-      <Tabs.Screen
-        name="rutas"
-        options={{
-          title: 'Mi ruta',
-          tabBarIcon: ({ color, size }) => <AppIcon name={Icons.route} color={color as string} size={size} />,
-        }}
-      />
-      <Tabs.Screen
-        name="historial"
-        options={{
-          title: 'Historial',
-          tabBarIcon: ({ color, size }) => <AppIcon name={Icons.history} color={color as string} size={size} />,
-        }}
-      />
-      <Tabs.Screen
-        name="ajustes"
-        options={{
-          title: 'Ajustes',
-          tabBarIcon: ({ color, size }) => <AppIcon name={Icons.settings} color={color as string} size={size} />,
-        }}
-      />
+      <Tabs.Screen name="rutas" options={{ title: 'Mi ruta', tabBarIcon: icono(Icons.route) }} />
+      <Tabs.Screen name="historial" options={{ title: 'Historial', tabBarIcon: icono(Icons.history) }} />
+      <Tabs.Screen name="ajustes" options={{ title: 'Ajustes', tabBarIcon: icono(Icons.settings) }} />
     </Tabs>
   );
 }
+
+const styles = StyleSheet.create({
+  iconWrap: {
+    width: 46,
+    height: 28,
+    borderRadius: 14,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  iconWrapActive: { backgroundColor: '#E3F1F9' },
+});

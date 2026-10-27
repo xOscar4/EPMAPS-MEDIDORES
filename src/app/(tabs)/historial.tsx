@@ -16,7 +16,9 @@ import { AppIcon } from '@/components/ui/app-icon';
 import { Chip } from '@/components/ui/chip';
 import { EmptyState } from '@/components/ui/empty-state';
 import { Segmented } from '@/components/ui/segmented';
-import { Brand, Radius, Shadows } from '@/constants/brand';
+import { StatTile } from '@/components/ui/stat-tile';
+import { WaterGlow, WaterWaves } from '@/components/ui/water-decor';
+import { Brand, Radius } from '@/constants/brand';
 import { Icons } from '@/constants/icons';
 import { LecturaCard } from '@/features/lecturas/components/lectura-card';
 import { useHistorial } from '@/features/lecturas/hooks';
@@ -62,41 +64,43 @@ export default function HistorialScreen() {
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
         style={styles.header}>
-        <View style={styles.headerBubble} />
-        <View pointerEvents="none" style={styles.dropMark}>
-          <AppIcon name={Icons.drop} size={150} color="#FFFFFF" />
-        </View>
+        <WaterGlow style={{ right: -90, top: -100 }} opacity={0.58} />
+        <WaterWaves opacity={0.15} />
+        <Text style={styles.eyebrow}>MIS REGISTROS</Text>
         <View style={styles.headerTop}>
-          <View>
-            <Text style={styles.eyebrow}>MIS REGISTROS</Text>
+          <View style={styles.headerTexts}>
             <Text style={styles.title}>Historial</Text>
             <Text style={styles.subtitle}>Lecturas guardadas en este teléfono</Text>
           </View>
           <View style={styles.headerIcon}>
-            <AppIcon name={Icons.history} size={24} color="#FFFFFF" />
-          </View>
-        </View>
-
-        <View style={styles.stats}>
-          <View style={styles.stat}>
-            <AppIcon name={Icons.pending} size={15} color="#FFD9A3" />
-            <Text style={styles.statValue}>{lecturas.length}</Text>
-            <Text style={styles.statLabel}>Sin enviar</Text>
-          </View>
-          <View style={styles.statDivider} />
-          <View style={styles.stat}>
-            <AppIcon name={Icons.verified} size={15} color="#9FE3C2" />
-            <Text style={styles.statValue}>{enviadas.length}</Text>
-            <Text style={styles.statLabel}>Enviadas</Text>
-          </View>
-          <View style={styles.statDivider} />
-          <View style={styles.stat}>
-            <AppIcon name={online ? Icons.wifi : Icons.wifiOff} size={15} color="#9FD4DC" />
-            <Text style={styles.statValue}>{online ? 'Sí' : 'No'}</Text>
-            <Text style={styles.statLabel}>Conexión</Text>
+            <AppIcon name={Icons.history} size={22} color="#FFFFFF" />
           </View>
         </View>
       </LinearGradient>
+
+      <View style={styles.statsRow}>
+        <StatTile
+          value={lecturas.length}
+          label="Sin enviar"
+          icon={Icons.pending}
+          tone="warning"
+          appearance="solid"
+        />
+        <StatTile
+          value={enviadas.length}
+          label="Enviadas"
+          icon={Icons.verified}
+          tone="success"
+          appearance="solid"
+        />
+        <StatTile
+          value={online ? 'Sí' : 'No'}
+          label="Conexión"
+          icon={online ? Icons.wifi : Icons.wifiOff}
+          tone="brand"
+          appearance="solid"
+        />
+      </View>
 
       <View style={styles.body}>
         {pendientes > 0 ? (
@@ -184,57 +188,45 @@ export default function HistorialScreen() {
 
 const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: 'transparent' },
-  content: { paddingBottom: 30 },
+  content: { paddingBottom: 118 },
   header: {
-    marginHorizontal: 12,
-    marginTop: 10,
-    borderRadius: Radius.xl,
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.22)',
-    padding: 20,
-    paddingBottom: 22,
+    borderBottomLeftRadius: 30,
+    borderBottomRightRadius: 30,
+    paddingHorizontal: 20,
+    paddingTop: 18,
+    paddingBottom: 52,
     overflow: 'hidden',
-    gap: 16,
-    ...Shadows.card,
+    gap: 4,
+    borderBottomWidth: 1,
+    borderColor: 'rgba(255,255,255,0.16)',
   },
-  headerBubble: {
-    position: 'absolute',
-    right: -60,
-    top: -70,
-    width: 190,
-    height: 190,
-    borderRadius: 95,
-    backgroundColor: 'rgba(27,184,198,0.26)',
+  headerTop: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 12,
   },
-  dropMark: { position: 'absolute', right: -28, top: 12, opacity: 0.10 },
-  headerTop: { flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between' },
-  eyebrow: { color: '#A9E7EE', fontSize: 10, fontWeight: '800', letterSpacing: 1.4 },
-  title: { color: '#FFFFFF', fontSize: 28, fontWeight: '800', lineHeight: 34, letterSpacing: -0.4 },
-  subtitle: { color: '#D6EAF3', fontSize: 12, marginTop: 2 },
+  headerTexts: { flex: 1, minWidth: 0, gap: 1 },
+  eyebrow: { color: '#B9E7EF', fontSize: 10, fontWeight: '800', letterSpacing: 1.4 },
+  title: { color: '#FFFFFF', fontSize: 30, fontWeight: '800', lineHeight: 35, letterSpacing: -0.6 },
+  subtitle: { color: '#D6EAF3', fontSize: 12, marginTop: 1 },
   headerIcon: {
-    width: 48,
-    height: 48,
-    borderRadius: 16,
+    width: 46,
+    height: 46,
+    borderRadius: 15,
     backgroundColor: 'rgba(255,255,255,0.16)',
     borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.28)',
+    borderColor: 'rgba(255,255,255,0.30)',
     alignItems: 'center',
     justifyContent: 'center',
   },
-  stats: {
+  statsRow: {
     flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: 'rgba(255,255,255,0.13)',
-    borderRadius: 16,
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.22)',
-    paddingVertical: 10,
+    gap: 8,
+    marginHorizontal: 16,
+    marginTop: -30,
   },
-  stat: { flex: 1, alignItems: 'center', gap: 1 },
-  statValue: { color: '#FFFFFF', fontSize: 17, fontWeight: '800' },
-  statLabel: { color: '#B7D4E2', fontSize: 9, fontWeight: '700', textTransform: 'uppercase', letterSpacing: 0.4 },
-  statDivider: { width: 1, height: 26, backgroundColor: 'rgba(255,255,255,0.18)' },
-  body: { paddingHorizontal: 16, paddingTop: 16, gap: 12 },
+  body: { paddingHorizontal: 16, paddingTop: 18, gap: 12 },
   alertBox: {
     flexDirection: 'row',
     alignItems: 'center',

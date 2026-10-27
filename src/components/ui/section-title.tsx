@@ -1,7 +1,7 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import { StyleSheet, Text, View } from 'react-native';
 
-import { Brand, Radius } from '@/constants/brand';
+import { Brand } from '@/constants/brand';
 
 interface Props {
   index: string;
@@ -9,12 +9,13 @@ interface Props {
   subtitle?: string;
 }
 
+/** Título de sección con gota numerada y filete de agua. */
 export function SectionTitle({ index, title, subtitle }: Props) {
   return (
     <View style={styles.container}>
       <LinearGradient
-        colors={[Brand.deepMid, Brand.deepEnd]}
-        start={{ x: 0, y: 0 }}
+        colors={[Brand.deepMid, Brand.deepEnd, Brand.accentBright]}
+        start={{ x: 0.2, y: 0 }}
         end={{ x: 1, y: 1 }}
         style={styles.index}>
         <Text style={styles.indexText}>{index}</Text>
@@ -30,11 +31,14 @@ export function SectionTitle({ index, title, subtitle }: Props) {
 const styles = StyleSheet.create({
   container: { flexDirection: 'row', alignItems: 'center', gap: 12 },
   index: {
-    width: 32,
-    height: 32,
-    borderRadius: Radius.pill,
+    width: 34,
+    height: 34,
+    borderTopLeftRadius: 14,
+    borderTopRightRadius: 14,
+    borderBottomLeftRadius: 14,
+    borderBottomRightRadius: 5,
     borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.45)',
+    borderColor: 'rgba(255,255,255,0.40)',
     alignItems: 'center',
     justifyContent: 'center',
   },

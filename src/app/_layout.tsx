@@ -38,6 +38,8 @@ export default function RootLayout() {
               <View pointerEvents="none" style={[styles.drop, styles.dropTop]} />
               <View pointerEvents="none" style={[styles.drop, styles.dropBottom]} />
               <View pointerEvents="none" style={[styles.drop, styles.dropMiddle]} />
+              <View pointerEvents="none" style={[styles.current, styles.currentA]} />
+              <View pointerEvents="none" style={[styles.current, styles.currentB]} />
 
               <StatusBanner />
               <Stack
@@ -63,6 +65,19 @@ export default function RootLayout() {
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: Brand.gradientMid, overflow: 'hidden' },
   drop: { position: 'absolute', borderRadius: 999 },
+  current: { position: 'absolute', width: 560, height: 96, borderRadius: 999 },
+  currentA: {
+    top: 130,
+    left: -200,
+    backgroundColor: 'rgba(18,166,180,0.05)',
+    transform: [{ rotate: '-16deg' }],
+  },
+  currentB: {
+    bottom: 180,
+    right: -240,
+    backgroundColor: 'rgba(127,210,232,0.10)',
+    transform: [{ rotate: '12deg' }],
+  },
   dropTop: {
     width: 280,
     height: 280,

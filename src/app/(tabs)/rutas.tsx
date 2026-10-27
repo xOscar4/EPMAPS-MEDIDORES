@@ -148,7 +148,7 @@ export default function RutasScreen() {
 
 const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: 'transparent' },
-  content: { paddingBottom: 30 },
+  content: { paddingBottom: 118 },
   body: { paddingHorizontal: 16, paddingTop: 16, gap: 14 },
   sectionRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 4 },
   list: { gap: 12 },

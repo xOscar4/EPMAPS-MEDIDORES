@@ -17,6 +17,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { AppButton } from '@/components/ui/app-button';
 import { AppIcon } from '@/components/ui/app-icon';
 import { AppInput } from '@/components/ui/app-input';
+import { WaterGlow, WaterRipples, WaterWaves } from '@/components/ui/water-decor';
 import { Brand, Radius, Shadows } from '@/constants/brand';
 import { Icons } from '@/constants/icons';
 import { useAuth } from '@/features/auth/auth-provider';
@@ -82,11 +83,9 @@ export default function LoginScreen() {
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
           style={styles.hero}>
-          <View style={styles.bubbleBig} />
-          <View style={styles.bubbleSmall} />
-          <View pointerEvents="none" style={styles.dropMark}>
-            <AppIcon name={Icons.drop} size={180} color="#FFFFFF" />
-          </View>
+          <WaterGlow style={{ right: -90, top: -80 }} opacity={0.62} />
+          <WaterRipples size={200} tone="rgba(255,255,255,0.14)" style={{ right: -66, top: -18 }} />
+          <WaterWaves opacity={0.16} />
           <View style={styles.logo}>
             <AppIcon name={Icons.drop} size={34} color={Brand.primary} />
           </View>
@@ -102,6 +101,7 @@ export default function LoginScreen() {
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
           style={styles.card}>
+          <View style={styles.grabber} />
           <Text style={styles.cardTitle}>Iniciar jornada</Text>
           <Text style={styles.cardSubtitle}>Identifícate con tu código de empleado.</Text>
 
@@ -174,56 +174,45 @@ const styles = StyleSheet.create({
   content: { paddingBottom: 34 },
   hero: {
     paddingHorizontal: 24,
-    paddingTop: 36,
-    paddingBottom: 58,
+    paddingTop: 34,
+    paddingBottom: 66,
     borderBottomLeftRadius: 36,
     borderBottomRightRadius: 36,
     overflow: 'hidden',
     gap: 10,
   },
-  bubbleBig: {
-    position: 'absolute',
-    right: -70,
-    top: -60,
-    width: 210,
-    height: 210,
-    borderRadius: 105,
-    backgroundColor: 'rgba(27,184,198,0.26)',
-  },
-  bubbleSmall: {
-    position: 'absolute',
-    right: 40,
-    bottom: -50,
-    width: 120,
-    height: 120,
-    borderRadius: 60,
-    backgroundColor: 'rgba(255,255,255,0.08)',
-  },
-  dropMark: { position: 'absolute', right: -40, bottom: -10, opacity: 0.10 },
   logo: {
-    width: 64,
-    height: 64,
-    borderRadius: 22,
-    backgroundColor: 'rgba(255,255,255,0.96)',
+    width: 66,
+    height: 66,
+    borderRadius: 23,
+    backgroundColor: 'rgba(255,255,255,0.97)',
     borderWidth: 1,
     borderColor: 'rgba(255,255,255,0.85)',
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 6,
+    marginBottom: 8,
     ...Shadows.floating,
   },
-  eyebrow: { color: '#A9E7EE', fontSize: 11, fontWeight: '800', letterSpacing: 1.5 },
+  eyebrow: { color: '#B9E7EF', fontSize: 11, fontWeight: '800', letterSpacing: 1.5 },
   title: { color: '#FFFFFF', fontSize: 34, lineHeight: 39, fontWeight: '800', letterSpacing: -0.6 },
   heroText: { color: '#D6EAF3', fontSize: 14, lineHeight: 21, maxWidth: 320 },
   card: {
-    marginHorizontal: 20,
-    marginTop: -30,
-    borderRadius: Radius.xl,
+    marginHorizontal: 18,
+    marginTop: -36,
+    borderRadius: 28,
     borderWidth: 1,
     borderColor: Brand.glassBorder,
     padding: 20,
-    gap: 14,
+    gap: 13,
     ...Shadows.floating,
+  },
+  grabber: {
+    alignSelf: 'center',
+    width: 46,
+    height: 4,
+    borderRadius: 2,
+    backgroundColor: '#D9E9F3',
+    marginBottom: 4,
   },
   cardTitle: { fontSize: 22, fontWeight: '800', color: Brand.text, letterSpacing: -0.4 },
   cardSubtitle: { fontSize: 13, color: Brand.textMuted, marginTop: -8, marginBottom: 2 },
