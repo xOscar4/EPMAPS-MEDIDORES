@@ -1,7 +1,7 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useState } from 'react';
 import {
   ActivityIndicator,
-  Alert,
   ScrollView,
   StyleSheet,
   Text,
@@ -10,6 +10,7 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { AppButton } from '@/components/ui/app-button';
+import { AppDialog } from '@/components/ui/app-dialog';
 import { AppIcon } from '@/components/ui/app-icon';
 import { AppInput } from '@/components/ui/app-input';
 import { Card } from '@/components/ui/card';
@@ -23,6 +24,7 @@ import { EstadoPicker } from '@/features/lecturas/components/estado-picker';
 import { MedidorResumen } from '@/features/lecturas/components/medidor-resumen';
 import { PhotoPicker } from '@/features/lecturas/components/photo-picker';
 import { useLecturaForm } from '@/features/lecturas/use-lectura-form';
+import { useNetworkStatus } from '@/hooks/use-network-status';
 import { formatearFechaHora, formatearNumero } from '@/utils/format';
 import { esCodigoValido, normalizarCodigo, numeroDesdeTexto } from '@/utils/validators';
 
@@ -34,6 +36,9 @@ export default function LecturaScreen() {
   }>();
   const router = useRouter();
   const insets = useSafeAreaInsets();
+  const { online } = useNetworkStatus();
+  const [guardadoVisible, setGuardadoVisible] = useState(false);
+  const [errorFormulario, setErrorFormulario] = useState<string | null>(null);
   const codigoMedidor = normalizarCodigo(codigo ?? '');
   const {
     form,
@@ -63,19 +68,19 @@ export default function LecturaScreen() {
   const guardar = async () => {
     const resultado = await guardarLectura();
     if (!resultado.ok) {
-      Alert.alert('Revisa el formulario', resultado.mensaje ?? 'Faltan datos obligatorios.');
+      setErrorFormulario(resultado.mensaje ?? 'Faltan datos obligatorios.');
       return;
     }
-    Alert.alert(
-      existente ? 'Corrección guardada' : 'Lectura guardada',
-      'Quedó en tu teléfono y se enviará sola cuando haya señal. Hasta que la oficina la confirme, figura como pendiente de verificación en Historial.',
-      [
-        { text: 'Seguir en la ruta', onPress: () => router.replace('/rutas') },
-        { text: 'Ver historial', onPress: () => router.replace('/historial') },
-      ],
-      { cancelable: false },
-    );
+    setGuardadoVisible(true);
   };
+
+  const mensajeGuardado = online
+    ? existente
+      ? 'La corrección quedó guardada y la app la envía a la oficina automáticamente. En Historial verás el estado del envío.'
+      : 'Quedó guardada y la app la envía a la oficina automáticamente. En Historial verás el estado del envío.'
+    : existente
+      ? 'La corrección quedó en tu teléfono y se enviará sola cuando vuelva la señal.'
+      : 'Quedó en tu teléfono y se enviará sola cuando vuelva la señal. Hasta que la oficina la confirme, figura como pendiente en Historial.';
 
   const Regresar = (
     <View style={styles.screen}>
@@ -262,8 +267,16 @@ export default function LecturaScreen() {
 
       <View style={[styles.footer, { paddingBottom: insets.bottom + 12 }]}>
         <View style={styles.footerTexts}>
-          <AppIcon name={Icons.cloudOff} size={13} color={Brand.textMuted} />
-          <Text style={styles.footerText}>Se guarda en el teléfono y se envía sola al volver la señal.</Text>
+          <AppIcon
+            name={online ? Icons.cloudDone : Icons.cloudOff}
+            size={13}
+            color={online ? Brand.primary : Brand.textMuted}
+          />
+          <Text style={styles.footerText}>
+            {online
+              ? 'Se guarda en el teléfono y se envía a la oficina.'
+              : 'Se guarda en el teléfono y se envía sola al volver la señal.'}
+          </Text>
         </View>
         <AppButton
           title={existente ? 'Guardar corrección' : 'Guardar lectura'}
@@ -272,6 +285,30 @@ export default function LecturaScreen() {
           onPress={() => void guardar()}
         />
       </View>
+
+      <AppDialog
+        visible={guardadoVisible}
+        icon={Icons.verified}
+        tone="success"
+        title={existente ? 'Corrección guardada' : 'Lectura guardada'}
+        message={mensajeGuardado}
+        primaryLabel="Seguir en la ruta"
+        onPrimary={() => router.replace('/rutas')}
+        secondaryLabel="Ver historial"
+        onSecondary={() => router.replace('/historial')}
+        onRequestClose={() => router.replace('/rutas')}
+      />
+
+      <AppDialog
+        visible={errorFormulario !== null}
+        icon={Icons.warning}
+        tone="warning"
+        title="Revisa el formulario"
+        message={errorFormulario ?? ''}
+        primaryLabel="Entendido"
+        onPrimary={() => setErrorFormulario(null)}
+        onRequestClose={() => setErrorFormulario(null)}
+      />
     </View>
   );
 }

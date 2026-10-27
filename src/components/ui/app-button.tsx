@@ -119,5 +119,5 @@ const styles = StyleSheet.create({
   },
   texto: { fontSize: 15, fontWeight: '700', letterSpacing: 0.2, flexShrink: 1 },
   pressed: { opacity: 0.9, transform: [{ scale: 0.99 }] },
-  disabled: { opacity: 0.45 },
+  disabled: { opacity: 0.55 },
 });
