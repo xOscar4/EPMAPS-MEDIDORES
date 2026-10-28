@@ -1,9 +1,9 @@
-import { LinearGradient } from 'expo-linear-gradient';
-import { StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
+import { LinearGradient } from "expo-linear-gradient";
+import { StyleSheet, View, type StyleProp, type ViewStyle } from "react-native";
 
-import { Brand, Radius, Shadows } from '@/constants/brand';
+import { Brand, Shadows } from "@/constants/brand";
 
-type Variante = 'glass' | 'plain' | 'accent';
+type Variante = "glass" | "plain" | "accent";
 
 interface Props {
   children: React.ReactNode;
@@ -15,8 +15,14 @@ interface Props {
 }
 
 /** Superficie reutilizada por todas las tarjetas, con tres acabados del sistema. */
-export function Card({ children, style, padded = true, elevated = true, variant = 'glass' }: Props) {
-  if (variant === 'plain') {
+export function Card({
+  children,
+  style,
+  padded = true,
+  elevated = true,
+  variant = "glass",
+}: Props) {
+  if (variant === "plain") {
     return (
       <View
         style={[
@@ -25,7 +31,8 @@ export function Card({ children, style, padded = true, elevated = true, variant 
           padded && styles.padded,
           elevated && Shadows.card,
           style,
-        ]}>
+        ]}
+      >
         {children}
       </View>
     );
@@ -33,17 +40,22 @@ export function Card({ children, style, padded = true, elevated = true, variant 
 
   return (
     <LinearGradient
-      colors={variant === 'accent' ? ['#FFFFFF', '#F4FBFD'] : [Brand.glassStrong, Brand.glassSoft]}
+      colors={
+        variant === "accent"
+          ? ["#FFFFFF", "#F4FBFD"]
+          : [Brand.glassStrong, Brand.glassSoft]
+      }
       start={{ x: 0, y: 0 }}
       end={{ x: 0.9, y: 1 }}
       style={[
         styles.card,
         padded && styles.padded,
         elevated && Shadows.card,
-        variant === 'accent' && styles.accentCard,
+        variant === "accent" && styles.accentCard,
         style,
-      ]}>
-      {variant === 'accent' ? (
+      ]}
+    >
+      {variant === "accent" ? (
         <LinearGradient
           colors={[Brand.accentBright, Brand.deepEnd, Brand.primary]}
           start={{ x: 0, y: 0 }}
@@ -59,13 +71,14 @@ export function Card({ children, style, padded = true, elevated = true, variant 
 
 const styles = StyleSheet.create({
   card: {
-    borderRadius: Radius.lg,
+    borderRadius: 24,
     borderWidth: 1,
-    borderColor: Brand.glassBorder,
-    overflow: 'hidden',
+    borderColor: Brand.border,
+    overflow: "hidden",
+    backgroundColor: "rgba(255,255,255,0.96)",
   },
-  plain: { backgroundColor: '#FFFFFF' },
+  plain: { backgroundColor: "#FFFFFF" },
   accentCard: { paddingTop: 20 },
-  padded: { padding: 16 },
-  rail: { position: 'absolute', top: 0, left: 0, right: 0, height: 4 },
+  padded: { padding: 18 },
+  rail: { position: "absolute", top: 0, left: 0, right: 0, height: 5 },
 });

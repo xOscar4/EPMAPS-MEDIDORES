@@ -2,9 +2,11 @@
 
 ## Estado
 
-Reemplazado por ADR-008 el 2026-10-26.
+Reemplazado por ADR-008 el 2026-10-26. No vigente.
 
 > Este ADR se conserva como registro histórico. El mock local se eliminó del código: la app usa únicamente MockAPI remoto (ADR-008). La continuidad sin Internet se resuelve con la caché, la copia de medidores en AsyncStorage y el outbox, no con un backend simulado.
+>
+> Las secciones de Decisión y Verificación describen el diseño histórico y no deben usarse como guía de la versión actual.
 
 ## Fecha
 

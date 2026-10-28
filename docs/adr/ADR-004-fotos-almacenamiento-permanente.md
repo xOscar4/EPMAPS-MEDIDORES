@@ -31,6 +31,8 @@ Las fotos son de una carátula, se toman a 0,45 de calidad y no necesitan edici�
 
 Al capturar, `guardarFoto` copia el archivo temporal a `Paths.document/fotos-medidores` con un nombre único y devuelve la nueva URI. Se usa la API nueva de `expo-file-system` (`Directory`, `File`, `Paths`), no la API legacy.
 
+Si la copia falla (por ejemplo, por un error de E/S), `guardarFoto` devuelve la URI temporal para no bloquear el registro; en ese caso la foto no tiene persistencia garantizada tras reiniciar.
+
 - La carpeta se crea con `intermediates: true` e `idempotent: true`.
 - La copia usa `overwrite: true` para repetir una captura sin fallar.
 - La URI final se guarda en el borrador y luego en `LecturaLocal.fotoUri`.
@@ -41,17 +43,18 @@ Las fotos quedan dentro del sandbox de la app; no se comparten con la galería n
 
 ## Consecuencias
 
-- La foto sigue visible después de reiniciar el teléfono y en modo avión.
+- La foto sigue visible después de reiniciar el teléfono y en modo avión cuando la copia a documentos tuvo éxito.
 - No se agregan permisos de almacenamiento ni de medios.
 - **Desventaja:** el archivo no se cifra; alguien con acceso físico al dispositivo podría verlo.
 - **Desventaja:** la limpieza es manual; una foto reemplazada puede quedar huérfana.
+- **Riesgo:** si la copia falla, la lectura queda con una URI de caché y la foto puede desaparecer al reiniciar o al limpiar la caché.
 - **Riesgo:** si el usuario borra los datos de la app, se pierden fotos y lecturas pendientes. Es el comportamiento esperado de un almacenamiento local.
-- **Obligación:** nunca guardar en la lectura una URI de caché sin copiarla antes.
+- **Obligación:** intentar siempre la copia a documentos antes de encolar una lectura; la URI de caché solo se conserva si la copia falla.
 
 ## Verificación
 
-- Se toma una foto, se cierra la app por completo y se reabre el borrador: la imagen se muestra.
-- En modo avión se guarda una lectura con foto; al reiniciar, el historial conserva la referencia.
+- Se toma una foto, se cierra la app por completo y se reabre el borrador: la imagen se muestra (cuando la copia a documentos tuvo éxito).
+- En modo avión se guarda una lectura con foto; al reiniciar, el historial conserva la referencia (si la copia a documentos tuvo éxito).
 - Al descartar una lectura pendiente, el archivo se elimina (`borrarFoto`).
 - Al negar el permiso de cámara, la app explica el motivo, ofrece abrir ajustes y permite continuar sin foto cuando es opcional.
 - `src/features/lecturas/foto.ts` centraliza copia y borrado.

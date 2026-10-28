@@ -34,7 +34,7 @@ Se guarda **un solo borrador** en la clave `EPMAPS_BORRADOR_LECTURA` con la form
 - `useLecturaForm` guarda automáticamente 250 ms después del último cambio.
 - Un listener de `AppState` fuerza el guardado cuando la app pasa a segundo plano.
 - Al entrar de nuevo a la pantalla, se ofrece continuar o descartar en una tarjeta.
-- `DraftGate` ofrece la misma decisión al abrir la app, en cualquier pantalla.
+- `DraftGate` ofrece la misma decisión al abrir la app, fuera de la pantalla de lectura.
 - Al guardar la lectura se usa `limpiarBorrador()`: la foto pasa a pertenecer a la lectura.
 - Al descartar se usa `borrarBorrador()`: se elimina también el archivo de la foto.
 
@@ -43,7 +43,7 @@ El borrador no se sincroniza ni se comparte: es estrictamente local.
 ## Consecuencias
 
 - Cerrar la app, reiniciar el teléfono o quedarse sin batería no borra lo avanzado.
-- El borrador se recupera con la foto ya copiada a documentos.
+- El borrador se recupera con la foto copiada a documentos; si la copia falló, conserva la URI temporal y la foto puede perderse al reiniciar (ver ADR-004).
 - **Desventaja:** solo hay un borrador global; si se empieza otro medidor, el anterior se reemplaza.
 - **Desventaja:** AsyncStorage no está cifrado; no se guardan claves ni datos sensibles.
 - **Riesgo:** una foto reemplazada puede quedar huérfana en disco; se acepta por simplicidad.

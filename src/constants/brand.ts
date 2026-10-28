@@ -1,4 +1,4 @@
-import { Platform, type ViewStyle } from 'react-native';
+import { Platform, type ViewStyle } from "react-native";
 
 /**
  * Paleta de EPMAPS: azul institucional, agua y estados de campo.
@@ -6,52 +6,50 @@ import { Platform, type ViewStyle } from 'react-native';
  * texto y los campos siempre se lean bien sobre el fondo.
  */
 export const Brand = {
-  primary: '#0A5A8C',
-  primaryDark: '#063B5C',
-  primaryDeep: '#04263C',
-  primaryLight: '#E3F1F9',
-  primarySoft: '#F2FAFE',
-  accent: '#0FA6B4',
-  accentDeep: '#077C8C',
-  accentBright: '#35D2DD',
-  aqua: '#8FE6EF',
-  mint: '#6FE0BE',
+  primary: "#0D5E8C",
+  primaryDark: "#082F4D",
+  primaryDeep: "#041E32",
+  primaryLight: "#EAF5FC",
+  primarySoft: "#F4FAFF",
+  accent: "#1097B2",
+  accentDeep: "#0A7280",
+  accentBright: "#6ED7E9",
+  aqua: "#9AE3F3",
+  mint: "#74D9C9",
 
-  background: '#E9F4FB',
-  surface: '#FFFFFF',
-  surfaceAlt: '#F2F8FC',
-  text: '#0B2333',
-  textMuted: '#4A6879',
-  border: 'rgba(10,90,140,0.14)',
+  background: "#EEF5FA",
+  surface: "#FFFFFF",
+  surfaceAlt: "#F5FAFD",
+  text: "#102738",
+  textMuted: "#5A7688",
+  border: "rgba(12, 66, 96, 0.12)",
 
-  success: '#0E6B45',
-  successSoft: '#E0F5EA',
-  warning: '#8F5300',
-  warningSoft: '#FFF3DD',
-  danger: '#A8231C',
-  dangerSoft: '#FCEBE9',
-  offline: '#6E4500',
-  offlineSoft: '#FFF1D6',
+  success: "#127A55",
+  successSoft: "#E9F9F1",
+  warning: "#A06110",
+  warningSoft: "#FFF4E8",
+  danger: "#B83B34",
+  dangerSoft: "#FDEDEA",
+  offline: "#715703",
+  offlineSoft: "#FFF7E0",
 
-  /** Capas de vidrio esmerilado (casi opacas para no interferir con el texto). */
-  glass: 'rgba(255,255,255,0.94)',
-  glassStrong: 'rgba(255,255,255,0.98)',
-  glassSoft: 'rgba(249,253,255,0.94)',
-  glassBorder: 'rgba(10,90,140,0.12)',
-  glassBorderSoft: 'rgba(10,90,140,0.08)',
-  glassField: '#FFFFFF',
+  glass: "rgba(255,255,255,0.92)",
+  glassStrong: "rgba(255,255,255,0.98)",
+  glassSoft: "rgba(247,251,255,0.94)",
+  glassBorder: "rgba(13,94,140,0.12)",
+  glassBorderSoft: "rgba(13,94,140,0.08)",
+  glassField: "#F7FBFF",
 
-  /** Degradados de agua. `deep*` es la corriente principal de los encabezados. */
-  sky: '#7FD2E8',
-  turquoise: '#1BB8C6',
-  gradientTop: '#E7F4FC',
-  gradientMid: '#F5FBFE',
-  gradientBottom: '#E3F4F6',
-  deepStart: '#052B47',
-  deepMid: '#085F86',
-  deepEnd: '#0C9AAA',
-  deepGlow: '#18BCC8',
-  overlay: 'rgba(3,32,48,0.66)',
+  sky: "#7FCFEA",
+  turquoise: "#1AB7C8",
+  gradientTop: "#F5FAFD",
+  gradientMid: "#E7F4FB",
+  gradientBottom: "#DDF6F4",
+  deepStart: "#062B45",
+  deepMid: "#0C5E8D",
+  deepEnd: "#14A7B8",
+  deepGlow: "#4CD6E2",
+  overlay: "rgba(5, 25, 38, 0.58)",
 } as const;
 
 export const Radius = {
@@ -63,33 +61,54 @@ export const Radius = {
   pill: 999,
 } as const;
 
-export const Shadows: Record<'card' | 'tile' | 'floating' | 'hero', ViewStyle> = {
-  card: {
-    ...Platform.select({
-      ios: { shadowColor: '#052B47', shadowOpacity: 0.07, shadowRadius: 12, shadowOffset: { width: 0, height: 4 } },
-      android: { elevation: 2 },
-      default: {},
-    }),
-  },
-  tile: {
-    ...Platform.select({
-      ios: { shadowColor: '#052B47', shadowOpacity: 0.10, shadowRadius: 14, shadowOffset: { width: 0, height: 6 } },
-      android: { elevation: 4 },
-      default: {},
-    }),
-  },
-  floating: {
-    ...Platform.select({
-      ios: { shadowColor: '#04263C', shadowOpacity: 0.16, shadowRadius: 20, shadowOffset: { width: 0, height: 8 } },
-      android: { elevation: 8 },
-      default: {},
-    }),
-  },
-  hero: {
-    ...Platform.select({
-      ios: { shadowColor: '#04263C', shadowOpacity: 0.22, shadowRadius: 24, shadowOffset: { width: 0, height: 12 } },
-      android: { elevation: 6 },
-      default: {},
-    }),
-  },
-};
+export const Shadows: Record<"card" | "tile" | "floating" | "hero", ViewStyle> =
+  {
+    card: {
+      ...Platform.select({
+        ios: {
+          shadowColor: "#052B47",
+          shadowOpacity: 0.07,
+          shadowRadius: 12,
+          shadowOffset: { width: 0, height: 4 },
+        },
+        android: { elevation: 2 },
+        default: {},
+      }),
+    },
+    tile: {
+      ...Platform.select({
+        ios: {
+          shadowColor: "#052B47",
+          shadowOpacity: 0.1,
+          shadowRadius: 14,
+          shadowOffset: { width: 0, height: 6 },
+        },
+        android: { elevation: 4 },
+        default: {},
+      }),
+    },
+    floating: {
+      ...Platform.select({
+        ios: {
+          shadowColor: "#04263C",
+          shadowOpacity: 0.16,
+          shadowRadius: 20,
+          shadowOffset: { width: 0, height: 8 },
+        },
+        android: { elevation: 8 },
+        default: {},
+      }),
+    },
+    hero: {
+      ...Platform.select({
+        ios: {
+          shadowColor: "#04263C",
+          shadowOpacity: 0.22,
+          shadowRadius: 24,
+          shadowOffset: { width: 0, height: 12 },
+        },
+        android: { elevation: 6 },
+        default: {},
+      }),
+    },
+  };

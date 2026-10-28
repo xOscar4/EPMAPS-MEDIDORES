@@ -1,13 +1,13 @@
-import { LinearGradient } from 'expo-linear-gradient';
-import { StyleSheet, Text, View } from 'react-native';
+import { LinearGradient } from "expo-linear-gradient";
+import { StyleSheet, Text, View } from "react-native";
 
-import { AppIcon } from '@/components/ui/app-icon';
-import { Card } from '@/components/ui/card';
-import { Chip } from '@/components/ui/chip';
-import { Brand, Radius, Shadows } from '@/constants/brand';
-import { Icons } from '@/constants/icons';
-import type { Medidor } from '@/types/models';
-import { formatearFecha, formatearNumero } from '@/utils/format';
+import { AppIcon } from "@/components/ui/app-icon";
+import { Card } from "@/components/ui/card";
+import { Chip } from "@/components/ui/chip";
+import { Brand, Shadows } from "@/constants/brand";
+import { Icons } from "@/constants/icons";
+import type { Medidor } from "@/types/models";
+import { formatearFecha, formatearNumero } from "@/utils/format";
 
 interface Props {
   medidor: Medidor;
@@ -23,21 +23,34 @@ export function MedidorDetalleCard({ medidor, online, actualizando }: Props) {
         colors={[Brand.deepStart, Brand.deepMid, Brand.deepEnd]}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
-        style={styles.hero}>
+        style={styles.hero}
+      >
         <View style={styles.heroBubble} />
         <View pointerEvents="none" style={styles.heroDrop}>
           <AppIcon name={Icons.drop} size={140} color="#FFFFFF" />
         </View>
         <View style={styles.heroTop}>
           <Chip
-            label={medidor.estado === 'activo' ? 'Servicio activo' : 'Servicio suspendido'}
-            tone={medidor.estado === 'activo' ? 'success' : 'danger'}
-            icon={medidor.estado === 'activo' ? Icons.check : Icons.block}
+            label={
+              medidor.estado === "activo"
+                ? "Servicio activo"
+                : "Servicio suspendido"
+            }
+            tone={medidor.estado === "activo" ? "success" : "danger"}
+            icon={medidor.estado === "activo" ? Icons.check : Icons.block}
           />
           <Chip
-            label={actualizando ? 'Actualizando' : online ? 'En línea' : 'Desde caché'}
+            label={
+              actualizando
+                ? "Actualizando"
+                : online
+                  ? "En línea"
+                  : "Desde caché"
+            }
             tone="info"
-            icon={actualizando ? Icons.sync : online ? Icons.wifi : Icons.cloudOff}
+            icon={
+              actualizando ? Icons.sync : online ? Icons.wifi : Icons.cloudOff
+            }
           />
         </View>
         <Text style={styles.codigo}>{medidor.codigo}</Text>
@@ -53,7 +66,7 @@ export function MedidorDetalleCard({ medidor, online, actualizando }: Props) {
           <Dato label="Cuenta" value={medidor.cuenta} icon={Icons.receipt} />
           <Dato
             label="Estado"
-            value={medidor.estado === 'activo' ? 'Activo' : 'Suspendido'}
+            value={medidor.estado === "activo" ? "Activo" : "Suspendido"}
             icon={Icons.info}
           />
           <Dato
@@ -84,14 +97,24 @@ export function MedidorDetalleCard({ medidor, online, actualizando }: Props) {
   );
 }
 
-function Dato({ label, value, icon }: { label: string; value: string; icon: (typeof Icons)[keyof typeof Icons] }) {
+function Dato({
+  label,
+  value,
+  icon,
+}: {
+  label: string;
+  value: string;
+  icon: (typeof Icons)[keyof typeof Icons];
+}) {
   return (
     <View style={styles.dato}>
       <View style={styles.datoIcon}>
         <AppIcon name={icon} size={14} color={Brand.primary} />
       </View>
       <Text style={styles.datoLabel}>{label}</Text>
-      <Text style={styles.datoValue} numberOfLines={1}>{value}</Text>
+      <Text style={styles.datoValue} numberOfLines={1}>
+        {value}
+      </Text>
     </View>
   );
 }
@@ -99,53 +122,77 @@ function Dato({ label, value, icon }: { label: string; value: string; icon: (typ
 const styles = StyleSheet.create({
   wrapper: { gap: 12 },
   hero: {
-    borderRadius: Radius.lg,
+    borderRadius: 26,
     borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.22)',
+    borderColor: "rgba(255,255,255,0.24)",
     padding: 18,
-    overflow: 'hidden',
+    overflow: "hidden",
     gap: 3,
     ...Shadows.floating,
   },
   heroBubble: {
-    position: 'absolute',
-    right: -50,
-    top: -60,
-    width: 160,
-    height: 160,
-    borderRadius: 80,
-    backgroundColor: 'rgba(27,184,198,0.28)',
+    position: "absolute",
+    right: -56,
+    top: -70,
+    width: 180,
+    height: 180,
+    borderRadius: 90,
+    backgroundColor: "rgba(22, 201, 218, 0.22)",
   },
-  heroDrop: { position: 'absolute', right: -26, bottom: -34, opacity: 0.10 },
-  heroTop: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 8, marginBottom: 8, flexWrap: 'wrap' },
-  codigo: { color: '#FFFFFF', fontSize: 26, fontWeight: '800', letterSpacing: 0.6, flexShrink: 1 },
-  sector: { color: '#A9E7EE', fontSize: 13, fontWeight: '700' },
-  addressRow: { flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 6 },
-  direccion: { color: '#D6EAF3', fontSize: 12, flex: 1, minWidth: 0 },
-  dataCard: { gap: 11 },
-  grid: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
+  heroDrop: { position: "absolute", right: -28, bottom: -36, opacity: 0.1 },
+  heroTop: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: 8,
+    marginBottom: 8,
+    flexWrap: "wrap",
+  },
+  codigo: {
+    color: "#FFFFFF",
+    fontSize: 27,
+    fontWeight: "800",
+    letterSpacing: 0.6,
+    flexShrink: 1,
+  },
+  sector: { color: "#BFEFF7", fontSize: 13, fontWeight: "700" },
+  addressRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    marginTop: 6,
+  },
+  direccion: { color: "#DEF7FB", fontSize: 12, flex: 1, minWidth: 0 },
+  dataCard: { gap: 12 },
+  grid: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
   dato: {
-    width: '47%',
+    width: "47%",
     flexGrow: 1,
     minWidth: 0,
-    backgroundColor: '#F7FBFD',
+    backgroundColor: "#F7FBFD",
     borderWidth: 1,
     borderColor: Brand.glassBorder,
-    borderRadius: 12,
-    padding: 9,
+    borderRadius: 14,
+    padding: 10,
     gap: 1,
   },
   datoIcon: {
-    width: 26,
-    height: 26,
-    borderRadius: 9,
+    width: 28,
+    height: 28,
+    borderRadius: 10,
     backgroundColor: Brand.primaryLight,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 3,
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 4,
   },
-  datoLabel: { fontSize: 9, fontWeight: '700', color: Brand.textMuted, textTransform: 'uppercase', letterSpacing: 0.3 },
-  datoValue: { fontSize: 12, fontWeight: '800', color: Brand.text },
-  cacheRow: { flexDirection: 'row', alignItems: 'center', gap: 6 },
-  cacheText: { flex: 1, fontSize: 10, color: Brand.success, fontWeight: '600' },
+  datoLabel: {
+    fontSize: 9,
+    fontWeight: "800",
+    color: Brand.textMuted,
+    textTransform: "uppercase",
+    letterSpacing: 0.35,
+  },
+  datoValue: { fontSize: 12, fontWeight: "800", color: Brand.text },
+  cacheRow: { flexDirection: "row", alignItems: "center", gap: 6 },
+  cacheText: { flex: 1, fontSize: 10, color: Brand.success, fontWeight: "600" },
 });

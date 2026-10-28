@@ -1,19 +1,19 @@
-import { LinearGradient } from 'expo-linear-gradient';
+import { LinearGradient } from "expo-linear-gradient";
 import {
-  ActivityIndicator,
-  Pressable,
-  StyleSheet,
-  Text,
-  View,
-  type StyleProp,
-  type ViewStyle,
-} from 'react-native';
+    ActivityIndicator,
+    Pressable,
+    StyleSheet,
+    Text,
+    View,
+    type StyleProp,
+    type ViewStyle,
+} from "react-native";
 
-import { Brand, Radius, Shadows } from '@/constants/brand';
-import type { IconName } from '@/constants/icons';
-import { AppIcon } from './app-icon';
+import { Brand, Shadows } from "@/constants/brand";
+import type { IconName } from "@/constants/icons";
+import { AppIcon } from "./app-icon";
 
-type Variante = 'primary' | 'secondary' | 'ghost' | 'danger';
+type Variante = "primary" | "secondary" | "ghost" | "danger";
 
 interface Props {
   title: string;
@@ -30,23 +30,39 @@ interface Props {
  * depende del fondo para distinguirse.
  */
 const ESTILOS = {
-  primary: { texto: '#FFFFFF', borde: 'rgba(255,255,255,0.26)', icono: 'rgba(255,255,255,0.18)' },
-  secondary: { texto: Brand.primaryDark, borde: 'rgba(10,90,140,0.20)', icono: 'rgba(10,90,140,0.08)' },
-  ghost: { texto: Brand.primary, borde: 'rgba(10,90,140,0.24)', icono: 'rgba(10,90,140,0.06)' },
-  danger: { texto: Brand.danger, borde: 'rgba(168,35,28,0.24)', icono: 'rgba(168,35,28,0.08)' },
+  primary: {
+    texto: "#FFFFFF",
+    borde: "rgba(255,255,255,0.20)",
+    icono: "rgba(255,255,255,0.14)",
+  },
+  secondary: {
+    texto: Brand.primaryDark,
+    borde: "rgba(13,94,140,0.14)",
+    icono: "rgba(13,94,140,0.08)",
+  },
+  ghost: {
+    texto: Brand.primary,
+    borde: "rgba(13,94,140,0.20)",
+    icono: "rgba(13,94,140,0.06)",
+  },
+  danger: {
+    texto: Brand.danger,
+    borde: "rgba(184,59,52,0.18)",
+    icono: "rgba(184,59,52,0.08)",
+  },
 } as const;
 
 const FONDOS: Record<Variante, string> = {
-  primary: 'transparent',
-  secondary: '#E7F4FB',
-  ghost: '#FFFFFF',
-  danger: '#FDF1EF',
+  primary: "transparent",
+  secondary: "#EEF7FC",
+  ghost: "#F9FBFD",
+  danger: "#FFF4F3",
 };
 
 export function AppButton({
   title,
   onPress,
-  variant = 'primary',
+  variant = "primary",
   icon,
   loading = false,
   disabled = false,
@@ -64,12 +80,13 @@ export function AppButton({
       style={({ pressed }) => [
         styles.base,
         { backgroundColor: FONDOS[variant], borderColor: colores.borde },
-        variant === 'primary' && Shadows.card,
+        variant === "primary" && Shadows.card,
         pressed && styles.pressed,
         inactivo && styles.disabled,
         style,
-      ]}>
-      {variant === 'primary' ? (
+      ]}
+    >
+      {variant === "primary" ? (
         <LinearGradient
           colors={[Brand.primaryDark, Brand.deepMid, Brand.deepEnd]}
           start={{ x: 0, y: 0 }}
@@ -88,7 +105,10 @@ export function AppButton({
               <AppIcon name={icon} size={16} color={colores.texto} />
             </View>
           ) : null}
-          <Text style={[styles.texto, { color: colores.texto }]} numberOfLines={2}>
+          <Text
+            style={[styles.texto, { color: colores.texto }]}
+            numberOfLines={2}
+          >
             {title}
           </Text>
         </>
@@ -99,25 +119,25 @@ export function AppButton({
 
 const styles = StyleSheet.create({
   base: {
-    minHeight: 50,
-    borderRadius: Radius.md,
+    minHeight: 52,
+    borderRadius: 16,
     borderWidth: 1,
-    paddingHorizontal: 12,
-    paddingVertical: 9,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
     gap: 8,
-    overflow: 'hidden',
+    overflow: "hidden",
   },
   iconBox: {
-    width: 28,
-    height: 28,
-    borderRadius: 9,
-    alignItems: 'center',
-    justifyContent: 'center',
+    width: 30,
+    height: 30,
+    borderRadius: 10,
+    alignItems: "center",
+    justifyContent: "center",
   },
-  texto: { fontSize: 15, fontWeight: '700', letterSpacing: 0.2, flexShrink: 1 },
-  pressed: { opacity: 0.9, transform: [{ scale: 0.99 }] },
+  texto: { fontSize: 15, fontWeight: "800", letterSpacing: 0.2, flexShrink: 1 },
+  pressed: { opacity: 0.92, transform: [{ scale: 0.99 }] },
   disabled: { opacity: 0.55 },
 });

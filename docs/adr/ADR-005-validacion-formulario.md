@@ -10,7 +10,7 @@ Aceptado.
 
 ## Requisitos relacionados
 
-R2, R5 y R6.
+R2, R5, R6 y R7.
 
 ## Contexto
 
@@ -35,14 +35,16 @@ El estado del formulario vive en `useLecturaForm` con `useState`. Las reglas viv
 - `numeroDesdeTexto` acepta coma o punto decimal.
 - `consumoDe` calcula la resta sin valores negativos.
 - `esConsumoAnomalo` compara contra `promedio * 3`.
-- `validarFormulario` devuelve un mapa `campo → mensaje` y aplica R5, R6 y R7.
-- `persistirLectura` vuelve a calcular consumo y anomalía antes de guardar, para que el servidor reciba datos coherentes.
+- `esLecturaMenor` detecta una lectura inferior a la anterior; se acepta solo si el técnico confirma que cambiaron el medidor.
+- `validarFormulario` devuelve un mapa `campo → mensaje` y aplica R5, R7 y las confirmaciones de R6.
+- `persistirLectura` vuelve a calcular consumo, anomalía y lectura menor, y comprueba duplicados antes de guardar, para que el servidor reciba datos coherentes.
 
 La UI solo pinta `errores[campo]`. El botón Guardar llama a la misma validación que se usa para mostrar los mensajes.
 
 ## Consecuencias
 
 - Las reglas se pueden leer en un archivo corto y explicar sin abrir la pantalla.
+- Una lectura menor a la anterior se muestra con consumo 0 m³ y exige confirmación de reemplazo; no se marca como anomalía de consumo alto.
 - No hay dependencias nuevas para formularios.
 - **Desventaja:** no hay validación declarativa ni esquema compartido con el backend; los mensajes se escriben a mano.
 - **Desventaja:** cada campo se registra manualmente con `setCampo`.
@@ -54,7 +56,8 @@ La UI solo pinta `errores[campo]`. El botón Guardar llama a la misma validació
 - Un medidor normal sin lectura muestra “La lectura es obligatoria”.
 - Un inaccesible sin motivo muestra error y no permite guardar; no se calcula consumo.
 - Un dañado exige descripción y foto.
-- Una lectura que supera el triple del promedio muestra la alerta y no guarda hasta confirmar.
+- Una lectura que supera el triple del promedio muestra la alerta; no guarda hasta confirmar y luego exige foto.
+- Una lectura menor a la anterior exige confirmar el reemplazo del medidor.
 - `MED-123` no dispara ninguna consulta; `MED-100001` sí.
 - `utils/validators.ts` no importa React ni AsyncStorage: es testeable de forma aislada.
 

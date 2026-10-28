@@ -29,7 +29,7 @@ Los datos son pequeños y cambian una vez al mes. No se necesita una base de dat
 
 ## Decisión
 
-Se usa TanStack Query como capa de estado del servidor. Su caché se persiste en AsyncStorage con `createAsyncStoragePersister`.
+Se usa TanStack Query como capa de estado del servidor. Su caché se persiste en AsyncStorage con `createAsyncStoragePersister` en la clave `EPMAPS_QUERY_CACHE`.
 
 - `networkMode: 'offlineFirst'` en consultas para mostrar la caché de inmediato.
 - `staleTime` de 12 horas en medidores y ruta; `gcTime` y `maxAge` de 7 días.
@@ -42,10 +42,11 @@ Se usa TanStack Query como capa de estado del servidor. Su caché se persiste en
 
 - Una segunda consulta del mismo medidor muestra datos al instante, con o sin señal.
 - No se escribe a mano la lógica de caché ni de reintentos.
+- La caché persistida se complementa con `EPMAPS_MEDIDORES_VISTOS`: cada medidor consultado queda también en AsyncStorage para abrir el detalle sin red aunque la caché de consultas se pierda (ADR-008).
 - **Desventaja:** se agrega una librería que no se vio en clase y hay que explicar su ciclo de vida (`isPending`, `isFetching`, `isError`).
 - **Riesgo:** la caché en AsyncStorage no está cifrada; no se guardan tokens ni claves.
 - **Riesgo:** un medidor puede cambiar en la oficina y la app mostrar el dato anterior. Se mitiga con `staleTime`, `refetchOnReconnect` y el botón de actualizar.
-- **Obligación:** las pantallas no llaman al mock directamente; usan hooks de `features/medidores`.
+- **Obligación:** las consultas de pantallas pasan por hooks de `features/medidores`; el alta de medidor es la excepción y usa `crearMedidor` del adaptador (ADR-008).
 - **Obligación:** al cerrar sesión se limpia la caché con `queryClient.clear()` y `persister.removeClient()`.
 
 ## Verificación
@@ -53,7 +54,8 @@ Se usa TanStack Query como capa de estado del servidor. Su caché se persiste en
 - `src/services/queryClient.ts` contiene el persister y `maxAge`.
 - Con señal se consulta un medidor; al activar modo avión, la segunda consulta muestra los mismos datos sin pantalla de error.
 - Al cerrar y abrir la app, la ruta sigue disponible sin red.
-- Las pantallas usan `useMedidor` y `useRuta`, no el mock directamente.
+- Las consultas de pantallas usan `useMedidor` y `useRuta`; el alta usa `crearMedidor` del adaptador, no un mock local.
+- Si se borra o expira la caché de Query, un medidor ya consultado sigue abriéndose desde `EPMAPS_MEDIDORES_VISTOS`.
 - `npx tsc --noEmit` termina sin errores.
 
 ## Uso de IA

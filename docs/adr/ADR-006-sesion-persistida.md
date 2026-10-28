@@ -16,7 +16,7 @@ R1.
 
 R1 exige iniciar sesión con código de empleado y clave, mantener la sesión al cerrar la app y permitir cerrar sesión. El técnico trabaja todo el día en campo y no puede volver a escribir la clave cada vez que el sistema operativo cierra la app.
 
-En este prototipo no hay servidor de autenticación real ni tokens: el login lo responde el mock local. No se necesita refresco de token ni permisos por rol.
+En este prototipo no hay servidor de autenticación real ni tokens: el login se valida en el teléfono con credenciales fijas en `src/services/auth.ts`. No se necesita refresco de token ni permisos por rol.
 
 ## Alternativas consideradas
 
@@ -25,14 +25,14 @@ En este prototipo no hay servidor de autenticación real ni tokens: el login lo 
 | Mantener la sesión solo en memoria | Cero persistencia; muy simple. | Al cerrar la app se pierde la sesión; no cumple R1. |
 | `expo-secure-store` | Cifra el dato en Keychain/Keystore; ideal para credenciales. | No está instalado; para el demo solo se guarda el nombre y el código. |
 | AsyncStorage con el perfil del técnico | Ya instalado; suficiente para un objeto público pequeño; persistente. | No está cifrado; cualquiera con acceso al sandbox podría leerlo. |
-| Token JWT | Separación entre credenciales y perfil; expiración. | El mock no emite tokens; agregar JWT sería teatro sin backend real. |
+| Token JWT | Separación entre credenciales y perfil; expiración. | MockAPI no emite tokens; agregar JWT sería teatro sin backend real. |
 
 ## Decisión
 
-Se guarda en `EPMAPS_SESION` únicamente el objeto `Tecnico` (código, nombre y zona). **La clave nunca se persiste.**
+Se guarda en `EPMAPS_SESION` únicamente el objeto `Tecnico` (código, nombre y zona). **La clave nunca se persiste.** El login no pasa por MockAPI: `src/services/auth.ts` compara las credenciales fijas y devuelve el perfil.
 
 - `AuthProvider` lee la sesión al arrancar y muestra la app sin pedir login si existe.
-- `iniciarSesion` llama al mock, guarda el perfil y actualiza el contexto.
+- `iniciarSesion` llama a `login` de `src/services/auth.ts`, guarda el perfil y actualiza el contexto.
 - `cerrarSesion` borra la sesión, limpia la caché de TanStack Query con `queryClient.clear()` y elimina la caché persistida con `persister.removeClient()`.
 - Las lecturas pendientes y el borrador **no** se borran al cerrar sesión, para no perder trabajo de campo.
 
