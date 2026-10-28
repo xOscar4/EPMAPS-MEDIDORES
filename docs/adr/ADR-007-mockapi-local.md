@@ -29,3 +29,19 @@ Se implementa `src/services/mockApi.ts` como sistema de la oficina simulado:
 
 - `login` espera 600 ms y valida `EMP-001 / epmaps2026`.
 - `getRuta` espera 700 ms y devuelve 8 medidores de `seed.ts`.
+
+## Consecuencias
+
+- La defensa funciona en modo avión después de la descarga inicial de la ruta.
+- Se pueden demostrar credenciales incorrectas, código inexistente y duplicados sin preparar servidores.
+- **Desventaja:** no hay HTTP real ni token; la latencia es artificial.
+
+## Verificación
+
+- Con `EMP-001 / epmaps2026` se entra; con otra clave se muestra el error del mock.
+- `MED-100001` aparece en la ruta; un código inventado devuelve “No existe un medidor”.
+- Se registra una lectura, se cierra la app y el historial la conserva.
+
+## Uso de IA
+
+La IA propuso usar MockAPI en la nube y un archivo `.env` con la URL. Se rechazó por el riesgo de depender de internet durante la defensa y porque el enunciado no entrega credenciales.
