@@ -1,43 +1,64 @@
-import { useEffect, useRef, useState } from 'react';
-import { AppState } from 'react-native';
+import { useEffect, useRef, useState } from "react";
+import { AppState } from "react-native";
 
-import type { BorradorLectura, FormLectura, LecturaLocal } from '@/types/models';
+import { useAuth } from "@/features/auth/auth-provider";
+import { useMedidor } from "@/features/medidores/hooks";
+import type {
+    BorradorLectura,
+    FormLectura,
+    LecturaLocal,
+} from "@/types/models";
+import { fechaISO } from "@/utils/format";
 import {
-  consumoDe,
-  esConsumoAnomalo,
-  esLecturaMenor,
-  hayDatos,
-  numeroDesdeTexto,
-  validarFormulario,
-} from '@/utils/validators';
-import { useAuth } from '@/features/auth/auth-provider';
-import { useMedidor } from '@/features/medidores/hooks';
-import { borrarBorrador, guardarBorrador, leerBorrador, limpiarBorrador } from './draft';
-import { persistirLectura, type ResultadoGuardado } from './guardar-lectura';
-import { useHistorial } from './hooks';
-import { useOutbox } from './outbox-provider';
+    consumoDe,
+    esConsumoAnomalo,
+    esLecturaMenor,
+    hayDatos,
+    numeroDesdeTexto,
+    validarFormulario,
+} from "@/utils/validators";
+import {
+    borrarBorrador,
+    guardarBorrador,
+    leerBorrador,
+    limpiarBorrador,
+} from "./draft";
+import { persistirLectura, type ResultadoGuardado } from "./guardar-lectura";
+import { useHistorial } from "./hooks";
+import { useOutbox } from "./outbox-provider";
 
 const VACIO: FormLectura = {
   estado: null,
-  lectura: '',
-  motivo: '',
-  descripcion: '',
+  fechaLectura: fechaISO(new Date()),
+  lectura: "",
+  motivo: "",
+  descripcion: "",
   fotoUri: null,
   confirmoAnomalia: false,
 };
 
 const desdeLectura = (lectura: LecturaLocal): FormLectura => ({
   estado: lectura.estadoMedidor,
-  lectura: lectura.lectura !== null ? String(lectura.lectura) : '',
-  motivo: lectura.motivo ?? '',
-  descripcion: lectura.descripcion ?? '',
+  fechaLectura: lectura.fecha || fechaISO(new Date()),
+  lectura: lectura.lectura !== null ? String(lectura.lectura) : "",
+  motivo: lectura.motivo ?? "",
+  descripcion: lectura.descripcion ?? "",
   fotoUri: lectura.fotoUri,
   confirmoAnomalia: lectura.confirmoAnomalia,
 });
 
-export function useLecturaForm(codigo: string, lecturaId?: string, continuar?: boolean) {
+export function useLecturaForm(
+  codigo: string,
+  lecturaId?: string,
+  continuar?: boolean,
+) {
   const { tecnico } = useAuth();
-  const { lecturas, cargando: cargandoOutbox, guardar, actualizar } = useOutbox();
+  const {
+    lecturas,
+    cargando: cargandoOutbox,
+    guardar,
+    actualizar,
+  } = useOutbox();
   const medidorQuery = useMedidor(codigo);
   const { data: historial = [] } = useHistorial();
   const [form, setForm] = useState<FormLectura>(VACIO);
@@ -49,7 +70,12 @@ export function useLecturaForm(codigo: string, lecturaId?: string, continuar?: b
   const guardadoOk = useRef(false);
 
   const existente = lecturas.find((item) => item.id === lecturaId);
-  const noEncontrada = Boolean(lecturaId) && !cargandoOutbox && !existente;
+  const enviadaNoPendiente =
+    Boolean(lecturaId) &&
+    !existente &&
+    historial.some((item) => item.id === lecturaId);
+  const noEncontrada =
+    Boolean(lecturaId) && !cargandoOutbox && (!existente || enviadaNoPendiente);
 
   useEffect(() => {
     if (inicializado.current || cargandoOutbox) return;
@@ -69,9 +95,20 @@ export function useLecturaForm(codigo: string, lecturaId?: string, continuar?: b
   }, [cargandoOutbox, codigo, continuar, existente, lecturaId]);
 
   useEffect(() => {
-    if (guardadoOk.current || cargando || existente || borrador || !hayDatos(form)) return;
+    if (
+      guardadoOk.current ||
+      cargando ||
+      existente ||
+      borrador ||
+      !hayDatos(form)
+    )
+      return;
     const timer = setTimeout(() => {
-      void guardarBorrador({ codigo, ...form, actualizadoEn: new Date().toISOString() });
+      void guardarBorrador({
+        codigo,
+        ...form,
+        actualizadoEn: new Date().toISOString(),
+      });
     }, 250);
     return () => clearTimeout(timer);
   }, [form, codigo, cargando, existente, borrador]);
@@ -79,45 +116,74 @@ export function useLecturaForm(codigo: string, lecturaId?: string, continuar?: b
   // R8: si el usuario manda la app al fondo, se guarda de inmediato.
   useEffect(() => {
     if (guardadoOk.current || existente || !hayDatos(form)) return;
-    const sub = AppState.addEventListener('change', (estado) => {
-      if (estado === 'active') return;
-      void guardarBorrador({ codigo, ...form, actualizadoEn: new Date().toISOString() });
+    const sub = AppState.addEventListener("change", (estado) => {
+      if (estado === "active") return;
+      void guardarBorrador({
+        codigo,
+        ...form,
+        actualizadoEn: new Date().toISOString(),
+      });
     });
     return () => sub.remove();
   }, [form, codigo, existente]);
 
-  const setCampo = <K extends keyof FormLectura>(campo: K, valor: FormLectura[K]) => {
+  const setCampo = <K extends keyof FormLectura>(
+    campo: K,
+    valor: FormLectura[K],
+  ) => {
     setForm((previo) => {
       const siguiente = { ...previo, [campo]: valor };
-      if (campo === 'lectura' || campo === 'estado') siguiente.confirmoAnomalia = false;
+      if (campo === "lectura" || campo === "estado")
+        siguiente.confirmoAnomalia = false;
       return siguiente;
     });
-    const clave = campo === 'confirmoAnomalia' ? 'confirmacion' : campo === 'fotoUri' ? 'foto' : campo;
+    const clave =
+      campo === "confirmoAnomalia"
+        ? "confirmacion"
+        : campo === "fotoUri"
+          ? "foto"
+          : campo;
     setErrores((previos) => ({
       ...previos,
-      [clave]: '',
-      ...(campo === 'lectura' || campo === 'estado' ? { confirmacion: '' } : {}),
+      [clave]: "",
+      ...(campo === "lectura" || campo === "estado"
+        ? { confirmacion: "" }
+        : {}),
     }));
   };
 
-  const lectura = form.estado === 'inaccesible' ? null : numeroDesdeTexto(form.lectura);
+  const lectura =
+    form.estado === "inaccesible" ? null : numeroDesdeTexto(form.lectura);
   const medidor = medidorQuery.data;
-  const consumo = medidor && lectura !== null ? consumoDe(lectura, medidor.ultimaLectura) : 0;
+  const consumo =
+    medidor && lectura !== null ? consumoDe(lectura, medidor.ultimaLectura) : 0;
   const anomalia =
-    medidor && lectura !== null ? esConsumoAnomalo(consumo, medidor.promedioMensual) : false;
+    medidor && lectura !== null
+      ? esConsumoAnomalo(consumo, medidor.promedioMensual)
+      : false;
   const lecturaMenor =
-    medidor && lectura !== null ? esLecturaMenor(lectura, medidor.ultimaLectura) : false;
-  const fotoRequerida = anomalia || form.estado === 'danado';
+    medidor && lectura !== null
+      ? esLecturaMenor(lectura, medidor.ultimaLectura)
+      : false;
+  const fotoRequerida = anomalia || form.estado === "danado";
 
   const validar = () => {
-    const encontrados = validarFormulario(form, fotoRequerida, anomalia, lecturaMenor);
+    const encontrados = validarFormulario(
+      form,
+      fotoRequerida,
+      anomalia,
+      lecturaMenor,
+      medidor?.fechaUltimaLectura,
+    );
     setErrores(encontrados);
     return Object.keys(encontrados).length === 0;
   };
 
   const guardarLectura = async (): Promise<ResultadoGuardado> => {
-    if (!tecnico || !medidor) return { ok: false, mensaje: 'Faltan los datos del medidor.' };
-    if (!validar()) return { ok: false, mensaje: 'Revisa los campos marcados.' };
+    if (!tecnico || !medidor)
+      return { ok: false, mensaje: "Faltan los datos del medidor." };
+    if (!validar())
+      return { ok: false, mensaje: "Revisa los campos marcados." };
     setGuardando(true);
     try {
       const resultado = await persistirLectura({
@@ -137,7 +203,10 @@ export function useLecturaForm(codigo: string, lecturaId?: string, continuar?: b
       }
       return resultado;
     } catch {
-      return { ok: false, mensaje: 'No se pudo guardar en el teléfono. Intenta de nuevo.' };
+      return {
+        ok: false,
+        mensaje: "No se pudo guardar en el teléfono. Intenta de nuevo.",
+      };
     } finally {
       setGuardando(false);
     }

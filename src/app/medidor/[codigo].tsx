@@ -17,7 +17,9 @@ import { ScreenHeader } from "@/components/ui/screen-header";
 import { SectionTitle } from "@/components/ui/section-title";
 import { Brand, Radius } from "@/constants/brand";
 import { Icons } from "@/constants/icons";
-import { useLecturaDelMes } from "@/features/lecturas/hooks";
+import { LecturaCard } from "@/features/lecturas/components/lectura-card";
+import { useHistorial, useLecturaDelMes } from "@/features/lecturas/hooks";
+import { useOutbox } from "@/features/lecturas/outbox-provider";
 import { MedidorDetalleCard } from "@/features/medidores/components/medidor-detalle-card";
 import { useMedidor } from "@/features/medidores/hooks";
 import { useNetworkStatus } from "@/hooks/use-network-status";
@@ -36,9 +38,21 @@ export default function MedidorScreen() {
   const { online } = useNetworkStatus();
   const codigoMedidor = normalizarCodigo(codigo ?? "");
   const consulta = useMedidor(codigoMedidor);
+  const { lecturas } = useOutbox();
+  const { data: enviadas = [] } = useHistorial();
   const { pendiente, enviada } = useLecturaDelMes(codigoMedidor);
   const valido = esCodigoValido(codigoMedidor);
   const periodo = periodoActual();
+  const fechaDeOrden = (
+    item: (typeof lecturas)[number] | (typeof enviadas)[number],
+  ) =>
+    "enviadoEn" in item
+      ? item.fecha || item.enviadoEn
+      : item.fecha || item.creadoEn;
+  const historialMedidor = [
+    ...lecturas.filter((item) => item.medidorCodigo === codigoMedidor),
+    ...enviadas.filter((item) => item.medidorCodigo === codigoMedidor),
+  ].sort((a, b) => fechaDeOrden(b).localeCompare(fechaDeOrden(a)));
 
   const volver = () => {
     if (router.canGoBack()) router.back();
@@ -148,6 +162,17 @@ export default function MedidorScreen() {
                   lectura. Si tiene un error, la oficina debe anularla y el
                   técnico registra una nueva.
                 </Text>
+                <AppButton
+                  title="Registrar otra lectura"
+                  icon={Icons.camera}
+                  variant="secondary"
+                  onPress={() =>
+                    router.push({
+                      pathname: "/lectura/[codigo]",
+                      params: { codigo: codigoMedidor },
+                    })
+                  }
+                />
               </Card>
             ) : pendiente ? (
               <Card style={styles.stateCard}>
@@ -261,6 +286,48 @@ export default function MedidorScreen() {
               </Card>
             )}
 
+            <Card style={styles.historyCard}>
+              <View style={styles.historyHeader}>
+                <View style={styles.historyTitleWrap}>
+                  <Text style={styles.historyTitle}>Historial del medidor</Text>
+                  <Text style={styles.historySubtitle}>
+                    Todas las lecturas del medidor
+                  </Text>
+                </View>
+                <AppIcon name={Icons.history} size={18} color={Brand.primary} />
+              </View>
+
+              {historialMedidor.length === 0 ? (
+                <Text style={styles.emptyHistory}>
+                  Todavía no hay lecturas para este medidor.
+                </Text>
+              ) : (
+                <View style={styles.historyList}>
+                  {historialMedidor.map((item) => (
+                    <View key={item.id} style={styles.historyItem}>
+                      <LecturaCard
+                        item={item}
+                        onEditar={
+                          "enviadoEn" in item
+                            ? undefined
+                            : item.estadoSync === "pendiente"
+                              ? () =>
+                                  router.push({
+                                    pathname: "/lectura/[codigo]",
+                                    params: {
+                                      codigo: codigoMedidor,
+                                      lecturaId: item.id,
+                                    },
+                                  })
+                              : undefined
+                        }
+                      />
+                    </View>
+                  ))}
+                </View>
+              )}
+            </Card>
+
             <Card style={styles.rulesCard}>
               <Text style={styles.rulesTitle}>Qué pide cada estado (R5)</Text>
               <Regla icon={Icons.check} texto="Normal: lectura obligatoria." />
@@ -338,6 +405,19 @@ const styles = StyleSheet.create({
     borderRadius: Radius.sm,
     padding: 10,
   },
+  historyCard: { gap: 12 },
+  historyHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: 8,
+  },
+  historyTitleWrap: { flex: 1, minWidth: 0 },
+  historyTitle: { fontSize: 14, fontWeight: "800", color: Brand.text },
+  historySubtitle: { fontSize: 11, color: Brand.textMuted },
+  historyList: { gap: 10 },
+  historyItem: { overflow: "hidden" },
+  emptyHistory: { fontSize: 11, color: Brand.textMuted, lineHeight: 17 },
   errorText: { fontSize: 11, color: Brand.danger, fontWeight: "600" },
   sending: {
     fontSize: 11,

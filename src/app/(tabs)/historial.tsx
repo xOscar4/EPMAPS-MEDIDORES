@@ -42,8 +42,14 @@ export default function HistorialScreen() {
   const { data: enviadas = [], refetch, isFetching, isError } = useHistorial();
   const [filtro, setFiltro] = useState<Filtro>("todos");
 
-  const locales = filtro === "enviadas" ? [] : lecturas;
-  const remotas = filtro === "pendientes" ? [] : enviadas;
+  const localesOrdenadas = [...lecturas].sort((a, b) =>
+    (b.fecha || b.creadoEn || "").localeCompare(a.fecha || a.creadoEn || ""),
+  );
+  const remotasOrdenadas = [...enviadas].sort((a, b) =>
+    (b.fecha || b.enviadoEn || "").localeCompare(a.fecha || a.enviadoEn || ""),
+  );
+  const locales = filtro === "enviadas" ? [] : localesOrdenadas;
+  const remotas = filtro === "pendientes" ? [] : remotasOrdenadas;
   const total = locales.length + remotas.length;
 
   const descartar = (id: string) =>

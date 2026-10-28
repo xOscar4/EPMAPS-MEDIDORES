@@ -1,8 +1,8 @@
 /** Estados que el técnico puede reportar en campo (R5). */
-export type EstadoMedidor = 'normal' | 'inaccesible' | 'danado';
+export type EstadoMedidor = "normal" | "inaccesible" | "danado";
 
 /** Ciclo de vida de una lectura dentro del outbox (R9). */
-export type EstadoSync = 'pendiente' | 'enviando' | 'error';
+export type EstadoSync = "pendiente" | "enviando" | "error";
 
 export interface Tecnico {
   codigo: string;
@@ -16,7 +16,7 @@ export interface Medidor {
   direccion: string;
   sector: string;
   cuenta: string;
-  estado: 'activo' | 'suspendido';
+  estado: "activo" | "suspendido";
   ultimaLectura: number;
   fechaUltimaLectura: string;
   promedioMensual: number;
@@ -27,6 +27,7 @@ export interface LecturaServidor {
   id: string;
   idempotencia: string;
   medidorCodigo: string;
+  fecha: string;
   periodo: string;
   estadoMedidor: EstadoMedidor;
   lectura: number | null;
@@ -46,6 +47,7 @@ export interface LecturaLocal {
   id: string;
   idempotencia: string;
   medidorCodigo: string;
+  fecha: string;
   periodo: string;
   estadoMedidor: EstadoMedidor;
   lectura: number | null;
@@ -65,6 +67,7 @@ export interface LecturaLocal {
 /** Campos que se guardan mientras el técnico llena el formulario (R8). */
 export interface FormLectura {
   estado: EstadoMedidor | null;
+  fechaLectura: string;
   lectura: string;
   motivo: string;
   descripcion: string;

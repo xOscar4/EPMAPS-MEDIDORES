@@ -1,8 +1,13 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { create } from 'axios';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { create } from "axios";
 
-import type { EstadoMedidor, LecturaLocal, LecturaServidor, Medidor } from '@/types/models';
-import { ApiError } from './apiError';
+import type {
+  EstadoMedidor,
+  LecturaLocal,
+  LecturaServidor,
+  Medidor,
+} from "@/types/models";
+import { ApiError } from "./apiError";
 
 /**
  * Sistema de la oficina: MockAPI real.
@@ -18,7 +23,8 @@ import { ApiError } from './apiError';
  * conectado y no hay ningún backend simulado dentro del teléfono.
  */
 export const MOCKAPI_URL =
-  process.env.EXPO_PUBLIC_MOCKAPI_URL ?? 'https://6ade67884e88f1bba4a5218d.mockapi.io';
+  process.env.EXPO_PUBLIC_MOCKAPI_URL ??
+  "https://6ade67884e88f1bba4a5218d.mockapi.io";
 
 const api = create({ baseURL: MOCKAPI_URL, timeout: 10000 });
 
@@ -32,12 +38,12 @@ const api = create({ baseURL: MOCKAPI_URL, timeout: 10000 });
 api.interceptors.response.use(
   (respuesta) => respuesta,
   (error) => {
-    const esGet = String(error?.config?.method ?? '').toLowerCase() === 'get';
+    const esGet = String(error?.config?.method ?? "").toLowerCase() === "get";
     if (esGet && error?.response?.status === 404) {
       return Promise.resolve({
         data: [],
         status: 200,
-        statusText: 'OK',
+        statusText: "OK",
         headers: error.response.headers,
         config: error.config,
       });
@@ -51,12 +57,13 @@ api.interceptors.response.use(
  * cada medidor consultado se guarda aquí para poder abrirlo sin Internet
  * incluso si la caché de consultas se limpia.
  */
-const MEDIDOR_KEY = 'EPMAPS_MEDIDORES_VISTOS';
+const MEDIDOR_KEY = "EPMAPS_MEDIDORES_VISTOS";
 
 interface LecturaApi {
   id: string;
   idempotencia?: string;
   medidorCodigo?: string;
+  fecha?: string;
   periodo?: string;
   estadoMedidor?: string;
   lectura?: number | string | null;
@@ -79,18 +86,19 @@ function comoLista<T>(data: T[] | T): T[] {
 
 /** Normaliza los campos que MockAPI puede guardar como texto. */
 function aServidor(raw: LecturaApi): LecturaServidor {
-  const estado = (raw.estadoMedidor ?? 'normal') as EstadoMedidor;
+  const estado = (raw.estadoMedidor ?? "normal") as EstadoMedidor;
   const tieneLectura =
-    estado !== 'inaccesible' &&
+    estado !== "inaccesible" &&
     raw.lectura !== null &&
     raw.lectura !== undefined &&
-    raw.lectura !== '';
+    raw.lectura !== "";
 
   return {
     id: String(raw.id),
-    idempotencia: String(raw.idempotencia ?? ''),
-    medidorCodigo: String(raw.medidorCodigo ?? ''),
-    periodo: String(raw.periodo ?? ''),
+    idempotencia: String(raw.idempotencia ?? ""),
+    medidorCodigo: String(raw.medidorCodigo ?? ""),
+    fecha: String(raw.fecha ?? raw.enviadoEn?.slice(0, 10) ?? ""),
+    periodo: String(raw.periodo ?? ""),
     estadoMedidor: estado,
     lectura: tieneLectura ? Number(raw.lectura) : null,
     motivo: raw.motivo ? String(raw.motivo) : null,
@@ -100,8 +108,8 @@ function aServidor(raw: LecturaApi): LecturaServidor {
     anomalia: Boolean(raw.anomalia),
     confirmoAnomalia: Boolean(raw.confirmoAnomalia),
     fotoUri: raw.fotoUri ? String(raw.fotoUri) : null,
-    tecnicoCodigo: String(raw.tecnicoCodigo ?? ''),
-    enviadoEn: String(raw.enviadoEn ?? ''),
+    tecnicoCodigo: String(raw.tecnicoCodigo ?? ""),
+    enviadoEn: String(raw.enviadoEn ?? ""),
   };
 }
 
@@ -124,7 +132,9 @@ export async function guardarMedidorVisto(medidor: Medidor): Promise<void> {
 }
 
 /** Guarda la ruta completa en una sola escritura, sin condiciones de carrera. */
-export async function guardarMedidoresVistos(medidores: Medidor[]): Promise<void> {
+export async function guardarMedidoresVistos(
+  medidores: Medidor[],
+): Promise<void> {
   const vistos = await leerVistos();
   const siguientes = { ...vistos };
   for (const medidor of medidores) siguientes[medidor.codigo] = medidor;
@@ -132,21 +142,25 @@ export async function guardarMedidoresVistos(medidores: Medidor[]): Promise<void
 }
 
 /** Devuelve la copia local de un medidor ya consultado, o `null`. */
-export async function leerMedidorVisto(codigo: string): Promise<Medidor | null> {
+export async function leerMedidorVisto(
+  codigo: string,
+): Promise<Medidor | null> {
   const vistos = await leerVistos();
   return vistos[codigo] ?? null;
 }
 
 export async function getRuta(): Promise<Medidor[]> {
-  const { data } = await api.get<Medidor[]>('/medidores');
+  const { data } = await api.get<Medidor[]>("/medidores");
   return comoLista(data).sort((a, b) => a.codigo.localeCompare(b.codigo));
 }
 
 export async function getMedidor(codigo: string): Promise<Medidor> {
-  const { data } = await api.get<Medidor[]>('/medidores', { params: { codigo } });
+  const { data } = await api.get<Medidor[]>("/medidores", {
+    params: { codigo },
+  });
   const medidor = comoLista(data)[0];
   if (!medidor) {
-    throw new ApiError('NO_ENCONTRADO', 'No existe un medidor con ese código.');
+    throw new ApiError("NO_ENCONTRADO", "No existe un medidor con ese código.");
   }
   return medidor;
 }
@@ -160,20 +174,21 @@ export type NuevoMedidor = Medidor;
  */
 export async function crearMedidor(datos: NuevoMedidor): Promise<Medidor> {
   const existente = await getMedidor(datos.codigo).catch((error) => {
-    if (error instanceof ApiError && error.codigo === 'NO_ENCONTRADO') return null;
+    if (error instanceof ApiError && error.codigo === "NO_ENCONTRADO")
+      return null;
     throw error;
   });
   if (existente) {
-    throw new ApiError('DUPLICADA', 'Ya existe un medidor con ese código.');
+    throw new ApiError("DUPLICADA", "Ya existe un medidor con ese código.");
   }
 
-  const { data } = await api.post<Medidor>('/medidores', datos);
+  const { data } = await api.post<Medidor>("/medidores", datos);
   await guardarMedidorVisto(data);
   return data;
 }
 
 export async function getLecturasEnviadas(): Promise<LecturaServidor[]> {
-  const { data } = await api.get<LecturaApi[]>('/lecturas');
+  const { data } = await api.get<LecturaApi[]>("/lecturas");
   return comoLista(data)
     .map(aServidor)
     .sort((a, b) => b.enviadoEn.localeCompare(a.enviadoEn));
@@ -184,19 +199,24 @@ export async function getLecturasEnviadas(): Promise<LecturaServidor[]> {
  * llegó al servidor pero se perdió la respuesta, el reintento devuelve la
  * lectura existente en lugar de crear otra.
  */
-export async function enviarLectura(lectura: LecturaLocal): Promise<LecturaServidor> {
-  const { data: previas } = await api.get<LecturaApi[]>('/lecturas', {
+export async function enviarLectura(
+  lectura: LecturaLocal,
+): Promise<LecturaServidor> {
+  const { data: previas } = await api.get<LecturaApi[]>("/lecturas", {
     params: { idempotencia: lectura.idempotencia },
   });
   const repetida = comoLista(previas)[0];
   if (repetida) return aServidor(repetida);
 
   // R10: MockAPI no impone un índice único; la app verifica antes de insertar.
-  const { data: duplicadas } = await api.get<LecturaApi[]>('/lecturas', {
+  const { data: duplicadas } = await api.get<LecturaApi[]>("/lecturas", {
     params: { medidorCodigo: lectura.medidorCodigo, periodo: lectura.periodo },
   });
-  if (comoLista(duplicadas).length > 0) {
-    throw new ApiError('DUPLICADA', 'Ya existe una lectura de este medidor en el mes.');
+  if (comoLista(duplicadas).some((item) => item.id !== lectura.id)) {
+    throw new ApiError(
+      "DUPLICADA",
+      "Este medidor ya tiene una lectura registrada en este mes.",
+    );
   }
 
   const {
@@ -207,13 +227,13 @@ export async function enviarLectura(lectura: LecturaLocal): Promise<LecturaServi
     ...base
   } = lectura;
 
-  const { data } = await api.post<LecturaApi>('/lecturas', {
+  const { data } = await api.post<LecturaApi>("/lecturas", {
     ...base,
     // MockAPI acepta null; se conserva para distinguir "sin lectura" de 0 m³.
     lectura: base.lectura,
-    motivo: base.motivo ?? '',
-    descripcion: base.descripcion ?? '',
-    fotoUri: base.fotoUri ?? '',
+    motivo: base.motivo ?? "",
+    descripcion: base.descripcion ?? "",
+    fotoUri: base.fotoUri ?? "",
     enviadoEn: new Date().toISOString(),
   });
 
