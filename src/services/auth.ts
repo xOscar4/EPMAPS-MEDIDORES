@@ -12,7 +12,7 @@ const CREDENCIALES = { codigo: 'EMP-001', clave: 'epmaps2026' } as const;
 
 const TECNICO: Tecnico = {
   codigo: CREDENCIALES.codigo,
-  nombre: 'Andrea Salazar',
+  nombre: 'Oscar Vásquez',
   zona: 'Ruta Norte · Pichincha',
 };
 

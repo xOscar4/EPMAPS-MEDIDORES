@@ -10,7 +10,7 @@ Prueba I de desarrollo móvil · ESFOT · Defensa: miércoles 28 de octubre de 2
 | --- | --- |
 | Usuario | `EMP-001` |
 | Clave | `epmaps2026` |
-| Técnico | Andrea Salazar · Ruta Norte |
+| Técnico | Oscar Vásquez · Ruta Norte |
 | Medidor normal | `MED-100001` |
 | Medidor con consumo anómalo | `MED-100003` (promedio 8 m³; superar 74 m³ dispara la alerta) |
 | Medidor dañado | `MED-100004` (exige descripción y foto) |
