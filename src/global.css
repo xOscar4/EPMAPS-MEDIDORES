@@ -1,0 +1,74 @@
+@import 'tailwindcss';
+@import 'uniwind';
+
+/*
+ * Identidad visual de EPMAPS.
+ * Estos tokens son los mismos de src/constants/brand.ts. Al centralizarlos
+ * aquí, las clases de Uniwind y los valores que usa JavaScript (íconos,
+ * degradados, indicadores) hablan del mismo color.
+ */
+@theme {
+  --color-brand-primary: #0d5e8c;
+  --color-brand-primary-dark: #082f4d;
+  --color-brand-primary-deep: #041e32;
+  --color-brand-primary-light: #eaf5fc;
+  --color-brand-primary-soft: #f4faff;
+
+  --color-brand-accent: #1097b2;
+  --color-brand-accent-deep: #0a7280;
+  --color-brand-accent-bright: #6ed7e9;
+  --color-brand-aqua: #9ae3f3;
+  --color-brand-mint: #74d9c9;
+
+  --color-brand-background: #eef5fa;
+  --color-brand-surface: #ffffff;
+  --color-brand-surface-alt: #f5fafd;
+  --color-brand-text: #102738;
+  --color-brand-muted: #5a7688;
+  --color-brand-border: rgba(12, 66, 96, 0.12);
+
+  --color-brand-success: #127a55;
+  --color-brand-success-soft: #e9f9f1;
+  --color-brand-warning: #a06110;
+  --color-brand-warning-soft: #fff4e8;
+  --color-brand-danger: #b83b34;
+  --color-brand-danger-soft: #fdedea;
+  --color-brand-offline: #715703;
+  --color-brand-offline-soft: #fff7e0;
+
+  --color-brand-glass: rgba(255, 255, 255, 0.92);
+  --color-brand-glass-strong: rgba(255, 255, 255, 0.98);
+  --color-brand-glass-soft: rgba(247, 251, 255, 0.94);
+  --color-brand-glass-border: rgba(13, 94, 140, 0.12);
+  --color-brand-glass-border-soft: rgba(13, 94, 140, 0.08);
+  --color-brand-glass-field: #f7fbff;
+
+  --color-brand-sky: #7fcfea;
+  --color-brand-turquoise: #1ab7c8;
+  --color-brand-gradient-top: #f5fafd;
+  --color-brand-gradient-mid: #e7f4fb;
+  --color-brand-gradient-bottom: #ddf6f4;
+  --color-brand-deep-start: #062b45;
+  --color-brand-deep-mid: #0c5e8d;
+  --color-brand-deep-end: #14a7b8;
+  --color-brand-deep-glow: #4cd6e2;
+  --color-brand-overlay: rgba(5, 25, 38, 0.58);
+
+  --radius-control: 16px;
+  --radius-card: 24px;
+  --radius-tile: 22px;
+  --radius-sheet: 30px;
+  --radius-chip: 12px;
+  --radius-pill: 999px;
+}
+
+/* Fuentes del template de Expo. Se mantienen para la versión web. */
+:root {
+  --font-display:
+    Spline Sans, Inter, ui-sans-serif, system-ui, sans-serif, Apple Color Emoji, Segoe UI Emoji,
+    Segoe UI Symbol, Noto Color Emoji;
+  --font-mono:
+    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, Liberation Mono, Courier New, monospace;
+  --font-rounded: 'SF Pro Rounded', 'Hiragino Maru Gothic ProN', Meiryo, 'MS PGothic', sans-serif;
+  --font-serif: Georgia, 'Times New Roman', serif;
+}

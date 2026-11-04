@@ -1,0 +1,241 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { create } from "axios";
+
+import type {
+  EstadoMedidor,
+  LecturaLocal,
+  LecturaServidor,
+  Medidor,
+} from "@/types/models";
+import { ApiError } from "./apiError";
+
+/**
+ * Sistema de la oficina: MockAPI real.
+ *
+ * Recursos:
+ *  - GET /medidores
+ *  - GET /medidores?codigo=MED-100001
+ *  - GET /lecturas
+ *  - POST /lecturas
+ *
+ * La URL se puede cambiar con EXPO_PUBLIC_MOCKAPI_URL. Si la variable no
+ * existe se usa la URL de la prueba, de modo que el APK siempre queda
+ * conectado y no hay ningún backend simulado dentro del teléfono.
+ */
+export const MOCKAPI_URL =
+  process.env.EXPO_PUBLIC_MOCKAPI_URL ??
+  "https://6ade67884e88f1bba4a5218d.mockapi.io";
+
+const api = create({ baseURL: MOCKAPI_URL, timeout: 10000 });
+
+/**
+ * MockAPI responde `404 Not found` cuando un GET con filtros no encuentra
+ * ninguna fila (por ejemplo `?idempotencia=...` o `?medidorCodigo=...`).
+ * Eso no es un fallo de red: significa "lista vacía". Sin esta traducción,
+ * el envío de una lectura se detenía antes del POST y la cola quedaba
+ * atascada aunque hubiera Internet.
+ */
+api.interceptors.response.use(
+  (respuesta) => respuesta,
+  (error) => {
+    const esGet = String(error?.config?.method ?? "").toLowerCase() === "get";
+    if (esGet && error?.response?.status === 404) {
+      return Promise.resolve({
+        data: [],
+        status: 200,
+        statusText: "OK",
+        headers: error.response.headers,
+        config: error.config,
+      });
+    }
+    return Promise.reject(error);
+  },
+);
+
+/**
+ * R3 y R4: la caché de TanStack Query se guarda en AsyncStorage. Además,
+ * cada medidor consultado se guarda aquí para poder abrirlo sin Internet
+ * incluso si la caché de consultas se limpia.
+ */
+const MEDIDOR_KEY = "EPMAPS_MEDIDORES_VISTOS";
+
+interface LecturaApi {
+  id: string;
+  idempotencia?: string;
+  medidorCodigo?: string;
+  fecha?: string;
+  periodo?: string;
+  estadoMedidor?: string;
+  lectura?: number | string | null;
+  motivo?: string | null;
+  descripcion?: string | null;
+  consumo?: number | string;
+  promedio?: number | string;
+  anomalia?: boolean;
+  confirmoAnomalia?: boolean;
+  fotoUri?: string | null;
+  tecnicoCodigo?: string;
+  enviadoEn?: string;
+}
+
+/** MockAPI devuelve un arreglo al listar y un objeto al filtrar por id. */
+function comoLista<T>(data: T[] | T): T[] {
+  if (Array.isArray(data)) return data;
+  return data ? [data] : [];
+}
+
+/** Normaliza los campos que MockAPI puede guardar como texto. */
+function aServidor(raw: LecturaApi): LecturaServidor {
+  const estado = (raw.estadoMedidor ?? "normal") as EstadoMedidor;
+  const tieneLectura =
+    estado !== "inaccesible" &&
+    raw.lectura !== null &&
+    raw.lectura !== undefined &&
+    raw.lectura !== "";
+
+  return {
+    id: String(raw.id),
+    idempotencia: String(raw.idempotencia ?? ""),
+    medidorCodigo: String(raw.medidorCodigo ?? ""),
+    fecha: String(raw.fecha ?? raw.enviadoEn?.slice(0, 10) ?? ""),
+    periodo: String(raw.periodo ?? ""),
+    estadoMedidor: estado,
+    lectura: tieneLectura ? Number(raw.lectura) : null,
+    motivo: raw.motivo ? String(raw.motivo) : null,
+    descripcion: raw.descripcion ? String(raw.descripcion) : null,
+    consumo: Number(raw.consumo ?? 0),
+    promedio: Number(raw.promedio ?? 0),
+    anomalia: Boolean(raw.anomalia),
+    confirmoAnomalia: Boolean(raw.confirmoAnomalia),
+    fotoUri: raw.fotoUri ? String(raw.fotoUri) : null,
+    tecnicoCodigo: String(raw.tecnicoCodigo ?? ""),
+    enviadoEn: String(raw.enviadoEn ?? ""),
+  };
+}
+
+async function leerVistos(): Promise<Record<string, Medidor>> {
+  try {
+    const raw = await AsyncStorage.getItem(MEDIDOR_KEY);
+    return raw ? (JSON.parse(raw) as Record<string, Medidor>) : {};
+  } catch {
+    return {};
+  }
+}
+
+/** Guarda una copia del medidor para las consultas sin conexión (R3). */
+export async function guardarMedidorVisto(medidor: Medidor): Promise<void> {
+  const vistos = await leerVistos();
+  await AsyncStorage.setItem(
+    MEDIDOR_KEY,
+    JSON.stringify({ ...vistos, [medidor.codigo]: medidor }),
+  );
+}
+
+/** Guarda la ruta completa en una sola escritura, sin condiciones de carrera. */
+export async function guardarMedidoresVistos(
+  medidores: Medidor[],
+): Promise<void> {
+  const vistos = await leerVistos();
+  const siguientes = { ...vistos };
+  for (const medidor of medidores) siguientes[medidor.codigo] = medidor;
+  await AsyncStorage.setItem(MEDIDOR_KEY, JSON.stringify(siguientes));
+}
+
+/** Devuelve la copia local de un medidor ya consultado, o `null`. */
+export async function leerMedidorVisto(
+  codigo: string,
+): Promise<Medidor | null> {
+  const vistos = await leerVistos();
+  return vistos[codigo] ?? null;
+}
+
+export async function getRuta(): Promise<Medidor[]> {
+  const { data } = await api.get<Medidor[]>("/medidores");
+  return comoLista(data).sort((a, b) => a.codigo.localeCompare(b.codigo));
+}
+
+export async function getMedidor(codigo: string): Promise<Medidor> {
+  const { data } = await api.get<Medidor[]>("/medidores", {
+    params: { codigo },
+  });
+  const medidor = comoLista(data)[0];
+  if (!medidor) {
+    throw new ApiError("NO_ENCONTRADO", "No existe un medidor con ese código.");
+  }
+  return medidor;
+}
+
+/** Datos que se piden para dar de alta un medidor nuevo en la ruta. */
+export type NuevoMedidor = Medidor;
+
+/**
+ * Alta de medidor. MockAPI no impone un código único, así que la app
+ * comprueba primero que el código no exista y después hace el POST.
+ */
+export async function crearMedidor(datos: NuevoMedidor): Promise<Medidor> {
+  const existente = await getMedidor(datos.codigo).catch((error) => {
+    if (error instanceof ApiError && error.codigo === "NO_ENCONTRADO")
+      return null;
+    throw error;
+  });
+  if (existente) {
+    throw new ApiError("DUPLICADA", "Ya existe un medidor con ese código.");
+  }
+
+  const { data } = await api.post<Medidor>("/medidores", datos);
+  await guardarMedidorVisto(data);
+  return data;
+}
+
+export async function getLecturasEnviadas(): Promise<LecturaServidor[]> {
+  const { data } = await api.get<LecturaApi[]>("/lecturas");
+  return comoLista(data)
+    .map(aServidor)
+    .sort((a, b) => b.enviadoEn.localeCompare(a.enviadoEn));
+}
+
+/**
+ * R9: antes de insertar se busca la misma idempotencia. Si el envío anterior
+ * llegó al servidor pero se perdió la respuesta, el reintento devuelve la
+ * lectura existente en lugar de crear otra.
+ */
+export async function enviarLectura(
+  lectura: LecturaLocal,
+): Promise<LecturaServidor> {
+  const { data: previas } = await api.get<LecturaApi[]>("/lecturas", {
+    params: { idempotencia: lectura.idempotencia },
+  });
+  const repetida = comoLista(previas)[0];
+  if (repetida) return aServidor(repetida);
+
+  // R10: MockAPI no impone un índice único; la app verifica antes de insertar.
+  const { data: duplicadas } = await api.get<LecturaApi[]>("/lecturas", {
+    params: { medidorCodigo: lectura.medidorCodigo, periodo: lectura.periodo },
+  });
+  if (comoLista(duplicadas).some((item) => item.id !== lectura.id)) {
+    throw new ApiError(
+      "DUPLICADA",
+      "Este medidor ya tiene una lectura registrada en este mes.",
+    );
+  }
+
+  const {
+    id: _id,
+    estadoSync: _estado,
+    error: _error,
+    creadoEn: _creado,
+    ...base
+  } = lectura;
+
+  const { data } = await api.post<LecturaApi>("/lecturas", {
+    ...base,
+    // MockAPI acepta null; se conserva para distinguir "sin lectura" de 0 m³.
+    lectura: base.lectura,
+    motivo: base.motivo ?? "",
+    descripcion: base.descripcion ?? "",
+    fotoUri: base.fotoUri ?? "",
+    enviadoEn: new Date().toISOString(),
+  });
+
+  return aServidor(data);
+}

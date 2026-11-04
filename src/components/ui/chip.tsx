@@ -1,0 +1,47 @@
+import { Text, View } from 'react-native';
+
+import { Brand } from '@/constants/brand';
+import type { IconName } from '@/constants/icons';
+import { AppIcon } from './app-icon';
+
+type Tono = 'neutral' | 'success' | 'warning' | 'danger' | 'info';
+
+interface Props {
+  label: string;
+  tone?: Tono;
+  icon?: IconName;
+}
+
+const TONOS = {
+  neutral: { fondo: '#F1F8FC', texto: '#3D5B6C', borde: 'rgba(10,90,140,0.14)', punto: '#6E93A6' },
+  success: { fondo: '#E1F6EC', texto: Brand.success, borde: 'rgba(14,107,69,0.20)', punto: '#1B9A67' },
+  warning: { fondo: '#FFF3DD', texto: Brand.warning, borde: 'rgba(143,83,0,0.22)', punto: '#D08A16' },
+  danger: { fondo: '#FCEBE9', texto: Brand.danger, borde: 'rgba(168,35,28,0.20)', punto: '#D0503F' },
+  info: { fondo: '#E4F3FA', texto: Brand.primary, borde: 'rgba(10,90,140,0.18)', punto: Brand.accent },
+} as const;
+
+export function Chip({ label, tone = 'neutral', icon }: Props) {
+  const colores = TONOS[tone];
+  return (
+    <View
+      className="shrink self-start flex-row items-center gap-[5px] rounded-full border px-[9px] py-1"
+      style={{ backgroundColor: colores.fondo, borderColor: colores.borde }}
+    >
+      {icon ? (
+        <AppIcon name={icon} size={12} color={colores.texto} />
+      ) : (
+        <View
+          className="h-[5px] w-[5px] rounded-full"
+          style={{ backgroundColor: colores.punto }}
+        />
+      )}
+      <Text
+        className="shrink text-[10px] font-extrabold tracking-[0.3px]"
+        style={{ color: colores.texto }}
+        numberOfLines={1}
+      >
+        {label}
+      </Text>
+    </View>
+  );
+}
